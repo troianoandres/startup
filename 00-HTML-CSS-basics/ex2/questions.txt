@@ -1,0 +1,8 @@
+normalize.css hace lo mismo que reset css?
+
+Porque se me pisan las fonts si incluyo despues del normalize el font
+
+Imagine there is a declaration like class=”oh-no-inline-styles” style=”background:red” and you need to change the background to green without changing the inline style. How could you accomplish this?  ¿¿¿ (!important) ????
+
+box-sizing ?? como funciona tradicional el width va includio el content + border + padding , W3C solo el content = width
+

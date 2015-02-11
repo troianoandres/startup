@@ -1,0 +1,33 @@
+td,
+th {
+	text-align: center;
+	border: 	1px solid #CCC;
+	padding:	10px;				
+}
+
+.btn {
+	padding: 10px;
+}
+
+.btn-block {
+	width: 100%;
+}
+
+input.input-block,
+select.input-block {
+	width: 100%;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display:block;
+}

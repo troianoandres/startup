@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="description" content="Exercise 1 - Bootcamp"/>
+		<meta name="author" content="Troiano Andres"/>
+		<meta name="viewport" content="width=device-width,initial-scale=1"/>
+		
+		<title>Sign up</title>
+
+		<!-- Adding some css just for fun -->
+		<link rel="stylesheet" type="text/css" href="template.css">
+
+		<!--[if lt IE 9]>
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+	</head>
+	<body>
+		<!-- Page header -->
+		<header>
+			<h1>
+				Sign up form
+			</h1>			
+		</header>
+		<!-- Page header -->
+
+		<!-- Main content -->
+		<section>
+			<!-- Sign up form -->
+			<!-- FIXME: Explorer - add some way to validate all the form -->
+			<form>
+				<table>
+					<tbody>
+						<tr>
+							<td>First name</td>
+							<td>
+								<input type="text" id="txtFirstName" name="firstName" class="input-block" placeholder="First name" required/>
+							</td>
+						</tr>
+						<tr>
+							<td>Last name</td>
+							<td>
+								<input type="text" id="txtLastName" name="lastName" class="input-block" placeholder="Last name" required/>
+							</td>
+						</tr>
+						<tr>
+							<td>Email</td>
+							<td>
+								<input type="email" id="txtEmail" name="email" class="input-block" placeholder="example@company.com" required/>
+							</td>
+						</tr>
+						<tr>
+
+							<!-- FIXME: Mozilla - add some way to validate date, if you insert some number value it do not recognice -->
+							<td>Birthday</td>
+							<td>
+								<input type="date" id="txtBirthday" name="birthday" class="input-block" required/>
+							</td>
+						</tr>
+						<tr>
+							<td>Favourite sport</td>
+							<td>
+								<select id="dpdFavouriteSport" name="favouriteSport" class="input-block">
+									<option 	selected 		 	value="1">Rugby</option>
+									<option 							 	value="2">Tennis</option>
+									<option 							 	value="3">Football</option>
+									<option 							 	value="4">Softball</option>
+									<option 							 	value="5">Basketball</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>Biography</td>
+							<td>
+								<textarea id="txtBiography" name="biography" class="input-block" cols="21" rows="5" placeholder="Please write a short biography of yourself" required></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="submit" class="btn btn-block"  value="Sign up" />
+							</td>
+							<td>
+								<input type="reset" class="btn btn-block" value="Clear form" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			<!-- Sign up form -->
+		</section>
+		<!-- Main content -->
+
+	</body>
+</html>

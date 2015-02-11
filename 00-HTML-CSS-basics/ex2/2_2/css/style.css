@@ -1,0 +1,27 @@
+header {
+	background-color: #CCCCCC;
+}
+
+nav {
+	background-color: #0A93CA;
+}
+
+aside {
+	background-color: #ABCCFE;
+}
+
+footer {
+	background-color: #888888;
+}
+
+.text-center {
+	text-align: center;
+}
+
+/**************************************************************
+ * Fonts
+ **************************************************************/
+html {
+	font-family: 'Open Sans', sans-serif !important;
+	font-size: 14px;
+}
