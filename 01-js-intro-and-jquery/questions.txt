@@ -1,0 +1,3 @@
+Que es mejor ?
+	link.appendTo("head");
+	$("head").append(link);

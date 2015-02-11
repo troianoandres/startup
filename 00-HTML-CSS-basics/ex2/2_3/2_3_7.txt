@@ -1,0 +1,5 @@
+I will acomplish this by adding he next attribute to the class selector in css
+
+.oh-no-inline-styles {
+	background-color: green !important;
+}

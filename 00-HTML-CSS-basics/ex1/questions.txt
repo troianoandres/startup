@@ -1,4 +1,6 @@
 Orden de los formatos y formatos a agregar (video y audio)
+	Se intenta poner el formato que este mas soportado entre browsers
+	O sino menor tamaño
 
 Agregar css que identifique el block de los elementos html5 en exploradores viejos
 
@@ -13,6 +15,7 @@ Agregar de forma dummy mediante js para evitar que IE6 (ej) no renderice los tag
   }
 </script>
 <![endif]-->
+
 <!--[if lt IE 9]>
 	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->

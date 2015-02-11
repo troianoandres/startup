@@ -10,11 +10,9 @@
 	text-align: center;
 }
 
-/**************************************************************
- * Fonts
- **************************************************************/
 html {
 	font-family: 'Open Sans', sans-serif !important;
+	font-weight: 700;
 }
 
 .header {

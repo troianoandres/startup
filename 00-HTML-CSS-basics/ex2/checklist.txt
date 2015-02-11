@@ -1,0 +1,21 @@
+2_1_*	-->	OK
+
+2_2_1	-->	OK
+2_2_2	-->	OK
+2_2_3	-->	OK
+
+2_3_1	-->	OK
+2_3_2	-->	OK
+2_3_3	-->	OK
+2_3_4	-->	OK
+2_3_5	-->	OK
+2_3_6	-->	OK
+2_3_7	-->	OK
+
+2_4_*	-->	OK
+
+2_5_1	-->	OK
+2_5_2	-->	OK (falta hacer nav)
+
+2_6_1	-->	OK
+2_6_2	-->	OK (falta hacer y hacer responsive el nav)

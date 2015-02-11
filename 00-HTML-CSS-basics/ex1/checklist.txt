@@ -1,0 +1,18 @@
+1_1_1 -->	OK
+1_1_2 -->	OK
+1_1_3 -->	OK
+1_1_4 -->	OK
+1_1_5 -->	NEED TO PUT VIDEO FILES
+1_1_6 -->	OK
+1_1_7 --> OK (MOZILLA DO NOT USE DATE TYPE IN HTML5, SAFARI IPHONE DO NOT VALIDATE)
+
+1_2_1	-->	OK
+1_2_2	-->	OK
+1_2_3	-->	OK
+1_2_4	-->	OK
+1_2_5	-->	OK
+1_2_6	-->	OK
+
+1_3_1 -->	TO DO
+1_3_2 -->	TO DO
+1_3_3 -->	TO DO

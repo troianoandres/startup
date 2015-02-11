@@ -1,0 +1,104 @@
+* {
+	line-height: 1.25em;
+}
+
+body{
+	margin: 0px;	
+}
+
+.header {
+	background-color: #6f5499;
+	min-height: 60px;
+}
+
+.footer {
+	width: 100%;
+	background-color: #444444;
+	min-height: 100px;
+}
+
+.subheader {
+	background-color: #EEEEEE;
+	border-bottom: 1px solid #CCCCCC;
+	padding: 15px;
+	margin-bottom: 15px;
+}
+
+.page-logo {
+	padding: 15px;
+	font-size: 1.5em;
+	color: #FFFFFF;
+}
+
+.pull-right {
+	float: right;
+}
+
+.pull-left {
+	float: left;
+}
+
+.text-center {
+	text-align: center;
+}
+
+header > h1 + p {
+	font-style: italic;
+	font-weight: lighter;
+}
+
+.img-wrapper {
+	position: relative;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+}
+
+.img-wrapper > img {
+	width: 100%;
+	height: auto;
+}
+
+/**************************************************************
+ * Fonts
+ **************************************************************/
+html {
+	font-family: 'Roboto Condensed', sans-serif;
+}
+
+.f-italic {
+	font-style: italic;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/*************************************************************
+ * Layout
+ *************************************************************/
+.wrapper {
+	margin: 0 auto;
+	width: 100%;
+}
+
+.fs-34 {
+	font-size: 1.7em;
+}
+
+.v-alg-container {
+	display: table;
+	width: 100%;
+	height: 100%;
+}
+
+.v-alg-container > .v-alg-mid {
+	display: table-cell;
+	vertical-align: middle;
+}
