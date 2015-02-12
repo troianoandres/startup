@@ -25,26 +25,33 @@ var getWellcomeMessage	=	function getWellcomeMessage(callbackFunction) {
 
 };
 
-
 ;$(document).on("ready", function(){
 	
+	// Get the hidden section to a lookup cache
+	var $hiddenSection 	=	$("section.is-hidden");
+
 	// Fadding in the hidden section
-	$("section.is-hidden").fadeIn(800, function(){
+	$hiddenSection.fadeIn(800, function(){
+
+		// Get the alias Textbox
+		var $aliasTextbox	 =	$(".alias");
 		
 		// When the fadeIn event finishes i'll take out the is-hidden class
 		$(this).removeClass("is-hidden");
 
 		// Now I set the focus to the input with the .alias class
-		$(".alias").focus();
+		$aliasTextbox.focus();
 
 	});
 
+	// Get the btn click element
+	var $btnClick 	=	$("#btn-click");
+
 	// Adding click event to #btn-click element
-	$("#btn-click").on("click", function(){
+	$btnClick.on("click", function(){
 
 			// Now getting the wellcome message from server
 			var wellcomeMessage 	=	getWellcomeMessage();
 	});
-
 
 });
