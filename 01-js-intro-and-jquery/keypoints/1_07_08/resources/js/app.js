@@ -18,8 +18,10 @@ var getWellcomeMessage	=	function getWellcomeMessage(callbackFunction) {
 
 
   })
-  .error(function() {
-
+  .error(function(xhr, textStatus, errorThrown) {
+  	console.log(xhr);
+  	console.log("Error: " + errorThrown);
+  	console.log("Status: " + textStatus);
   })
   .complete(function() {
 
