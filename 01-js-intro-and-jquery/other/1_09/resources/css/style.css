@@ -1,0 +1,23 @@
+section {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.is-hidden {
+	display: none;
+}
+
+.h-center {
+	display: block;
+	margin: 0 auto;
+}
+
+.btn {
+	padding: 15px;
+	width: auto;
+}
+
+.input {
+	padding: 10px;
+
+}
