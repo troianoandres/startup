@@ -15,7 +15,7 @@
 2_4_*	-->	OK
 
 2_5_1	-->	OK
-2_5_2	-->	OK (falta hacer nav)
+2_5_2	-->	OK
 
 2_6_1	-->	OK
-2_6_2	-->	OK (falta hacer y hacer responsive el nav)
+2_6_2	-->	OK
