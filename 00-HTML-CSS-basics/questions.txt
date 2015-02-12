@@ -1,0 +1,20 @@
+Create a component library, significa crear una libreria de componentes (modulo para luego utilizar en la pagina, por ej un widget o simil)
+
+Separate container and content (Separar el css de el contenedor, el del fondo y de el contenido, para que no se relacionen entre si y poder hacer una relacion 1:n)
+
+Separar estructura del "skin" o piel (por un lado el layout y por otro lado los colores y estilizacion)
+
+Beware of gradient or variant backgrounds on rounded corners
+
+Common workflow of designing a page
+
+<!--[if lt IE 7 ]> <html class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
+
+EJEMPLO DE 
+	Module Subclass class names should be: module--subclass
+
+	The double dash makes it clear that this class represents a subclass and which module the subclass is affecting. The wrapper for this module will need the module class and the subclass module.
