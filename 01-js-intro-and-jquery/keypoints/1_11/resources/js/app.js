@@ -1,10 +1,3 @@
-;$(document).on("ready", function(){
-
-  // Load albums list of the Rolling Stones
-  loadAlbumsList("Rolling Stones", "album");
-
-});
-
 /**
  *  loadAlbumsList() search for the data type provided by searchType, filtered by the artistName
  *  then it appends it to the albums-list section
@@ -45,8 +38,10 @@ var   loadAlbumsList  = function loadAlbumsList(artistName, searchType) {
     }
 
   })
-  .error(function(){
-
+  .error(function(xhr, textStatus, errorThrown){
+    console.log(xhr);
+    console.log("Status: " + textStatus);
+    console.log("Error: " + errorThrown);
   })
   .complete(function(){
 
@@ -102,3 +97,10 @@ var   appendAlbum = function appendAlbum(album) {
   $albumsList.append($listItemContainer);
 
 };
+
+;$(document).on("ready", function(){
+
+  // Load albums list of the Rolling Stones
+  loadAlbumsList("Rolling Stones", "album");
+
+});
