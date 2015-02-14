@@ -6,21 +6,6 @@
   				box-sizing: border-box;
 }
 
-.header {
-	min-height: 60px;
-	margin-bottom: 15px;
-	background-color: #1F1F1F;
-}
-
-.logo-container {
-	width: auto;
-	min-height: 60px;
-	display: table;
-	
-
-	font-size: 1.5em;
-}
-
 .logo {
 	display: table-cell;
 
@@ -34,6 +19,27 @@
 .text-center {
 	text-align: center;
 }
+
+.input {
+	width: 100%;
+	padding: 10px;
+}
+
+.btn {
+	padding: 15px;
+}
+
+/**********************************************
+ * 										STATES 									*
+ **********************************************/
+
+.is-error {
+	color: red;
+}
+
+/**********************************************
+ * 										WRAPPERS								*
+ **********************************************/
 
 .img-wrapper {
 	position: relative;
@@ -50,19 +56,7 @@
 	margin: 0 auto;
 }
 
-.input {
-	width: 100%;
-	padding: 10px;
-}
-
-.btn {
-	padding: 15px;
-}
-
-/**********************************************
- * 										LAYOUT 									*
- **********************************************/
- .v-alg-container {
+.v-alg-container {
 	display: table;
 	width: 100%;
 	height: 100%;
@@ -71,6 +65,25 @@
 .v-alg-container > .v-alg-mid {
 	display: table-cell;
 	vertical-align: middle;
+}
+
+.logo-container {
+	width: auto;
+	min-height: 60px;
+	display: table;
+	
+
+	font-size: 1.5em;
+}
+
+/**********************************************
+ * 										LAYOUT 									*
+ **********************************************/
+
+.header {
+	min-height: 60px;
+	margin-bottom: 15px;
+	background-color: #1F1F1F;
 }
 
 .container {

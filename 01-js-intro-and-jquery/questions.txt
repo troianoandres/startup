@@ -1,3 +1,5 @@
 Que es mejor ?
 	link.appendTo("head");
 	$("head").append(link);
+
+VER EJ 11-12, MEJOR FORMA DE HACER ESO

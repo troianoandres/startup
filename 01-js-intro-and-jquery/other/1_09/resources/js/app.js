@@ -3,7 +3,7 @@
  *   	http://bootcamp.aws.af.cm/welcome/yourname
  *  @return {void}
  */
-var getWellcomeMessage	=	function getWellcomeMessage(callbackFunction) {
+var getWellcomeMessage	=	function getWellcomeMessage() {
 
 	// Calling via AJAX http://bootcamp.aws.af.cm/welcome/yourname to get the wellcome message
 	$.ajax({
@@ -11,28 +11,8 @@ var getWellcomeMessage	=	function getWellcomeMessage(callbackFunction) {
   	url: 				"http://bootcampwelcome/yourname",
   	dataType: 	"json"
 	})
-  .done(function(data) {
-
-  	// Call to the callbackFunction
-  	callbackFunction(data.response, false);
-
-  })
-  .error(function(xhr, textStatus, errorThrown) {
-  	
-  	// Error thrown not giving anything, setting custom message for error
-  	console.log("Error message: " + errorThrown);
-  	console.log(xhr);
-  	console.log("Status: " + textStatus);
-
-  	// Call to the callbackFunction
-  	callbackFunction("The Ajax call throw up an error", true);
-  })
-  .complete(function() {
-
-  })
-  .always(function() {
-
-  });
+  .done(insertWellcomeMessage)
+  .error(insertErrorMessage);
 
 };
 
@@ -42,20 +22,38 @@ var getWellcomeMessage	=	function getWellcomeMessage(callbackFunction) {
  *  @param 	{Boolean} 	error 		If there was an error it must be true
  *  @return {void}
  */
-var insertWellcomeMessage 	=	function insertWellcomeMessage(message, error) {
+var insertWellcomeMessage 	=	function insertWellcomeMessage(data) {
 
 	// Get the hidden section to append the response message
 	var 	$hiddenSection 	=	$("#hidden-section");
 
 	// Appending to hidden section content-info the response message with correct css format
-	$hiddenSection.find(".content-info").html(message);	
-
-	// Setting red color to the section if there was an error
-	if(error){
-		$hiddenSection.css({color: "red"});
-	}
+	$hiddenSection.find(".content-info").html(data.response);	
 	
-}
+};
+
+/**
+ *  insertErrorMessage() appends the error message into the hiddenSection content-info element
+ *  @param  {Json} 			xhr 				Error object
+ *  @param 	{String} 		textStatus 	status
+ *  @param 	{String} 		errorThrowm Text of the error thrown
+ *  @return {void}
+ */
+var insertErrorMessage 	=	function insertErrorMessage(xhr, textStatus, errorThrown) {
+
+	// Get the hidden section to append the response message
+	var 	$hiddenSection 	=	$("#hidden-section");
+  	
+	// Error thrown not giving anything, setting custom message for error
+	console.log("Error message: " + errorThrown);
+	console.log(xhr);
+	console.log("Status: " + textStatus);
+
+	// Appending to hidden section content-info the response message with correct css format
+	$hiddenSection.find(".content-info").html("The Ajax call throw up an error");
+	$hiddenSection.addClass("is-error");
+	
+};
 
 
 ;$(document).on("ready", function(){

@@ -9,8 +9,8 @@
 1_09 	-->	OK
 1_10 	-->	TO ASK
 1_11 	-->	OK
-1_12 	-->	
-1_13 	-->	OK - STILL LEFT EXERCISE NRO 12
+1_12 	-->	OK
+1_13 	-->	OK
 
 
 KEY: 1, 5, 7, 11, 13

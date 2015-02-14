@@ -21,3 +21,7 @@ section {
 	padding: 10px;
 
 }
+
+.is-error {
+	color: red;
+}

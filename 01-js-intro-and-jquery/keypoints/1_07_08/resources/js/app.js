@@ -3,7 +3,7 @@
  *   	http://bootcamp.aws.af.cm/welcome/yourname
  *  @return {void}
  */
-var getWellcomeMessage	=	function getWellcomeMessage(callbackFunction) {
+var getWellcomeMessage	=	function getWellcomeMessage() {
 
 	// Calling via AJAX http://bootcamp.aws.af.cm/welcome/yourname to get the wellcome message
 	$.ajax({
@@ -11,23 +11,11 @@ var getWellcomeMessage	=	function getWellcomeMessage(callbackFunction) {
   	url: 				"http://bootcamp.aws.af.cm/welcome/yourname",
   	dataType: 	"json"
 	})
-  .done(function(data) {
-
-
-  	callbackFunction(data);
-
-
-  })
+  .done( insertWellcomeMessage )
   .error(function(xhr, textStatus, errorThrown) {
   	console.log(xhr);
   	console.log("Error: " + errorThrown);
   	console.log("Status: " + textStatus);
-  })
-  .complete(function() {
-
-  })
-  .always(function() {
-
   });
 
 };
@@ -45,8 +33,7 @@ var insertWellcomeMessage 	=	function insertWellcomeMessage(data) {
 	// Appending to hidden section content-info the response message
 	$hiddenSection.find(".content-info").html(data.response);
 
-}
-
+};
 
 ;$(document).on("ready", function(){
 	
@@ -80,7 +67,7 @@ var insertWellcomeMessage 	=	function insertWellcomeMessage(data) {
 
 			// If the button clicks i'll call getWellcomeMessage, on success it will call insertWellcomeMessage
 			// to append the response message to the hidden section content-info element
-			getWellcomeMessage(insertWellcomeMessage);
+			getWellcomeMessage();
 	});
 
 });

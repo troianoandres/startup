@@ -12,8 +12,11 @@
 		// When the fadeIn event finishes i'll take out the is-hidden class
 		$(this).removeClass("is-hidden");
 
-		// Now I set the focus to the input with the .alias class
-		$aliasTextbox.focus();
+		if($aliasTextbox.length){
+			
+			// Now I set the focus to the input with the .alias class
+			$aliasTextbox.eq(1).focus();
+		}
 
 	});
 
