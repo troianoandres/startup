@@ -68,8 +68,8 @@ MovieObserver.prototype 	=	{
 /**
  * Movie class
  * Methods:
- * @method privileged get(attr), returns the value into properties[attr]
- * @method privileged set(attr, value), set value into properties[attr]
+ * @method privileged get(attr), returns the value into members[attr]
+ * @method privileged set(attr, value), set value into members[attr]
  * @method public play(), play the movie
  * @method public stop(), stop the movie
  * @param  {String} title) Movie's title
@@ -80,11 +80,11 @@ var Movie = (function(hashmap, title) {
 	// Constructor
   var Movie = function Movie(hashmap, title) {
 
-  	// Private properties
-  	var properties = {};
-  	properties.title = title;
-  	properties.hashmap = hashmap;
-  	properties.observerList 	=	new List();
+  	// Private members
+  	var members = {};
+  	members.title = title;
+  	members.hashmap = hashmap;
+  	members.observerList 	=	new List();
 
   	// Reference to this
 		var that = this;
@@ -92,11 +92,11 @@ var Movie = (function(hashmap, title) {
 		// Privileged methods
   	this.get =	function(attr) {
 
-  		return properties[attr];
+  		return members[attr];
   	};
   	this.set = function(attr, value) {
 
-  		properties[attr] = value;
+  		members[attr] = value;
   	};
 
   };
