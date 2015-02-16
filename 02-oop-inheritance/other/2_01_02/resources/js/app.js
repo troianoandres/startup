@@ -1,8 +1,8 @@
+// Movie definition
 var Movie = function Movie(hashmap, title) {
 	this.hashmap = hashmap;
 	this.title = title;
 };
-
 Movie.prototype	=	{
 	constructor: Movie,
 	play: function() {
