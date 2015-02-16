@@ -85,7 +85,7 @@ Movie.prototype	=	{
 // Creating the main observer for all moviews
 var movieObserver 	=	 new MovieObserver();
 
-// Creating 3 moviews
+// Creating 3 movies
 var starWarsMovie 		=	new Movie(1, "Star Wars III");
 var scaryMovieMovie 	=	new Movie(2, "Scary Movie I");
 var harryPotterMovie 	=	new Movie(3, "Harry Potter and the Deadly Hallows");
