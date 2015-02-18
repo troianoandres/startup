@@ -1,6 +1,8 @@
 // Imports
-var Movie = require("./modules/movie");
+var List = require("./modules/list");
 var Director = require("./modules/director");
+var Actor = require("./modules/actor");
+var Movie = require("./modules/movie");
 var $ = require("../node_modules/jquery/dist/jquery");
 
 
@@ -8,8 +10,8 @@ var $ = require("../node_modules/jquery/dist/jquery");
 var alien = new Movie("Alien vs Depredator");
 var ridleyScott = new Director("Ridley Scott", ['Cast is everything.', 'Do what ...']);
 
-alien.set('director', ridleyScott);
-alien.get('director').speak();
+alien.setDirector(ridleyScott);
+alien.getDirector().speak();
 
 $(document).on("ready", function() {
 

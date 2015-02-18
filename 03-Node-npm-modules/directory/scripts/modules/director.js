@@ -1,14 +1,17 @@
 /**
- * Director class
+ * @name    Director
  *
- * @method privileged get(attr), returns the value into members[attr]
- * @method privileged set(attr, value), set value into members[attr]
- * @method public speak(), make the director speak
- * @param  {String} 	name   Director's name
- * @param  {Array} 		quotes Director's quotes
- * @return {Object}
+ * @method  getName()         Returns the director name
+ * @method  getQuote(index)   Returns the director quote in quotes[index]
+ * @method  setName(name)     Sets the director name
+ * @method  addQuote(quote)   Add a quote to the director's quotes 
+ * @method  speak()           Make the director speak
+ * 
+ * @param   {String}  name    Director's name
+ * @param   {Array} 	quotes  Director's quotes
+ * @return  {Object}
  */
-module.exports = (function(name, quotes) {
+ var Director = (function() {
 
 	// Constructor
   var Director = function Director(name, quotes) {
@@ -18,16 +21,11 @@ module.exports = (function(name, quotes) {
   	members.name = name;
   	members.quotes = quotes || [];
 
-  	// Reference to this
-		var that = this;
-
 		// Privileged methods
   	this.get =	function(attr) {
-
   		return members[attr];
   	};
   	this.set = function(attr, value) {
-
   		members[attr] = value;
   	};
   };
@@ -35,13 +33,26 @@ module.exports = (function(name, quotes) {
   // Constructor function setup and public methods
 	Director.prototype	=	{
 		constructor: Director,
-		speak: function() {
-      var message = this.get("name") + " says: ";
-
-
-      console.log(message);
+    getName: function() {
+      return this.get("name");
+    },
+    setName: function(name) {
+      this.set("name", name);
+    },
+    getQuote: function(index) {
+      return this.get("quotes")[index];
+    },
+    addQuote: function(quote) {
+      this.get("quotes").push(quote);
+    },
+		speak: function() {      
+      var message = [this.getName(), " says: "];
+      message.push( this.get("quotes").join(", ") );
+      console.log(message.join(""));
 		}
 	};
 	
   return Director;
 })();
+
+module.exports = Director;

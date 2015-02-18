@@ -10348,8 +10348,10 @@ return jQuery;
 
 },{}],2:[function(require,module,exports){
 // Imports
-var Movie = require("./modules/movie");
+var List = require("./modules/list");
 var Director = require("./modules/director");
+var Actor = require("./modules/actor");
+var Movie = require("./modules/movie");
 var $ = require("../node_modules/jquery/dist/jquery");
 
 
@@ -10357,8 +10359,8 @@ var $ = require("../node_modules/jquery/dist/jquery");
 var alien = new Movie("Alien vs Depredator");
 var ridleyScott = new Director("Ridley Scott", ['Cast is everything.', 'Do what ...']);
 
-alien.set('director', ridleyScott);
-alien.get('director').speak();
+alien.setDirector(ridleyScott);
+alien.getDirector().speak();
 
 $(document).on("ready", function() {
 
@@ -10374,18 +10376,74 @@ $(document).on("ready", function() {
 });
 
 
-},{"../node_modules/jquery/dist/jquery":1,"./modules/director":3,"./modules/movie":4}],3:[function(require,module,exports){
+},{"../node_modules/jquery/dist/jquery":1,"./modules/actor":3,"./modules/director":4,"./modules/list":5,"./modules/movie":6}],3:[function(require,module,exports){
 /**
- * Director class
+ * @name 		Actor
+ * 
+ * @method 	getFullName() 						return the full name of the actor
+ * @method 	getAge() 									return the age of the actor
+ * @method 	setFullName(value) 				set the actor's full name of the actor
+ * @method 	setAge(value) 						set the actor's age
+ * 
+ * @param 	{String} 	fullName 				Full name of the actor
+ * @param 	{Integer} age 						Age of the actor
+ * @return 	{Object}
+ */
+var Actor = (function() {
+
+	//Constructor
+	var Actor = function Actor(fullName, age) {
+
+  	// Private members
+  	var attributes = {};
+  	attributes.fullName = fullName || "";
+  	attributes.age = age || 0;
+
+		// Privileged methods
+  	this.get =	function(attr) {
+  		return attributes[attr];
+  	};
+  	this.set = function(attr, value) {
+  		attributes[attr] = value;
+  	};
+	};
+
+	// Constructor name setup
+	Actor.prototype = {
+		constructor: Actor,
+		getFullName: function () {
+			return this.get("fullName");
+		},
+		setFullName: function (value) {
+			this.set("fullName", value);
+		},		
+		getAge: function() {
+			return this.get("age");
+		},
+		setAge: function(value) {
+			this.set("age", value);
+		}		
+	};
+
+	return Actor;
+})();
+
+module.exports = Actor;
+},{}],4:[function(require,module,exports){
+/**
+ * @name Director
  *
- * @method privileged get(attr), returns the value into members[attr]
- * @method privileged set(attr, value), set value into members[attr]
- * @method public speak(), make the director speak
- * @param  {String} 	name   Director's name
- * @param  {Array} 		quotes Director's quotes
+ * @method getName()        Returns the director name
+ * @method getQuote(index)  Returns the director quote in quotes[index]
+ * @method setName(name)    Sets the director name
+ * @method addQuote(quote)  Add a quote to the director's quotes 
+ * @method speak()          Make the director speak
+ * 
+ * @param  {String} name    Director's name
+ * @param  {Array} 	quotes  Director's quotes
  * @return {Object}
  */
-module.exports = (function(name, quotes) {
+ var Director = (function() {
 
 	// Constructor
   var Director = function Director(name, quotes) {
@@ -10395,16 +10453,11 @@ module.exports = (function(name, quotes) {
   	members.name = name;
   	members.quotes = quotes || [];
 
-  	// Reference to this
-		var that = this;
-
 		// Privileged methods
   	this.get =	function(attr) {
-
   		return members[attr];
   	};
   	this.set = function(attr, value) {
-
   		members[attr] = value;
   	};
   };
@@ -10412,63 +10465,204 @@ module.exports = (function(name, quotes) {
   // Constructor function setup and public methods
 	Director.prototype	=	{
 		constructor: Director,
-		speak: function() {
-      var message = this.get("name") + " says: ";
-
-
-      console.log(message);
+    getName: function() {
+      return this.get("name");
+    },
+    setName: function(name) {
+      this.set("name", name);
+    },
+    getQuote: function(index) {
+      return this.get("quotes")[index];
+    },
+    addQuote: function(quote) {
+      this.get("quotes").push(quote);
+    },
+		speak: function() {      
+      var message = [this.getName(), " says: "];
+      message.push( this.get("quotes").join(", ") );
+      console.log(message.join(""));
 		}
 	};
 	
   return Director;
 })();
-},{}],4:[function(require,module,exports){
-// Import required modules
-var Director  =  require("./director");
 
+module.exports = Director;
+},{}],5:[function(require,module,exports){
 /**
- * Movie class
- *
- * @method privileged get(attr), returns the value into members[attr]
- * @method privileged set(attr, value), set value into members[attr]
- * @method public play(), play the movie
- * @method public stop(), stop the movie
- * @param  {String} 	title Movie's title
- * @return {Object}
+ * @name 		List
+ * 
+ * @method 	add(object) 								adds an item to the next index of the array
+ * @method 	count() 										returns the length of the item's array
+ * @method 	get(index) 									return the item into list[index], if not found returns undefined
+ * @method 	getBy(value, attr) 					return the item that matches the value into the attr member, if not 
+ *          															found returns null
+ * @method 	indexOf(object, startIndex) returns the index of the object to find, starting from startIndex. If not found
+ *          															returns -1
+ * @method 	removeAt(index) 						removes the item on index
+ * 
+ * @return 	{Object}
  */
-module.exports = (function(title, director) {
+var List = (function() {
 
 	// Constructor
-  var Movie = function Movie(title, director) {  	
+	var List = function List() {
+		this.list = [];
+	};
 
-  	// Private members
-  	var members = {};
-  	members.title = title;
-  	members.director = director || null;
+	// Constructor name setup & public methods
+	List.prototype 	=	{
+		constructor: List,
+		add: 		function (object) {
+			return this.list.push( object );
+		},
+		count: 	function () {
+			return this.list.length;
+		},
+		get: 		function (index) {
+		  if( index > -1 && index < this.list.length ){
+		    return this.list[ index ];
+		  }		  
+		},
+		getBy: 	function (value, attr) {
+			var index = 0;
+		  while( index < this.list.length ){
+		    
+		    if( this.list[index][attr] === value ){
+		      return this.list[index];
+		    }
 
-  	// Reference to this
-		var that = this;
+		    index++;
+		  }
+		  return null;
+		},
+		indexOf: 	function (object, startIndex) {
+		  var index = startIndex || 0;
+		 
+		  while( index < this.list.length ){
+		    
+		    if( this.list[index] === object ){
+		      return index;
+		    }
 
-		// Privileged methods
-  	this.get =	function(attr) {
+		    index++;
+		  }
+		  return -1;
+		},
+		removeAt: function (index) {
+			this.list.splice( index, 1 );
+		}
+	};
 
-  		return members[attr];
-  	};
-  	this.set = function(attr, value) {
+	return List;
+})();
 
-  		members[attr] = value;
-  	};
+module.exports = List;
+},{}],6:[function(require,module,exports){
+// Import required modules
+var List = require("./list");
+var Director = require("./director");
+var Actor = require("./actor");
+
+
+/**
+ * @name    Movie
+ * 
+ * @method  play()                        play the movie
+ * @method  stop()                        stop the movie
+ * @method  getTitle()                    returns movie's title
+ * @method  getHashmap()                  returns movie's hashmap
+ * @method  getActors()                   returns all the movie actors
+ * @method  getActor(index)               returns the actor at index
+ * @method  setTitle(value)               set the movie's title
+ * @method  setHashmap(value)             set the movie's hashmap
+ * @method  addActor(actor)               add the provided instance of Actor to actorList
+ * @method  removeActor(actor)            remove the provided Actor if founded 
+ * @method  setDirector(director)         add the provided instance of Director as director
+ * @method  getDirector()                 returns movie's director
+ *
+ * @param  {String}                       title Movie's title
+ * @param  {Integer}                      hashmap Movie's hashmap
+ * @return {Object}
+ */
+var Movie = (function() {
+
+  // Constructor
+  var Movie = function Movie(hashmap, title) {
+
+    // Private members
+    var attributes = {};
+    attributes.title = title || "";
+    attributes.hashmap = hashmap || 0;
+    attributes.director  = null;
+    attributes.actorList  = new List();
+
+    // Privileged methods
+    this.get =  function(attr) {
+      return attributes[attr];
+    };
+    this.set = function(attr, value) {
+      attributes[attr] = value;
+    };
   };
 
   // Constructor function setup and public methods
-	Movie.prototype	=	{
-		constructor: Movie,
-		play: function() {
-		},
-		stop: function() {
-		}
-	};
-	
+  Movie.prototype = {
+    constructor: Movie,
+    play: function() {
+
+    },
+    stop: function() {
+
+    },
+    getTitle: function() {
+      return this.get("title");
+    },
+    setTitle: function(value) {
+      return this.set("title", value);
+    },
+    getHashmap: function() {
+      return this.get("hashmap");
+    },
+    setHashmap: function(value) {
+      return this.set("hashmap", value);
+    },
+    getMovieObservers: function() {
+      return this.get("observerList");
+    },
+    getMovieObserver: function(index) {
+      return this.get("observerList").get(index);
+    },    
+    addMovieObserver: function(observer) {
+      this.get("observerList").add(observer);
+    },
+    removeMovieObserver: function(observer) {
+      var observers = this.get("observerList");
+      observers.removeAt(observers.indexOf(observer));
+    },
+    getActors: function() {
+      return this.get("actorList");
+    },
+    getActor: function(index) {
+      return this.get("actorList").get(index);
+    },    
+    addActor: function(actor) {
+      this.get("actorList").add(actor);
+    },
+    removeActor: function(actor) {
+      var actors = this.get("actorList");
+      actors.removeAt(actors.indexOf(actor));
+    },
+    setDirector: function(director) {
+      this.set("director", director);
+    },
+    getDirector: function() {
+      return this.get("director");
+    }
+  };
+  
   return Movie;
 })();
-},{"./director":3}]},{},[2]);
+
+module.exports = Movie;
+},{"./actor":3,"./director":4,"./list":5}]},{},[2]);
