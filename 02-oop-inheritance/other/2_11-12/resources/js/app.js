@@ -153,7 +153,6 @@ var Actor = (function(fullName, age) {
   	this.set = function(attr, value) {
   		members[attr] = value;
   	};
-
 	};
 
 	// Constructor name setup

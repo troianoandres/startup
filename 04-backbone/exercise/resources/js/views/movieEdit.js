@@ -28,6 +28,13 @@ app.MovieEditView = Backbone.View.extend({
 
 	// Triggered when the form is submited
 	saveMovie: function() {
-
+		this.model.set({
+			name: this.$form.find("#txt-movie-name").val(), 
+			year: parseInt(this.$form.find("#txt-movie-year").val()),
+			description: this.$form.find("#txt-movie-description").val(), 
+			genre: this.$form.find("#txt-movie-genre").val(),
+			runtime: this.$form.find("#txt-movie-runtime").val(), 
+			image: this.$form.find("#txt-movie-image").val()
+		});	
 	}
 });
