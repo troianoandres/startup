@@ -1,10 +1,7 @@
 /**
  *	Exercises:
- *		09) Create a mixin object called Social with the methods: share(friendName) and like().
- *		10) Apply the mixin to Movie object and play with the console output.
- *
- * 	To do:
- * 		Ask about the definition of share into the Social class (interface). Should overwrite it?
+ *		11) Create an Actor class and create some actors from one of your favorite movies.
+ *		12) Show how you would add an array of actors to a Movie object.
  */
 
 /**

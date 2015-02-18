@@ -1,0 +1,14 @@
+{
+  "name": "3_01",
+  "version": "1.0.0",
+  "description": "Exercise 3_01 globant bootcamp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Troiano Andres",
+  "license": "ISC",
+  "dependencies": {
+    "jquery": "1.11.2"
+  }
+}
