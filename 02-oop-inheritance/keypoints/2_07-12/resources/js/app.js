@@ -225,50 +225,51 @@ var Movie = (function() {
 		Observable.call(this);	
 	};
 
+	// Inherit to Movie.prototype the Observable.prototype
+	extend(Movie, Observable);
+	augment(Movie, Social, ["share", "like"]);
+
+	Movie.prototype.play = function() {
+		if( (typeof this.publish) !== "undefined" ){
+			this.publish("play");
+		}
+	};
+	Movie.prototype.stop = function() {
+		if( (typeof this.publish) !== "undefined" ){
+			this.publish("stop");
+		}
+	};
+	Movie.prototype.getTitle = function() {
+		return this.get("title");
+	};
+	Movie.prototype.getRuntime = function() {
+		return this.get("runtime");
+	};
+	Movie.prototype.getDescription = function() {
+		return this.get("description");
+	};
+	Movie.prototype.setTitle = function(title) {
+		this.set("title", title);
+	};
+	Movie.prototype.setRuntime = function(runtime) {
+		this.set("runtime", runtime);
+	};
+	Movie.prototype.setDescription = function(description) {
+		this.set("description", description);
+	};
+	Movie.prototype.addActor = function(actor) {
+		this.get("actors").push(actor);
+	};
+	Movie.prototype.getActor = function(index) {
+		return this.get("actors")[index];
+	};
+	Movie.prototype.getActors = function() {
+		return this.get("actors");
+	};
+
 	return Movie;
 })();
 
-// Inherit to Movie.prototype the Observable.prototype
-extend(Movie, Observable);
-augment(Movie, Social, ["share", "like"]);
-
-Movie.prototype.play = function() {
-	if( (typeof this.publish) !== "undefined" ){
-		this.publish("play");
-	}
-};
-Movie.prototype.stop = function() {
-	if( (typeof this.publish) !== "undefined" ){
-		this.publish("stop");
-	}
-};
-Movie.prototype.getTitle = function() {
-	return this.get("title");
-};
-Movie.prototype.getRuntime = function() {
-	return this.get("runtime");
-};
-Movie.prototype.getDescription = function() {
-	return this.get("description");
-};
-Movie.prototype.setTitle = function(title) {
-	this.set("title", title);
-};
-Movie.prototype.setRuntime = function(runtime) {
-	this.set("runtime", runtime);
-};
-Movie.prototype.setDescription = function(description) {
-	this.set("description", description);
-};
-Movie.prototype.addActor = function(actor) {
-	this.get("actors").push(actor);
-};
-Movie.prototype.getActor = function(index) {
-	return this.get("actors")[index];
-};
-Movie.prototype.getActors = function() {
-	return this.get("actors");
-};
 
 /**
  *  @name DownloadableMovie
