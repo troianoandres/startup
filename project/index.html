@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="description" content="Final project - Bootcamp"/>
+		<meta name="author" 	   content="Troiano Andres"/>
+		<meta name="viewport"    content="width=device-width,initial-scale=1"/>
+
+		<title>Final project</title>
+
+		<!-- Google font css file -->
+		<link href='http://fonts.googleapis.com/css?family=Exo+2:300italic,100italic,600,300,400,600italic,100,400italic' rel='stylesheet' type='text/css'>
+
+		<link rel="stylesheet" type="text/css" href="resources/css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="resources/libs/font-awesome-4.3.0/css/font-awesome.min.css" />
+		<!-- Bootstrap css file -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">		
+		<link rel="stylesheet" type="text/css" href="resources/css/layout.css" />
+		<link rel="stylesheet" type="text/css" href="resources/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="resources/css/modules.css" />
+
+		<!--[if lt IE 9]>
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+
+		<div class="wrapper">
+			
+			<div class="sidebar" id="sidebar">
+				<header class="text-center">
+					<div class="sidebar-header-container">
+						<div class="sidebar-header">
+							Movie display
+						</div>
+					</div>
+				</header>
+				<nav class="navigation">
+					<ul id="sidebar-navigation">
+						<li class="navigation-item active">
+							<a href="">
+								<i class="navigation-item-icon fa fa-home"></i>
+								Home
+							</a>
+						</li>
+						<li class="navigation-item" >
+							<a href="#data-storage-menu" data-toggle="collapse" data-parent="#sidebar-navigation">
+								<i class="navigation-item-icon fa fa-database"></i>
+								Data storage
+								<i class="fa fa-angle-down pull-right"></i>
+							</a>
+							<ul class="second-level collapse in" id="data-storage-menu">
+								<li class="navigation-item">
+                	<a href="#movies">
+                		<i class="navigation-item-icon fa fa-circle-o"></i>
+                		Movies
+                	</a>
+                 </li>
+                <li class="navigation-item">
+                  <a href="#users">
+                  	<i class="navigation-item-icon fa fa-circle-o"></i>
+                  	Users
+                  </a>
+                </li>
+              </ul>							
+						</li>
+						<li class="navigation-item">
+							<a href="#data-asd-menu" data-toggle="collapse" data-parent="#sidebar-navigation">
+								<i class="navigation-item-icon fa fa-database"></i>
+								Data storage
+								<i class="fa fa-angle-down pull-right"></i>
+							</a>
+							<ul class="second-level collapse" id="data-asd-menu">
+								<li class="navigation-item">
+                	<a href="#movies">
+                		<i class="navigation-item-icon fa fa-circle-o"></i>
+                		Movies
+                	</a>
+                 </li>
+                <li class="navigation-item">
+                  <a href="#users">
+                  	<i class="navigation-item-icon fa fa-circle-o"></i>
+                  	Users
+                  </a>
+                </li>
+              </ul>							
+						</li>
+					</ul>
+				</nav>				
+			</div>
+
+			<section class="content">
+				<header class="content-header">
+					<h1>
+						<b>Home</b>
+						Index
+					</h1>
+					<div>
+						<button class="btn btn-default pull-right">
+							Previous page
+						</button>						
+					</div>
+				</header>
+				<div class="content-body-container">
+					<div class="content-body">
+						
+					</div>						
+				</div>
+			</section>
+
+		</div>
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+		<script src="resources/js/collapsefix.js"></script>
+
+	</body>
+</html>

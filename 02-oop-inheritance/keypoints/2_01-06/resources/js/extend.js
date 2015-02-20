@@ -1,11 +1,3 @@
-/**
- *  extend() will extend the parentClass prototype to the childClass prototype. Finally the childClass will inherit
- *  the methods and properties from the parentClass prototype
- * 
- *  @param  {Object/Class}  childClass  Class to get the Inherit members
- *  @param  {Object/Class}  parentClass Class to extends from
- *  @return {void}
- */
 var extend =	function extend(childClass, parentClass){
   var copyOfParent = Object.create(parentClass.prototype);
   copyOfParent.constructor = childClass;
@@ -40,4 +32,4 @@ function augment(receivingClass, givingClass, methods) {
       // }
     }
   }
-};
+}

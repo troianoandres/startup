@@ -11,48 +11,42 @@
  * @param   {Array} 	quotes  Director's quotes
  * @return  {Object}
  */
- var Director = (function() {
+var Director = function Director(name, quotes) {
 
-	// Constructor
-  var Director = function Director(name, quotes) {
+	// Private members
+	var members = {};
+	members.name = name;
+	members.quotes = quotes || [];
 
-  	// Private members
-  	var members = {};
-  	members.name = name;
-  	members.quotes = quotes || [];
-
-		// Privileged methods
-  	this.get =	function(attr) {
-  		return members[attr];
-  	};
-  	this.set = function(attr, value) {
-  		members[attr] = value;
-  	};
-  };
-
-  // Constructor function setup and public methods
-	Director.prototype	=	{
-		constructor: Director,
-    getName: function() {
-      return this.get("name");
-    },
-    setName: function(name) {
-      this.set("name", name);
-    },
-    getQuote: function(index) {
-      return this.get("quotes")[index];
-    },
-    addQuote: function(quote) {
-      this.get("quotes").push(quote);
-    },
-		speak: function() {      
-      var message = [this.getName(), " says: "];
-      message.push( this.get("quotes").join(", ") );
-      console.log(message.join(""));
-		}
+	// Privileged methods
+	this.get =	function(attr) {
+		return members[attr];
 	};
-	
-  return Director;
-})();
+	this.set = function(attr, value) {
+		members[attr] = value;
+	};
+};
+
+// Constructor function setup and public methods
+Director.prototype	=	{
+	constructor: Director,
+  getName: function() {
+    return this.get("name");
+  },
+  setName: function(name) {
+    this.set("name", name);
+  },
+  getQuote: function(index) {
+    return this.get("quotes")[index];
+  },
+  addQuote: function(quote) {
+    this.get("quotes").push(quote);
+  },
+	speak: function() {      
+    var message = [this.getName(), " says: "];
+    message.push( this.get("quotes").join(", ") );
+    console.log(message.join(""));
+	}
+};
 
 module.exports = Director;

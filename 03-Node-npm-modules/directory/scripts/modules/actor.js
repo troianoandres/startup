@@ -10,43 +10,37 @@
  * @param 	{Integer} age 						Age of the actor
  * @return 	{Object}
  */
-var Actor = (function() {
+var Actor = function Actor(fullName, age) {
 
-	//Constructor
-	var Actor = function Actor(fullName, age) {
+	// Private members
+	var attributes = {};
+	attributes.fullName = fullName || "";
+	attributes.age = age || 0;
 
-  	// Private members
-  	var attributes = {};
-  	attributes.fullName = fullName || "";
-  	attributes.age = age || 0;
-
-		// Privileged methods
-  	this.get =	function(attr) {
-  		return attributes[attr];
-  	};
-  	this.set = function(attr, value) {
-  		attributes[attr] = value;
-  	};
+	// Privileged methods
+	this.get =	function(attr) {
+		return attributes[attr];
 	};
-
-	// Constructor name setup
-	Actor.prototype = {
-		constructor: Actor,
-		getFullName: function () {
-			return this.get("fullName");
-		},
-		setFullName: function (value) {
-			this.set("fullName", value);
-		},		
-		getAge: function() {
-			return this.get("age");
-		},
-		setAge: function(value) {
-			this.set("age", value);
-		}		
+	this.set = function(attr, value) {
+		attributes[attr] = value;
 	};
+};
 
-	return Actor;
-})();
+// Constructor name setup
+Actor.prototype = {
+	constructor: Actor,
+	getFullName: function () {
+		return this.get("fullName");
+	},
+	setFullName: function (value) {
+		this.set("fullName", value);
+	},		
+	getAge: function() {
+		return this.get("age");
+	},
+	setAge: function(value) {
+		this.set("age", value);
+	}		
+};
 
 module.exports = Actor;
