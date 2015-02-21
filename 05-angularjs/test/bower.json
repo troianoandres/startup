@@ -1,0 +1,25 @@
+{
+  "name": "test",
+  "version": "0.0.0",
+  "homepage": "https://github.com/troianoandres/startup",
+  "authors": [
+    "Troiano Andres <troianoandres@gmail.com>"
+  ],
+  "description": "Test bower example",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.13",
+    "bootstrap": "~3.3.2",
+    "jquery": "1.11.2",
+    "font-awesome": "~4.3.0",
+    "angular-ui-router": "~0.2.13",
+    "angular-local-storage": "~0.1.5"
+  }
+}

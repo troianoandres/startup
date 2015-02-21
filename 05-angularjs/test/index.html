@@ -2,28 +2,29 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8"/>
-		<meta name="description" content="Final project - Bootcamp"/>
-		<meta name="author" 	   content="Troiano Andres"/>
-		<meta name="viewport"    content="width=device-width,initial-scale=1"/>
+		<meta name="description" content="AngularJS - Bootcamp"/>
+		<meta name="author" content="Troiano Andres"/>
+		<meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-		<title>Final project</title>
+		<title></title>
 
-		<!-- Google font css file -->
-		<link href='http://fonts.googleapis.com/css?family=Exo+2:300italic,100italic,600,300,400,600italic,100,400italic' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
 
-		<link rel="stylesheet" type="text/css" href="resources/css/normalize.css" />
-		<link rel="stylesheet" type="text/css" href="resources/libs/font-awesome-4.3.0/css/font-awesome.min.css" />
-		<!-- Bootstrap css file -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">		
-		<link rel="stylesheet" type="text/css" href="resources/css/layout.css" />
-		<link rel="stylesheet" type="text/css" href="resources/css/style.css" />
-		<link rel="stylesheet" type="text/css" href="resources/css/modules.css" />
+		<link rel="stylesheet" type="text/css" href="libs/bootstrap/dist/css/bootstrap.css" />
+
+		<link rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
+
+		<link rel="stylesheet" type="text/css" href="css/layout.css" />
+
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+		<link rel="stylesheet" type="text/css" href="css/modules.css" />
 
 		<!--[if lt IE 9]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 	</head>
-	<body>
+	<body ng-app="mainApp">	
 
 		<div class="wrapper">
 			
@@ -102,19 +103,26 @@
 					</div>
 				</header>
 				<div class="content-body-container">
-					<div class="content-body" ui-view="mainContent">
+					<div class="content-body" ui-view="mainContentView">
 						
 					</div>						
 				</div>
 			</section>
 
-		</div>
+		</div>		
 
+		<script type="text/javascript" src="libs/angular/angular.js"></script>
+		<script type="text/javascript" src="libs/angular-ui-router/release/angular-ui-router.min.js"></script>
+		<script type="text/javascript" src="libs/angular-local-storage/dist/angular-local-storage.min.js"></script>
+		<script type="text/javascript" src="libs/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="libs/bootstrap/dist/js/bootstrap.js"></script>
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="modules/movies/scripts/module.js"></script>
+		<script type="text/javascript" src="modules/movies/scripts/factories/movie.js"></script>
+		<script type="text/javascript" src="modules/movies/scripts/services/movieCollection.js"></script>
+		
 
-		<script src="resources/js/collapsefix.js"></script>
+		<script type="text/javascript" src="scripts/app.js"></script>
 
 	</body>
 </html>
