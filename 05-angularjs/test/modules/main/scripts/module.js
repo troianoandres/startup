@@ -10,7 +10,6 @@ var mainApp = angular.module('mainApp', [
   "moviesModule"
 ]);
 
-
 mainApp
   .config([
 	  "$stateProvider", 
@@ -28,22 +27,23 @@ mainApp
           views: {
             "mainContentView": {
       		    templateUrl: 'modules/main/views/index.html',
-              controller: "MainController"
+              controller: "MainController as main"
       		  }
           }
-        });
+        })
+
+        .state('movies', {
+          url: '/movies',
+          views: {
+            "mainContentView": {
+              templateUrl: 'modules/movies/views/index.html',
+              controller: "MovieListController as mlCtrl"
+            }
+          }
+        })
+
+        ;
 
     }
   ]);
 
-mainApp.controller('MainController', ['$scope', 'MovieCollection', function($scope, MovieCollection){
-	
-  $scope.set = function() {
-    MovieCollection.set([{title:"asd"},{title:"aaa"}]);
-  };
-
-  $scope.get = function() {
-    console.log(MovieCollection.get());
-  };
-
-}]);
