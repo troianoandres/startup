@@ -5,7 +5,7 @@ define([
 	"views/movieCreateView",
 	"views/movieEditView",
 	"collections/movieCollection",
-	"common",
+	"common"
 ], function($, Backbone, MovieListView, MovieCreateView, MovieEditView, movies, Common) {
 
 	/**
