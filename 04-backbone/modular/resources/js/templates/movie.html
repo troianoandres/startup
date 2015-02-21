@@ -1,0 +1,22 @@
+<div class="movie-container pull-left">
+	<article class="movie">			
+
+		<div class="movie-image image-wrapper pull-left">
+			<img src="{{ image }}">
+		</div>			
+
+		<div class="movie-body pull-left">				
+			<header class="movie-header">
+				<h2 class="movie-name">{{ name }} [{{ year }}]</h2>
+				<p class="movie-metadata">{{ runtime }} mins - Genre: {{ genre }}</p>
+			</header>
+			<p>{{ description }}</p>
+			<div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">	
+				<a href="#edit/{{ id }}"><button class="btn btn-info">Edit</button></a>
+				<a href="#delete/{{ id }}"><button class="btn btn-danger">Delete</button></a>
+			</div>
+		</div>
+
+		<div class="clearfix"></div>
+	</article>		
+</div>

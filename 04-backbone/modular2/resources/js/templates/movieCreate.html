@@ -1,0 +1,38 @@
+<form onsubmit="return false;" id="new-item-form">
+	<div class="form-group">
+		<label for="txt-movie-name">Movie name</label>
+		<input type="text" id="txt-movie-name" class="form-control" value="" required/>
+	</div>
+	
+	<div class="form-group">
+		<label for="txt-movie-year">Year</label>
+		<input type="number" min="1900" minlength="4" maxlength="4" id="txt-movie-year" class="form-control" value="" required/>
+	</div>
+
+	<div class="form-group">
+		<label for="txt-movie-runtime">Runtime</label>
+		<input type="number" min="45" id="txt-movie-runtime" class="form-control" value="" required/>
+	</div>
+
+	<div class="form-group">
+		<label for="txt-movie-genre">Genre</label>
+		<input type="text" id="txt-movie-genre" class="form-control" value="" required/>
+	</div>
+
+	<div class="form-group">
+		<label for="txt-movie-image">Image url:</label>
+		<input type="url" id="txt-movie-image" class="form-control" value="" required/>
+	</div>
+
+	<div class="form-group">
+		<label for="txt-movie-description">Description:</label>
+		<textarea id="txt-movie-description" rows="10" class="form-control" required></textarea>
+	</div>
+
+	<div class="form-group pull-right">
+		<button class="btn btn-primary save">Save</button>
+		<input type="reset" class="btn btn-danger" value="Clear form"/>
+	</div>
+	
+	<div class="clearfix"></div>
+</form>
