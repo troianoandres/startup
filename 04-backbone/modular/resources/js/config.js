@@ -12,31 +12,23 @@ require.config({
 		},
 		"handlebars": {
 			exports: "Handlebars"
-		}
+		},
+    jasmine: {
+      exports: "jasmine"
+    },
+    "jasmine-html": {
+      deps: ["jasmine"],
+      exports: "jasmine-html"
+    }		
 	},
 	paths: {
-		jquery: 	 		"libs/jquery/jquery.min",
-		underscore: 	"libs/underscore/underscore",
-		backbone: 		"libs/backbone/backbone",
-		text: 	 	 		"libs/require/text",
-		handlebars: 	"libs/handlebars/handlebars",
-		localStorage: "libs/backbone/localStorage"
+		jquery: 	 			"libs/jquery/jquery.min",
+		underscore: 		"libs/underscore/underscore",
+		backbone: 			"libs/backbone/backbone",
+		text: 	 	 			"libs/require/text",
+		handlebars: 		"libs/handlebars/handlebars",
+		localStorage: 	"libs/backbone/localStorage",
+    jasmine: 	 	 		"libs/jasmine/jasmine",
+    "jasmine-html": "libs/jasmine/jasmine-html"		
 	}
 });
-/*
-require([
-	"routers/router",
-	"common"
-], function(Workspace, Common) {
-	
-	Backbone.View.prototype.close = function(){
-		this.$contentBody.empty();
-		this.$contentHeader.empty();
-  	this.unbind();
-	}
-
-	Common.workspace = new Workspace();
-	Backbone.history.start();
-
-});
-*/
