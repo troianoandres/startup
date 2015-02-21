@@ -4,5 +4,7 @@ angular.module('moviesModule')
 		"MovieFactory",
 		function(MovieCollectionService, MovieFactory){
 		
+			this.movies = MovieCollectionService.getMovies();
+
 		}
 	]);

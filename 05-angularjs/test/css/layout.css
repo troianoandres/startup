@@ -4,6 +4,20 @@
 					box-sizing: border-box;
 }
 
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+ 
+.clearfix:after {
+  clear: both;
+}
+ 
+.clearfix {
+  zoom: 1;
+}
+
 html,
 body {
 	margin: 0px;
@@ -37,4 +51,12 @@ body {
 
 .container {
 	width: 90%;
+}
+
+.image-wrapper {
+	width: 100%;	
+}
+
+.image-wrapper > img {
+	width: 100%;
 }

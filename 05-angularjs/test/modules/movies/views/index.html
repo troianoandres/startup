@@ -1,7 +1,22 @@
 <div class="container">
 	<div class="row">
-		<div class="well">
-			asd
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="movie in mlCtrl.movies">
+
+			<div class="clearfix movie-grid-cell pointer">
+				<div class="image-wrapper">
+					<img class="movie-grid-image" ng-src="{{ movie.attributes.image }}" />	
+				</div>
+				
+				<div class="movie-grid-body pull-left">				
+					<header class="movie-grid-header">
+						<h2 class="movie-grid-name">{{ movie.attributes.title }}</h2>
+						<p class="movie-grid-metadata">{{ movie.attributes.runtime }} mins</p>
+					</header>
+				</div>
+			</div>
+
 		</div>
+
 	</div>
 </div>
