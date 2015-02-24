@@ -1,3 +1,33 @@
-<button ng-click="main.set();">set</button>
-<button ng-click="main.get();">get</button>
-<button ng-click="main.shout();">shout</button>
+<div class="sidebar" id="sidebar">
+	<header class="text-center">
+		<div class="sidebar-header-container">
+			<div class="sidebar-header">
+				Movies
+			</div>
+		</div>
+	</header>
+	<nav class="navigation">
+		<ul id="sidebar-navigation">
+			<a ui-sref="app.movies.index">
+				<li class="navigation-item active">
+					<i class="navigation-item-icon fa fa-video-camera text-center"></i>
+					<span>Movies</span>
+				</li>
+			</a>
+			<a ui-sref="app.profile">
+				<li class="navigation-item">
+					<i class="navigation-item-icon fa fa-user text-center"></i>
+					<span>Profile</span>
+				</li>
+			</a>
+		</ul>
+	</nav>
+</div>
+
+<section class="content">
+	<div class="content-body-container">
+		<div class="content-body" ui-view="mainContentView">
+			
+		</div>						
+	</div>
+</section>

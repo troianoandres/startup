@@ -1,130 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8"/>
-		<meta name="description" content="AngularJS - Bootcamp"/>
-		<meta name="author" content="Troiano Andres"/>
-		<meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="AngularJS - Bootcamp"/>
+    <meta name="author" content="Troiano Andres"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-		<title></title>
+    <title></title>
 
-		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
 
-		<link rel="stylesheet" type="text/css" href="libs/bootstrap/dist/css/bootstrap.css" />
+    <!-- Google font css file -->
+    <link href='http://fonts.googleapis.com/css?family=Exo+2:300italic,100italic,600,300,400,600italic,100,400italic' rel='stylesheet' type='text/css'>
 
-		<link rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap/dist/css/bootstrap.css" />
 
-		<link rel="stylesheet" type="text/css" href="css/layout.css" />
+    <link rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
 
-		<link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/layout.css" />
 
-		<link rel="stylesheet" type="text/css" href="css/modules.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
 
-		<!--[if lt IE 9]>
-			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
-	</head>
-	<body ng-app="mainApp">	
+    <link rel="stylesheet" type="text/css" href="css/modules.css" />
 
-		<div class="wrapper">
-			
-			<div class="sidebar" id="sidebar">
-				<header class="text-center">
-					<div class="sidebar-header-container">
-						<div class="sidebar-header">
-							Movie display
-						</div>
-					</div>
-				</header>
-				<nav class="navigation">
-					<ul id="sidebar-navigation">
-						<li class="navigation-item active">
-							<a href="">
-								<i class="navigation-item-icon fa fa-home"></i>
-								Home
-							</a>
-						</li>
-						<li class="navigation-item" >
-							<a href="#data-storage-menu" data-toggle="collapse" data-parent="#sidebar-navigation">
-								<i class="navigation-item-icon fa fa-database"></i>
-								Data storage
-								<i class="fa fa-angle-down pull-right"></i>
-							</a>
-							<ul class="second-level collapse in" id="data-storage-menu">
-								<li class="navigation-item">
-                	<a href="#movies">
-                		<i class="navigation-item-icon fa fa-circle-o"></i>
-                		Movies
-                	</a>
-                 </li>
-                <li class="navigation-item">
-                  <a href="#users">
-                  	<i class="navigation-item-icon fa fa-circle-o"></i>
-                  	Users
-                  </a>
-                </li>
-              </ul>							
-						</li>
-						<li class="navigation-item">
-							<a href="#data-asd-menu" data-toggle="collapse" data-parent="#sidebar-navigation">
-								<i class="navigation-item-icon fa fa-database"></i>
-								Data storage
-								<i class="fa fa-angle-down pull-right"></i>
-							</a>
-							<ul class="second-level collapse" id="data-asd-menu">
-								<li class="navigation-item">
-                	<a href="#movies">
-                		<i class="navigation-item-icon fa fa-circle-o"></i>
-                		Movies
-                	</a>
-                 </li>
-                <li class="navigation-item">
-                  <a href="#users">
-                  	<i class="navigation-item-icon fa fa-circle-o"></i>
-                  	Users
-                  </a>
-                </li>
-              </ul>							
-						</li>
-					</ul>
-				</nav>				
-			</div>
+    <script type="text/javascript" src="libs/angular/angular.js"></script>
+    <script type="text/javascript" src="libs/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="libs/angular-local-storage/dist/angular-local-storage.min.js"></script>
 
-			<section class="content">
-				<header class="content-header">
-					<h1>
-						<b>Home</b>
-						Index
-					</h1>
-					<div>
-						<button class="btn btn-default pull-right">
-							Previous page
-						</button>						
-					</div>
-				</header>
-				<div class="content-body-container">
-					<div class="content-body" ui-view="mainContentView">
-						
-					</div>						
-				</div>
-			</section>
+    <!-- Firebase JS file -->
+    <script type="text/javascript" src="libs/firebase/firebase.js"></script>
+    <script type="text/javascript" src="libs/angularfire/dist/angularfire.min.js"></script>
+    <script src="https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js"></script>
 
-		</div>		
+    <!--
+    <script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/0.8.0/angularfire.min.js"></script>
+    <script src="https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js"></script>
+    -->
 
-		<script type="text/javascript" src="libs/angular/angular.js"></script>
-		<script type="text/javascript" src="libs/angular-ui-router/release/angular-ui-router.min.js"></script>
-		<script type="text/javascript" src="libs/angular-local-storage/dist/angular-local-storage.min.js"></script>
-		<script type="text/javascript" src="libs/jquery/dist/jquery.min.js"></script>
-		<script type="text/javascript" src="libs/bootstrap/dist/js/bootstrap.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body ng-app="mainApp"> 
 
-		<script type="text/javascript" src="modules/movies/scripts/module.js"></script>
-		<script type="text/javascript" src="modules/movies/scripts/controllers/MovieListController.js"></script>
-		<script type="text/javascript" src="modules/movies/scripts/factories/MovieFactory.js"></script>
-		<script type="text/javascript" src="modules/movies/scripts/services/MovieCollectionService.js"></script>
-		
-		<script type="text/javascript" src="modules/main/scripts/module.js"></script>
-		<script type="text/javascript" src="modules/main/scripts/controllers/MainController.js"></script>
-		
+    <div class="wrapper" ui-view="pageView"></div>    
 
-	</body>
+    <!-- Libs js files -->
+    <script type="text/javascript" src="libs/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="libs/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="libs/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+    <!-- Movies module js files -->
+    <script type="text/javascript" src="modules/movies/scripts/module.js"></script>
+    <script type="text/javascript" src="modules/movies/scripts/controllers/MovieController.js"></script>
+    <script type="text/javascript" src="modules/movies/scripts/controllers/MovieIndexController.js"></script>
+    <script type="text/javascript" src="modules/movies/scripts/controllers/MovieListController.js"></script>
+    <script type="text/javascript" src="modules/movies/scripts/factories/MovieFactory.js"></script>
+    <script type="text/javascript" src="modules/movies/scripts/services/MovieCollectionService.js"></script>
+    <!-- Movies module js files -->
+
+    <!-- Directives module js files -->
+    <script type="text/javascript" src="modules/directives/scripts/module.js"></script>
+    <script type="text/javascript" src="modules/directives/scripts/directives/rating.js"></script>
+    <script type="text/javascript" src="modules/directives/scripts/controllers/TRatingController.js"></script>
+    <!-- Directives module js files -->
+
+    <!-- Access module js files -->
+    <script type="text/javascript" src="modules/access/scripts/module.js"></script>
+    <script type="text/javascript" src="modules/access/directives/scripts/directives/signup.js"></script>
+    <script type="text/javascript" src="modules/access/directives/scripts/controllers/SignupController.js"></script>
+    <!-- Access module js files -->
+
+    <!-- Authentication module js files -->
+    <script type="text/javascript" src="modules/authentication/scripts/module.js"></script>
+    <script type="text/javascript" src="modules/authentication/scripts/factories/AuthenticationFactory.js"></script>
+    <!-- Authentication module js files -->
+
+    <!-- Datastore module js files -->
+    <script type="text/javascript" src="modules/datastore/scripts/module.js"></script>
+    <script type="text/javascript" src="modules/datastore/scripts/factories/DatastoreFactory.js"></script>
+    <!-- Datastore module js files -->
+
+
+    <!-- Main module js files -->
+    <script type="text/javascript" src="modules/main/scripts/module.js"></script>
+    <script type="text/javascript" src="modules/main/scripts/controllers/MainController.js"></script> 
+    <!-- Main module js files -->
+
+  </body>
 </html>
+

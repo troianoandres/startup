@@ -1,22 +1,34 @@
-<div class="container">
-	<div class="row">
-		
-		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="movie in mlCtrl.movies">
+<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" ng-repeat="movie in miCtrl.movies | limitTo: 9 ">
 
-			<div class="clearfix movie-grid-cell pointer">
-				<div class="image-wrapper">
-					<img class="movie-grid-image" ng-src="{{ movie.attributes.image }}" />	
-				</div>
-				
-				<div class="movie-grid-body pull-left">				
-					<header class="movie-grid-header">
-						<h2 class="movie-grid-name">{{ movie.attributes.title }}</h2>
-						<p class="movie-grid-metadata">{{ movie.attributes.runtime }} mins</p>
-					</header>
-				</div>
+	<div class="clearfix movie-grid-cell pointer" ng-click="miCtrl.clickMovie($index)">
+		<a href="">
+			
+		</a>
+		<header class="movie-grid-header">
+			<div class="image-wrapper">
+				<img class="movie-image" src="https://demo.astoundify.com/listify/wp-content/uploads/sites/39/job_listings/2014/11/6323131287_d342bd98d2_b.jpg" />
 			</div>
-
-		</div>
-
+			<div class="movie-overlay">
+				<div class="overlay"></div>
+				<h2 class="overlay-text">
+					{{ movie.title }}
+				</h2>
+			</div>
+		</header>
+		<footer class="movie-grid-footer clearfix">
+			<div class="movie-raiting pull-left">
+        <div t-rating ng-rating="movie.rating" ng-max="5" ng-readonly="false"></div>
+				<span class="text-raiting">
+					{{ movie.rating }}
+				</span>				
+			</div>
+			<div class="movie-likes pull-right">
+				<i class="fa fa-heart-o"></i>
+				{{ movie.likes }}				
+			</div>
+		</footer>
+		
 	</div>
+
 </div>
+

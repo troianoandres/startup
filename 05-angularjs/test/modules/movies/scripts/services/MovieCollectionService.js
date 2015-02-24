@@ -7,8 +7,12 @@
  */
 angular.module('moviesModule')
 	.service('MovieCollectionService', [
-		'localStorageService', 
-		function(localStorageService) {
+    "firebaseURL",
+    "$firebase",
+		function(firebaseURL, $firebase) {      
+      
+      this.firebase = $firebase( new Firebase(firebaseURL + "movies"));
+      this.movies 	= this.firebase.$asArray();
 
       /**
        *  @name               getMovies()  
@@ -16,29 +20,17 @@ angular.module('moviesModule')
        *  @return {Array}     Array of movies
        */
   	 	this.getMovies = function() {
-    		return localStorageService.get("movies");
+    		return this.movies;
   		};
 
       /**
-       *  @name               getMovie(index)
+       *  @name               getMovie(key)
        *  @description        Return the desired Movie object fetched from the local storage
        *  @param  {Integer}   index
        *  @return {Object}    Movie object
        */
-      this.getMovie = function(index) {
-        
-        // Checking if there is a correct index value provided
-        if(index >= 0){
-          var movies = this.getMovies();
-
-          // Checking if the index is into the index bounds of the movies array
-          if(index < movies.length) {
-            return movies[index];
-          }
-
-        }
-
-        return null;
+      this.getMovie = function(key) {
+        return this.movies.$getRecord(key);
       };
 
       /**
@@ -47,7 +39,10 @@ angular.module('moviesModule')
        *  @param  {Array}     movies
        */
       this.setMovies = function (movies) {
-        localStorageService.set("movies", movies);
+      	var index;
+				for(index = 0; index < movies.length; index++){
+					this.addMovie(movies[index]);
+				}
       };
 
       /**
@@ -56,9 +51,10 @@ angular.module('moviesModule')
        *  @param  {Object}    movie
        */
       this.addMovie = function(movie) {
-        var movies = this.getMovies();
-        movies.push(movie);
-        this.setMovies(movies);
+        this.movies.$add(movie).then(function(reference) {
+
+        });
+
       };
 
 		}

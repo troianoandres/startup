@@ -1,1 +1,1 @@
-angular.module('moviesModule', []);
+angular.module('moviesModule', ["firebase"]);

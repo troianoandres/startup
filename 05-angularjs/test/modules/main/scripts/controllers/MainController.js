@@ -6,20 +6,18 @@
  * 	@param  {Factory} 			MovieCollection
  */
 mainApp.controller('MainController', [
-	'MovieCollection', 
-	function(MovieCollection) {
-		
-	  this.set = function() {
-	    MovieCollection.set([{title:"asd"},{title:"aaa"}]);
-	  };
-
-	  this.get = function() {
-	    console.log(MovieCollection.get());
-	  };
-
-	  this.shout = function() {
-	  	alert();
-	  };
+	"Authentication", 
+	function(Authentication) {
+		//Authentication.$unauth();
+			Authentication.$authWithPassword({
+  email: "troianoandres@gmail.com",
+  password: "11235813"
+}).then(function(authData) {
+  console.log("Logged in as:", authData.uid);
+}).catch(function(error) {
+  console.error("Authentication failed:", error);
+});
+	
 
 	}
 ]);

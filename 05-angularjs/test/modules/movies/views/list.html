@@ -1,0 +1,26 @@
+<div class="table-responsive">
+  
+  <table class="table table-hover">
+    
+    <thead>
+      <tr>
+        <th width="6%" class="text-center">IMDB</th>
+        <th width="30%">Movie title</th>
+        <th width="10%">Runtime</th>
+        <th width="14%">Likes</th>
+        <th width="20%">Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="movie in mlCtrl.movies">
+        <td class="text-center">{{ movie.IMDB }}</td>
+        <td>{{ movie.title }}</td>
+        <td>{{ movie.runtime}} mins</td>
+        <td><i class="fa fa-heart-o mg-right-5"></i>{{ movie.likes }}</td>
+        <td><div t-rating ng-rating="movie.rating" ng-max="5" ng-readonly="false"></div></td>
+      </tr>
+    </tbody>
+
+  </table>  
+
+</div>
