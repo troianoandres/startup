@@ -10348,17 +10348,12 @@ return jQuery;
 
 },{}],2:[function(require,module,exports){
 // Imports
-var List = require("./modules/list");
-var Director = require("./modules/director");
-var Actor = require("./modules/actor");
 var Movie = require("./modules/movie");
 var $ = require("../node_modules/jquery/dist/jquery");
 
-
 // Creating movie & it's director
 var alien = new Movie("Alien vs Depredator");
-var ridleyScott = new Director("Ridley Scott", ['Cast is everything.', 'Do what ...']);
-
+var ridleyScott = alien.createDirector("Ridley Scott", ['Cast is everything.', 'Do what ...']);
 alien.setDirector(ridleyScott);
 alien.getDirector().speak();
 
@@ -10376,54 +10371,7 @@ $(document).on("ready", function() {
 });
 
 
-},{"../node_modules/jquery/dist/jquery":1,"./modules/actor":3,"./modules/director":4,"./modules/list":5,"./modules/movie":6}],3:[function(require,module,exports){
-/**
- * @name 		Actor
- * 
- * @method 	getFullName() 						return the full name of the actor
- * @method 	getAge() 									return the age of the actor
- * @method 	setFullName(value) 				set the actor's full name of the actor
- * @method 	setAge(value) 						set the actor's age
- * 
- * @param 	{String} 	fullName 				Full name of the actor
- * @param 	{Integer} age 						Age of the actor
- * @return 	{Object}
- */
-var Actor = function Actor(fullName, age) {
-
-	// Private members
-	var attributes = {};
-	attributes.fullName = fullName || "";
-	attributes.age = age || 0;
-
-	// Privileged methods
-	this.get =	function(attr) {
-		return attributes[attr];
-	};
-	this.set = function(attr, value) {
-		attributes[attr] = value;
-	};
-};
-
-// Constructor name setup
-Actor.prototype = {
-	constructor: Actor,
-	getFullName: function () {
-		return this.get("fullName");
-	},
-	setFullName: function (value) {
-		this.set("fullName", value);
-	},		
-	getAge: function() {
-		return this.get("age");
-	},
-	setAge: function(value) {
-		this.set("age", value);
-	}		
-};
-
-module.exports = Actor;
-},{}],4:[function(require,module,exports){
+},{"../node_modules/jquery/dist/jquery":1,"./modules/movie":4}],3:[function(require,module,exports){
 /**
  * @name    Director
  *
@@ -10476,75 +10424,9 @@ Director.prototype	=	{
 };
 
 module.exports = Director;
-},{}],5:[function(require,module,exports){
-/**
- * @name 		List
- * 
- * @method 	add(object) 								adds an item to the next index of the array
- * @method 	count() 										returns the length of the item's array
- * @method 	get(index) 									return the item into list[index], if not found returns undefined
- * @method 	getBy(value, attr) 					return the item that matches the value into the attr member, if not 
- *          															found returns null
- * @method 	indexOf(object, startIndex) returns the index of the object to find, starting from startIndex. If not found
- *          															returns -1
- * @method 	removeAt(index) 						removes the item on index
- * 
- * @return 	{Object}
- */
-var List = function List() {
-	this.list = [];
-};
-
-// Constructor name setup & public methods
-List.prototype 	=	{
-	constructor: List,
-	add: 		function (object) {
-		return this.list.push( object );
-	},
-	count: 	function () {
-		return this.list.length;
-	},
-	get: 		function (index) {
-	  if( index > -1 && index < this.list.length ){
-	    return this.list[ index ];
-	  }		  
-	},
-	getBy: 	function (value, attr) {
-		var index = 0;
-	  while( index < this.list.length ){
-	    
-	    if( this.list[index][attr] === value ){
-	      return this.list[index];
-	    }
-
-	    index++;
-	  }
-	  return null;
-	},
-	indexOf: 	function (object, startIndex) {
-	  var index = startIndex || 0;
-	 
-	  while( index < this.list.length ){
-	    
-	    if( this.list[index] === object ){
-	      return index;
-	    }
-
-	    index++;
-	  }
-	  return -1;
-	},
-	removeAt: function (index) {
-		this.list.splice( index, 1 );
-	}
-};
-
-module.exports = List;
-},{}],6:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 // Import required modules
-var List = require("./list");
 var Director = require("./director");
-var Actor = require("./actor");
 
 
 /**
@@ -10554,12 +10436,8 @@ var Actor = require("./actor");
  * @method  stop()                        stop the movie
  * @method  getTitle()                    returns movie's title
  * @method  getHashmap()                  returns movie's hashmap
- * @method  getActors()                   returns all the movie actors
- * @method  getActor(index)               returns the actor at index
  * @method  setTitle(value)               set the movie's title
  * @method  setHashmap(value)             set the movie's hashmap
- * @method  addActor(actor)               add the provided instance of Actor to actorList
- * @method  removeActor(actor)            remove the provided Actor if founded 
  * @method  setDirector(director)         add the provided instance of Director as director
  * @method  getDirector()                 returns movie's director
  *
@@ -10574,7 +10452,6 @@ var Movie = function Movie(hashmap, title) {
   attributes.title = title || "";
   attributes.hashmap = hashmap || 0;
   attributes.director  = null;
-  attributes.actorList  = new List();
 
   // Privileged methods
   this.get =  function(attr) {
@@ -10619,26 +10496,16 @@ Movie.prototype = {
     var observers = this.get("observerList");
     observers.removeAt(observers.indexOf(observer));
   },
-  getActors: function() {
-    return this.get("actorList");
-  },
-  getActor: function(index) {
-    return this.get("actorList").get(index);
-  },    
-  addActor: function(actor) {
-    this.get("actorList").add(actor);
-  },
-  removeActor: function(actor) {
-    var actors = this.get("actorList");
-    actors.removeAt(actors.indexOf(actor));
-  },
+  createDirector: function(name, quotes) {
+    return new Director(name, quotes);
+  }, 
   setDirector: function(director) {
     this.set("director", director);
   },
   getDirector: function() {
     return this.get("director");
-  }
+  },
 };
 
 module.exports = Movie;
-},{"./actor":3,"./director":4,"./list":5}]},{},[2]);
+},{"./director":3}]},{},[2]);
