@@ -1,0 +1,5 @@
+homeModule.controller("HomeIndexController", [
+  function(){
+
+  }
+]);

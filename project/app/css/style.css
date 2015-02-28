@@ -1,0 +1,39 @@
+* {
+  font-family: 'Exo 2', sans-serif;
+}
+
+body { 
+  line-height: 1.4;
+  color: #EEEEEE;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.pull-right {
+  float: right;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+hr.sm {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 0;
+  border-top: 1px solid #444;
+}
+
+.mg-bot-10 {
+  margin-bottom: 10px;
+}
+
+.mg-right-2 { margin-right: 2px; }
+.mg-right-5 { margin-right: 5px; }
+
+
+.navbar {
+  margin-bottom: 0px;
+}

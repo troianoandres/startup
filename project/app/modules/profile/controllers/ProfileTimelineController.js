@@ -1,0 +1,5 @@
+profileModule.controller('ProfileTimelineController', [
+  function(){
+  
+  }
+]);
