@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="AngularJS - Bootcamp"/>
+    <meta name="author" content="Troiano Andres"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <title></title>
+
+    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+
+    <!-- Google font css file -->
+    <link href='http://fonts.googleapis.com/css?family=Exo+2:300italic,100italic,600,300,400,600italic,100,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap/dist/css/bootstrap.css" />
+
+    <link rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/layout.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/modules.css" />
+
+    <script type="text/javascript" src="libs/angular/angular.js"></script>
+    <script type="text/javascript" src="libs/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="libs/angular-local-storage/dist/angular-local-storage.min.js"></script>
+
+    <!-- Firebase JS file -->
+    <script type="text/javascript" src="libs/firebase/firebase.js"></script>
+    <script type="text/javascript" src="libs/angularfire/dist/angularfire.min.js"></script>
+
+    <!--
+    <script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/0.8.0/angularfire.min.js"></script>
+    <script src="https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js"></script>
+    -->
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body ng-app="app"> 
+
+    <div class="wrapper" ui-view="pageView"></div>    
+
+    <!-- Libs js files -->
+    <script type="text/javascript" src="libs/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="libs/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="libs/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+    <!-- Movies module js files -->
+    <script type="text/javascript" src="modules/movies/script.js"></script>
+    <script type="text/javascript" src="modules/movies/controllers/MovieController.js"></script>
+    <script type="text/javascript" src="modules/movies/controllers/MovieIndexController.js"></script>
+    <script type="text/javascript" src="modules/movies/controllers/MovieListController.js"></script>
+    <script type="text/javascript" src="modules/movies/factories/MovieFactory.js"></script>
+    <script type="text/javascript" src="modules/movies/services/MovieCollectionService.js"></script>
+    <!-- Movies module js files -->
+
+    <!-- Directives module js files -->
+    <script type="text/javascript" src="modules/directives/script.js"></script>
+    <script type="text/javascript" src="modules/directives/directives/tRating.js"></script>
+    <script type="text/javascript" src="modules/directives/controllers/TRatingController.js"></script>
+    <!-- Directives module js files -->
+
+    <!-- Access module js files -->
+    <script type="text/javascript" src="modules/access/script.js"></script>
+    <script type="text/javascript" src="modules/access/directives/tSignup.js"></script>
+    <script type="text/javascript" src="modules/access/controllers/TSignupController.js"></script>
+    <!-- Access module js files -->
+
+    <!-- Authentication module js files -->
+    <script type="text/javascript" src="modules/authentication/script.js"></script>
+    <script type="text/javascript" src="modules/authentication/factories/AuthenticationFactory.js"></script>
+    <!-- Authentication module js files -->
+
+    <!-- Datastore module js files -->
+    <script type="text/javascript" src="modules/datastore/script.js"></script>
+    <script type="text/javascript" src="modules/datastore/factories/DatastoreFactory.js"></script>
+    <!-- Datastore module js files -->
+
+
+    <!-- Main module js files -->
+    <script type="text/javascript" src="modules/main/script.js"></script>
+    <script type="text/javascript" src="modules/main/controllers/MainController.js"></script> 
+    <!-- Main module js files -->
+
+  </body>
+</html>
+

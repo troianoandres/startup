@@ -1,1 +1,0 @@
-angular.module('AuthenticationModule', ["DatastoreModule"]);
