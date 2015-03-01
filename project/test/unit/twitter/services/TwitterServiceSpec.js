@@ -77,10 +77,6 @@ describe("\nTests for TwitterService\n", function() {
 
       deferred = $q.defer();
 
-      //deferred.resolve("asd");
-
-      console.log(deferred.promise);
-
       spyOn(window.OAuth, "popup").and.callFake(function() {
         return deferred.promise;
       });

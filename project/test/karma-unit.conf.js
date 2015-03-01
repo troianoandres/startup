@@ -17,7 +17,7 @@ module.exports = function(config){
       'app/modules/**/**/*.js',
 
       // include unit test specs
-      'tests/unit/**/**/*.js'
+      'test/unit/**/*'
     ],
     // files to exclude
     exclude : [
@@ -33,7 +33,7 @@ module.exports = function(config){
     frameworks: ['jasmine'],
  
     // browsers to test against, be sure to install the correct karma browser launcher plugin
-    browsers : [/*'PhantomJS',*/ 'Chrome'/*, 'Firefox', 'IE'*/],
+    browsers : ['PhantomJS',/* 'Chrome'/*, 'Firefox', 'IE'*/],
  
     // progress is the default reporter
     reporters: ['progress', 'coverage'],
