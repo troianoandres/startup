@@ -1,9 +1,12 @@
 var mainApp = angular.module('app', [
-  "ui.router", 
+  "ui.router",
+  "ngCookies",
   "app.home",
   "app.trends",
   "app.profile"
 ]);
+
+mainApp.constant('appKey', "YTdRujwGxLOyqmpnuJcth07m08c");
 
 mainApp
   .config([
@@ -15,11 +18,72 @@ mainApp
 
       $stateProvider  		
 
-        .state('app', {
-          url: '/app',
+        .state('access', {
+          url: '/access',
+          resolve: {
+            logged: [
+              "TwitterService",
+              function(TwitterService) {
+
+                TwitterService.initialize();
+
+                if(TwitterService.isConnected()) {
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            ]
+          },           
           views: {
             "pageView": {
-              templateUrl:  'modules/main/partials/index.html'
+              templateUrl:  'modules/main/partials/access.html',
+              controller:   "AccessController"
+            }
+          }
+        })
+
+        .state('access.login', {
+          url: '/login',         
+          views: {
+            "contentView": {
+              templateUrl:  'modules/main/partials/login.html',
+              controller:   "AccessLoginController as login"
+            }
+          }
+        })
+
+        .state('access.callback', {
+          url: '/callback',
+          views: {
+            "contentView": {
+              templateUrl:  'modules/main/partials/loginCallback.html',
+              controller:   "AccessLoginCallbackController as callback"
+            }
+          }
+        })
+
+        .state('app', {
+          url: '/app',
+          resolve: {
+            logged: [
+              "TwitterService",
+              function(TwitterService) {
+
+                TwitterService.initialize();
+
+                if(!TwitterService.isConnected()) {
+                  return false;
+                } else {
+                  return true;
+                }
+              }
+            ]
+          },           
+          views: {
+            "pageView": {
+              templateUrl:  'modules/main/partials/index.html',
+              controller:   "AppController"
             }
           }
         })
@@ -44,16 +108,18 @@ mainApp
           }
         })
 
-        .state('app.profile', {
-          url: '/profile',
+        /*
+        .state('app.users', {
+          url: '/users',
           views: {
             "contentView": {
-              templateUrl:  'modules/profile/partials/container.html',
-              controller:   "ProfileIndexController as index"
+              templateUrl:  'modules/users/partials/container.html',
+              controller:   "HomeIndexController as index"
             }
           }
         })
-
+        */
+        /*
         .state('app.profile.timeline', {
           url: '/timeline',
           views: {
@@ -63,6 +129,7 @@ mainApp
             }
           }
         })
+        */
 
         .state('app.trends', {
           url: '/trends',

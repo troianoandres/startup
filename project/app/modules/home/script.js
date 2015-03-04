@@ -1,1 +1,1 @@
-var homeModule = angular.module("app.home", ["twitter"]);
+var homeModule = angular.module("app.home", []);

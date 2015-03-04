@@ -1,7 +1,26 @@
 <div class="container">
   <div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" ng-repeat="tweet in timeline.tweets">
-      <div twitter-tweet></div>      
+    
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+      <div class="tweet-list-header">
+        <input type="text" class="form-control" placeholder="Search for tweets..." ng-model="timeline.filterBy"/>
+      </div>
+      <div ng-show="!(timeline.tweets | filter:timeline.filterBy).length && timeline.initialized" class="tweet-list-message text-center">
+        Your timeline is currently empty or your search does not match any tweet. <br/>
+        Follow people and topics you find interesting to see their Tweets in your timeline or change your search.
+      </div>
+      <div ng-show="!timeline.initialized" class="tweet-list-message text-center">
+        Loading your timeline<br/>
+        Please wait...
+      </div>      
+      <div ng-show="(timeline.tweets | filter:timeline.filterBy).length && timeline.initialized" class="tweet-list-body">
+        <div twitter-tweet ng-tweet="tweet" ng-repeat="tweet in timeline.tweets | filter:timeline.filterBy"></div>      
+      </div>        
     </div>
+    
+
+
+
+
   </div>
 </div>

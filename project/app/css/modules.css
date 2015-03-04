@@ -7,33 +7,51 @@
  */
 
 /****************************************************************************
- *                               NAV BAR                                    *
+ *                            HEADER LOGO                                   *
  ****************************************************************************/
 
-.nav-bar {
-  position: relative;
-  min-height: 50px;
-}
-
-.nav-bar-brand {
+.header-page-logo {
+  width: 100%;
   float: left;
   height: 50px;
   padding: 15px 15px;
   font-size: 18px;
   line-height: 20px;
+  color: #FFFFFF;
+  text-align: center;
+  border-bottom: 1px solid #333;
+}
+
+.header-page-logo:hover {
   color: inherit;
+  text-decoration: none;
+}
+
+/****************************************************************************
+ *                               NAV BAR                                    *
+ ****************************************************************************/
+
+.nav-bar {
+  width: 100%;
+  float: left;
+  display: block;
+  position: relative;
+  min-height: 50px;
 }
 
 .navigation-list {
-  float: left;
-  margin-bottom: 0;
-  padding: 0px;  
+  float: none;
+  margin: 0 auto;
+  padding: 0px;
 }
 
 .navigation-list-item {
   display: inline-block;
   font-size: 15px;
   border-top: 3px solid #2C2C2C;
+  height: 50px;
+  width: 33.31%;
+  text-align: center;
 }
 
 .navigation-list > .navigation-list-item:not(:first-child) {
@@ -66,22 +84,156 @@
 
 /* tweet module */
 
-.tweet {
-  width: 100%;
-  background-color: #FFFFFF;
-  min-height: 50px;
-  margin-bottom: 10px;
+.tweet-list-header {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  background-color: #EEEEEE;
   padding: 10px;
+  min-height: 40px;
+}
+
+.tweet-list-message {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  background-color: #FFFFFF;
+  color: #888888;
+  padding: 10px;
+  min-height: 40px;
+  border-top: 1px solid #CCCCCC;
 }
 
 .tweet-container {
+  position: relative;
+  width: 100%;
+  background-color: #FFFFFF;
+  min-height: 50px;
+  border: 1px solid #CCCCCC;
+  border-bottom: 0px;
+}
+
+.tweet-container:last-child {
+  border-bottom: 1px solid #CCCCCC;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.tweet-container:hover {
+  background-color: #EEEEEE;
+}
+
+.tweet {
+  padding: 10px;
+  min-height: 50px;
+  position: relative;
+  color: #000000;
+  font-size: 12px;
+}
+
+.tweet-image {
+  width: 48px;
+  height: 48px;
+  background-color: #000;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.tweet-header {
+  text-decoration: none;
+  color: #888888;
+  line-height: inherit;
+  cursor: pointer;
+  font-size: 90%;
+}
+
+.tweet-header .tweet-user-name {
+  color: #000000;
+}
+
+.tweet-header:hover > .tweet-user-name {
+  text-decoration: underline;
+  color: #0080B0;
+}
+
+.tweet-header > .tweet-user-tag {  
 
 }
 
+.tweet-header > .tweet-date {  
+  font-size: 70%;
+}
+
+.tweet-header > .image-wrapper {
+  float: left;
+  margin-left: -58px;
+  margin-top: 5px;
+  width: 48px;
+}
+
 .tweet-body {
-  width: 80%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  font-size: 85%;
+}
+
+.tweet-footer {
+
+}
+
+.tweet-retweet {
+  
+}
+
+.tweet-content {
+  margin-left: 58px;
+  display: block;
+}
+
+
+.tweet-header > .image-wrapper {
+  float: left;
+  margin-left: -30px;
+  margin-top: 5px;
+  width: 25px;
+}
+
+.tweet-content {
+  margin-left: 30px;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  
+  .header-page-logo {
+    width: auto;
+    border-bottom: 0px;
+  }
+  
+  .nav-bar {
+    width: auto;
+    float: right;
+  }
+
+  .navigation-list-item {
+    width: auto;
+    text-align: center;
+  }
+
+
+  .tweet-list-header {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  .tweet-container:last-child {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+}
+
+
+@media (min-width: 992px) {
+
+}
+
+@media (min-width: 1200px) {
+
 }

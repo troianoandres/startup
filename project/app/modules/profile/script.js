@@ -1,1 +1,1 @@
-var profileModule = angular.module("app.profile", ["twitter"]);
+var profileModule = angular.module("app.profile", []);

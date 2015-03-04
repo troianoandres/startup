@@ -1,5 +1,0 @@
-twitterModule.controller('TwitterTweetController', [
-  function(){
-  
-  }
-]);

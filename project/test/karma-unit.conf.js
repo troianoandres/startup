@@ -7,6 +7,7 @@ module.exports = function(config){
     files : [
       // include relevant Angular files and libs
       'app/libs/angular/angular.js',
+      'app/libs/angular-cookies/angular-cookies.js',
       'app/libs/angular-ui-router/release/angular-ui-router.min.js',
       'app/libs/angular-mocks/angular-mocks.js',
       'app/libs/angular-bootstrap/ui-bootstrap-tpls.js',
@@ -49,7 +50,7 @@ module.exports = function(config){
       // type of file to output, use text to output to console
       type : 'text',
       // directory where coverage results are saved
-      dir: 'tests/test-results/coverage/'
+      dir: 'test/test-results/coverage/'
       // if type is text or text-summary, you can set the file name
       // file: 'coverage.txt'
     },

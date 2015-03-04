@@ -12,6 +12,9 @@ module.exports = function(grunt) {
         files: {
           './app/dist/js/app.min.js': ['./app/dist/js/app.js']
         }
+      },
+      options: {
+        sourceMap: true
       }
     },
 
@@ -36,15 +39,13 @@ module.exports = function(grunt) {
       modules: {
         src: [
           "./app/libs/angular/angular.js",
-          "./app/libs/angular-ui-router/release/angular-ui-router.min.js",
-          "./app/libs/jquery/dist/jquery.min.js",
+          "./app/libs/angular-ui-router/release/angular-ui-router.js",
+          "./app/libs/angular-cookies/angular-cookies.js",
+          "./app/libs/jquery/dist/jquery.js",
+          "./app/js/jquery-transport-fix.js",
           "./app/libs/oauth-js/dist/oauth.js",
           "./app/libs/bootstrap/dist/js/bootstrap.js",
           "./app/libs/angular-bootstrap/ui-bootstrap-tpls.js",
-          "./app/modules/twitter/script.js",
-          "./app/modules/twitter/services/TwitterService.js",
-          "./app/modules/twitter/directives/TwitterTweet.js",
-          "./app/modules/twitter/controllers/TwitterTweetController.js",
           "./app/modules/home/script.js",
           "./app/modules/home/controllers/HomeIndexController.js",
           "./app/modules/home/controllers/HomeTimelineController.js",
@@ -53,7 +54,14 @@ module.exports = function(grunt) {
           "./app/modules/profile/controllers/ProfileTimelineController.js",
           "./app/modules/trends/script.js",
           "./app/modules/trends/controllers/HomeController.js",        
-          "./app/modules/main/script.js"
+          "./app/modules/main/script.js",
+          "./app/modules/main/services/TwitterService.js",
+          "./app/modules/main/directives/TwitterTweet.js",
+          "./app/modules/main/controllers/AppController.js",
+          "./app/modules/main/controllers/AccessController.js",
+          "./app/modules/main/controllers/AccessLoginController.js",
+          "./app/modules/main/controllers/AccessLoginCallbackController.js",
+          "./app/modules/main/controllers/TwitterTweetController.js"          
         ],
         dest: "./app/dist/js/app.js"
       }
@@ -69,19 +77,22 @@ module.exports = function(grunt) {
     watch: {
       css: {
         files: [
-          "./app/css/*"
+          "./app/css/*.css"
         ],
-        tasks: ["developmentCSS"]
+        tasks: ["css"]
       },
       scripts: {
         files: [
-          "./app/modules/**/*"
+          "./app/modules/**/*.js",
+          "./app/modules/**/**/*.js"
         ],
-        tasks: ["developmentJS"]
+        tasks: ["js"]
       },
       test: {
         files: [
-          "./test/unit/**/*"
+          "./test/unit/**/*",
+          "./app/modules/**/*.js",
+          "./app/modules/**/**/*.js"
         ],
         tasks: ["test:unit"]
       }
@@ -97,12 +108,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma');
  
   
-  grunt.registerTask("developmentJS", [
+  grunt.registerTask("js", [
     "concat:modules",
     "uglify"
   ]);
 
-  grunt.registerTask("developmentCSS", [
+  grunt.registerTask("css", [
     "concat:css",
     "cssmin"
   ]);
