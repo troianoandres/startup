@@ -1,4 +1,4 @@
-angular.module("app").directive('twitterTweet', [
+app.directive('tweet', [
   function(){
     return {
       // name: '',

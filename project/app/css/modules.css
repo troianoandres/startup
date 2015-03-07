@@ -82,7 +82,120 @@
   background-color: #1C1C1C;
 }
 
-/* tweet module */
+/****************************************************************************
+ *                           BLOCKED LIST MODULE                            *
+ ****************************************************************************/
+
+.people-list-container {
+  width: 100%;
+  height: 100%;
+  padding: 15px;  
+}
+
+.people-list {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #EEE;
+}
+
+.people-list-header {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  background-color: #EEEEEE;
+  padding: 10px;
+  min-height: 40px;
+  color: #000000;
+}
+
+.item-container {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  padding: 10px;
+
+  border: 1px solid #CCCCCC;  
+  border-bottom: 0px;  
+  
+  background-color: #FFFFFF;  
+}
+
+.item-container:hover {
+  background-color: #EEEEEE;
+}
+
+.item-container:last-child {
+  border-bottom: 1px solid #CCCCCC;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.item {
+  position: relative;
+  min-height: 50px;  
+  color: #000000;
+  font-size: 12px;
+}
+
+.item-content {
+  display: block;
+  margin-left: 58px;  
+}
+
+.item-header {
+  text-decoration: none;
+  color: #888888;
+  line-height: inherit;
+  cursor: pointer;
+  font-size: 90%;
+}
+
+.item-header .user-name {
+  color: #000000;
+}
+
+.item-header:hover > .user-name {
+  text-decoration: underline;
+  color: #0080B0;
+}
+
+.item-header > .date {  
+  font-size: 70%;
+}
+
+.avatar-image {
+  width: 48px;
+  height: 48px;
+  background-color: #000;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.avatar-wrapper {
+  float: left;
+  margin-left: -58px;
+  margin-top: 5px;
+  width: 48px;
+}
+
+
+/****************************************************************************
+ *                           TWEET LIST MODULE                              *
+ ****************************************************************************/
+
+.tweet-list-container {
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+}
+
+.tweet-list {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #EEE;
+}
 
 .tweet-list-header {
   border-top-left-radius: 0px;
@@ -90,6 +203,7 @@
   background-color: #EEEEEE;
   padding: 10px;
   min-height: 40px;
+  color: #000000;
 }
 
 .tweet-list-message {
@@ -100,6 +214,10 @@
   padding: 10px;
   min-height: 40px;
   border-top: 1px solid #CCCCCC;
+  font-size: 12px;
+}
+
+.tweet-list-body {
 }
 
 .tweet-container {
@@ -217,17 +335,50 @@
     text-align: center;
   }
 
+}
 
-  .tweet-list-header {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-  }
 
-  .tweet-container:last-child {
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  opacity: 0.7;
+}
+
+.circle {
+  margin: 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  border: 3px solid #FFF;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  -webkit-animation: spin 0.4s infinite linear;
+  -moz-animation: spin 0.4s infinite linear;
+  animation: spin 0.4s infinite linear;
+}
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
   }
 }
+
+@keyframes spin { 
+  100% {     
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+  } 
+} 
 
 
 @media (min-width: 992px) {

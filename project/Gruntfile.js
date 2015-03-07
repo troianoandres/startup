@@ -46,22 +46,33 @@ module.exports = function(grunt) {
           "./app/libs/oauth-js/dist/oauth.js",
           "./app/libs/bootstrap/dist/js/bootstrap.js",
           "./app/libs/angular-bootstrap/ui-bootstrap-tpls.js",
+          
           "./app/modules/home/script.js",
           "./app/modules/home/controllers/HomeIndexController.js",
           "./app/modules/home/controllers/HomeTimelineController.js",
-          "./app/modules/profile/script.js",
-          "./app/modules/profile/controllers/ProfileIndexController.js",
-          "./app/modules/profile/controllers/ProfileTimelineController.js",
+          
+          "./app/modules/people/script.js",
+          "./app/modules/people/controllers/PeopleBlockedController.js",
+          "./app/modules/people/controllers/PeopleListController.js",
+          "./app/modules/people/directives/PeopleList.js",
+
           "./app/modules/trends/script.js",
           "./app/modules/trends/controllers/HomeController.js",        
+          
           "./app/modules/main/script.js",
           "./app/modules/main/services/TwitterService.js",
-          "./app/modules/main/directives/TwitterTweet.js",
+          "./app/modules/main/filters/TweetLinkFilter.js",
+          "./app/modules/main/directives/Tweet.js",
+          "./app/modules/main/directives/TweetList.js",
+          "./app/modules/main/directives/LoadingOverlay.js",
+          "./app/modules/main/directives/LoadingSpinner.js",
           "./app/modules/main/controllers/AppController.js",
           "./app/modules/main/controllers/AccessController.js",
           "./app/modules/main/controllers/AccessLoginController.js",
           "./app/modules/main/controllers/AccessLoginCallbackController.js",
-          "./app/modules/main/controllers/TwitterTweetController.js"          
+          "./app/modules/main/controllers/TwitterTweetController.js",
+          "./app/modules/main/controllers/TweetListController.js",
+          "./app/modules/main/controllers/LoadingOverlayController.js"
         ],
         dest: "./app/dist/js/app.js"
       }

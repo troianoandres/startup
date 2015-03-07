@@ -1,4 +1,4 @@
-angular.module("app").controller('AccessLoginCallbackController', [
+app.controller('AccessLoginCallbackController', [
   'TwitterService',
   "$state",
   function(TwitterService, $state){

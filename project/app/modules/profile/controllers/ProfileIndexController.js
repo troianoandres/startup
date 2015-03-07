@@ -1,5 +1,0 @@
-profileModule.controller('ProfileIndexController', [
-  function(){
-  
-  }
-]);

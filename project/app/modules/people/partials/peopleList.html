@@ -1,0 +1,34 @@
+<div class="people-list-container">
+  
+  <div class="people-list">
+    
+    <!-- People list header -->
+    <div class="people-list-header text-center">
+      <h4>{{ peopleListCtrl.listTitle }}</h4>
+    </div>
+    <!-- People list header -->
+    <div class="people-list-body">    
+    
+      <div class="item-container" ng-repeat="people in peopleListCtrl.people">
+        <div class="item">
+          <div class="item-content">
+            
+            <header class="item-header">        
+              <div class="avatar-wrapper">
+                <img ng-src="https://pbs.twimg.com/profile_images/3310627568/d956d7204b97e732eb6fc7e58dfb2102_normal.png" class="avatar-image" />  
+              </div>          
+              <strong class="user-name">Troiano Andres</strong><br/>
+              <span class="user-tag">@TroianoAndres</span>
+            </header>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div loading-overlay ng-if="peopleListCtrl.loading"></div>
+
+  </div>
+
+</div>

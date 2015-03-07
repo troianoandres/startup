@@ -8,9 +8,11 @@ describe("TwitterService tests", function() {
     // Mock the main module dependencies
     angular.mock.module("ui.router");
     angular.mock.module("ngCookies");
+    angular.mock.module("ngSanitize");
     angular.mock.module("app.home");
     angular.mock.module("app.trends");
-    angular.mock.module("app.profile");
+    angular.mock.module("app.people");
+
 
     // Retrieve the main module
     module("app");
@@ -33,6 +35,87 @@ describe("TwitterService tests", function() {
 
   it("TwitterService twitterReference must be null", function() {
     expect(TwitterService.getReference()).toBe(null);
+  });
+
+  describe("getReference() & setReference() tests", function() {
+
+    it("getReference must be defined", function() {
+      expect(TwitterService.getReference).not.toBe(null);
+    });
+
+    it("setReference must be defined", function() {
+      expect(TwitterService.setReference).not.toBe(null);
+    });
+
+    it("expect to set and get twitterReference successfuly", function() {
+
+      var obj = {};
+
+      TwitterService.setReference( obj );
+
+      expect(TwitterService.getReference()).toBe(obj);
+
+    });
+
+  });
+
+  describe("isInitialized() tests", function() {
+
+    beforeEach(function() {
+
+      spyOn($window.OAuth, "initialize").and.callFake(function() {});
+      spyOn($window.OAuth, "create").and.callFake(function() {
+        return {};
+      });
+
+    });
+
+    it("must not be initialized", function() {
+
+      expect(TwitterService.isInitialized()).toBe(false);
+
+    });
+
+    it("must be initialized", function() {
+
+      TwitterService.initialize();
+
+      expect(TwitterService.isInitialized()).toBe(true);
+
+    });
+
+  });
+
+  describe("isConnected() tests", function() {
+
+    beforeEach(function() {
+
+      spyOn($window.OAuth, "initialize").and.callFake(function() {});
+
+    });
+
+    it("must not be connected", function() {
+
+      spyOn($window.OAuth, "create").and.callFake(function() {
+        return false;
+      });
+
+      expect(TwitterService.isConnected()).toBe(false);
+
+    });
+
+    it("must be connected", function() {
+
+      spyOn($window.OAuth, "create").and.callFake(function() {
+        return {};
+      });
+
+      TwitterService.initialize();
+
+      expect(TwitterService.isConnected()).toBe(true);
+
+    });
+
   });
 
   describe("initialize() tests", function() {
@@ -105,8 +188,7 @@ describe("TwitterService tests", function() {
 
   });
 
-  // Tests for connectTwitter method
-  xdescribe("connectTwitter() tests", function() {
+  describe("connectTwitter() tests", function() {
 
     var $q, deferred, $rootScope;
 
@@ -117,40 +199,9 @@ describe("TwitterService tests", function() {
         $rootScope = _$rootScope_;
       });
 
-    });
-
-    describe("connectTwitter must not call redirect", function() {
-
-      beforeEach(function() {
-
-        deferred = $q.defer();
-
-        spyOn(window.OAuth, "redirect").and.callFake(function() {});
-
-      });
-
-      describe("connectTwitter called with TwitterService initialized and connected", function() {
-
-        beforeEach(function() {
-
-          spyOn(TwitterService, "initialize").and.callFake(function() {
-            initialized = true;
-            connected = true;
-          });
-
-        });
-
-        it("connectTwitter must not call redirect", function() {
-
-          TwitterService.connectTwitter();
-
-        });
-
-      });
-
-      describe("connectTwitter called with TwitterService not initialized and not connected", function() {
-
-      });
+      spyOn($window.OAuth, "redirect").and.callFake(function() { });
+      spyOn(TwitterService, "isInitialized").and.callThrough();
+      spyOn(TwitterService, "isConnected").and.callThrough();      
 
     });
 
@@ -158,20 +209,137 @@ describe("TwitterService tests", function() {
       expect(TwitterService.connectTwitter).not.toBe(null);
     });
 
+    describe("connectTwitter called with TwitterService initialized and connected", function() {
 
-    it("TwitterService.connectTwitter", function() {
-      TwitterService.connectTwitter();
+      beforeEach(function() {
+
+        spyOn($window.OAuth, "initialize").and.callFake(function() {});
+        spyOn($window.OAuth, "create").and.callFake( function() { 
+          return {asd: "asd"};
+        });
+
+      });
+
+      it("twitterReference must not be null, isConnected and isInitialized calls = 1, redirect calls = 0", function() {
+
+        TwitterService.initialize();
+
+        TwitterService.connectTwitter();
+
+        expect(TwitterService.getReference()).not.toBe(null);
+        expect(TwitterService.isConnected.calls.count()).toBe(1);
+        expect(TwitterService.isInitialized.calls.count()).toBe(1);
+        expect($window.OAuth.redirect.calls.count()).toBe(0);
+
+      });
+
+    });
+
+    describe("connectTwitter called with TwitterService not initialized and not connected", function() {
+
+      it("twitterReference must be null, isConnected and redirect calls = 0, isInitialized calls = 1", function() {
+
+        expect(TwitterService.connectTwitter).toThrow();
+
+        expect(TwitterService.getReference()).toBe(null);
+        expect(TwitterService.isConnected.calls.count()).toBe(0);
+        expect(TwitterService.isInitialized.calls.count()).toBe(1);
+        expect($window.OAuth.redirect.calls.count()).toBe(0);
+
+      });
+
+    });
+
+    describe("connectTwitter called with TwitterService initialized but not connected", function() {
       
-      deferred.resolve("hola");
+      beforeEach(function() {
 
-      rootScope.$digest();
-      
+        spyOn($window.OAuth, "initialize").and.callFake(function() {});
+        spyOn($window.OAuth, "create").and.callFake( function() { 
+          return false;
+        });
 
-      expect(window.OAuth.popup).toHaveBeenCalled();
-      //expect(TwitterService.getReference()).toBe(null);
+      });
+
+      it("twitterReference must be null, isConnected and isInitialized calls = 1, redirect calls = 0", function() {
+
+        TwitterService.initialize();
+
+        TwitterService.connectTwitter();
+
+        expect(TwitterService.getReference()).toBe(null);
+        expect(TwitterService.isConnected.calls.count()).toBe(1);
+        expect(TwitterService.isInitialized.calls.count()).toBe(1);
+        expect($window.OAuth.redirect.calls.count()).toBe(1);
+
+      });
 
     });
     
+  });
+
+  describe("generateURL() tests", function() {
+
+    beforeEach(function() {
+
+    });
+
+    it("generateURL must be defined", function() {
+      expect(TwitterService.generateURL).not.toBe(null);
+    });
+
+    it("generateURL called with no argument must throw error", function() {
+      
+      expect(function() { 
+        TwitterService.generateURL();
+      }).toThrow( new Error("baseUrl must be defined") );
+
+    })
+
+    it("generateURL called with one argument must return the baseURL", function() {
+
+      var url = "http://localhost/app";
+  
+      expect(TwitterService.generateURL(url)).toBe(url);
+
+    });
+
+    it("generateURL called with two arguments must return a modified url", function() {
+
+      var url = "http://localhost/app";
+      var defaults = {
+        id: 100,
+        trim_user: false
+      };
+
+      expect(TwitterService.generateURL(url, defaults)).toBe("http://localhost/app?id=100&trim_user=false");
+
+    });    
+
+  });
+
+  describe("connectionCallback() tests", function() {
+
+    var $q, deferred;
+
+    beforeEach(function() {
+
+      inject(function(_$q_) {
+        $q = _$q_;
+      });
+
+      deferred = $q.defer();
+
+    });
+
+    describe("connectionCallback error", function() {
+
+    });
+
+    describe("connectionCallback success", function() {
+
+    });
+
   });
 
   xdescribe("TwitterService.getTweets method tests", function() {

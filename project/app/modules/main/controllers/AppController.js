@@ -1,4 +1,4 @@
-mainApp.controller('AppController', [
+app.controller('AppController', [
   'logged', 
   "$state",
   function(logged, $state){

@@ -1,10 +1,7 @@
 homeModule.controller("HomeTimelineController", [
-  "$scope",
-  "TwitterService",
-  "$q",
-  "$document",
-  function($scope, TwitterService, $q, $document){
 
+  function(){
+    /*
     var q = $q,
         that = this,
         scope = $scope;
@@ -14,19 +11,9 @@ homeModule.controller("HomeTimelineController", [
     that.initialized = false;
 
     TwitterService.initialize();
-    
-    /*
-    $scope
-      .$on('$stateChangeStart', 
-        function(event, toState, toParams, fromState, fromParams){
-          TwitterService.saveTweets("timeline", that.tweets);
-        });
-    */
-    
 
     var initialize = function() {
       var deferred = q.defer();
-
       TwitterService.getTweets()
         .then(function(result) {
           storeTweets(result);
@@ -34,7 +21,7 @@ homeModule.controller("HomeTimelineController", [
           deferred.resolve("ok");
 
         }, function(error) {
-          console.log(error)
+          console.log(error);
 
           deferred.reject("error");
         });
@@ -52,6 +39,8 @@ homeModule.controller("HomeTimelineController", [
       }, function(){
         that.initialized = false;
       });  
+
+  */
 
   }
 ]);

@@ -1,4 +1,4 @@
-mainApp.controller('AccessController', [
+app.controller('AccessController', [
   "logged",
   "$state",
   function(logged, $state){

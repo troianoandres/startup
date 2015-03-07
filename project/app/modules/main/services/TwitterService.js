@@ -1,13 +1,11 @@
-angular.module("app").service('TwitterService', [
+app.service('TwitterService', [
   "$q",
   "appKey",
   "$window",
-  "$cookies",
-  function($q, appKey, $window, $cookies) {
+  function($q, appKey, $window) {
     var twitterReference = null,
         initialized = false,
         connected = false,
-        cookies = $cookies,
         that = this;
 
     /**
@@ -20,22 +18,31 @@ angular.module("app").service('TwitterService', [
      *  @param    {Object}    arguments Object with the parameters to add to the url
      *  @return   {String}              Parsed url to make the request
      */
-    that.generateURL = function(baseURL, arguments) {
-      var keys,
-          index = 0;
-          queryStringParameters = [];
-      
-      // Get the keys of the arguments
-      keys = Object.keys(arguments);
+    that.generateURL = function(baseURL, parameters) {
+      if(!baseURL) {
+        throw new Error("baseUrl must be defined");
+      }
 
-      // For each argument i will append it
-      for(index; index < keys.length; index++){
-        if(arguments[keys[index]]){
-          queryStringParameters.push( [keys[index], "=", arguments[keys[index]]].join("") );
-        }
-      }      
-      // Join the url
-      var url = [baseURL, queryStringParameters.join("&")].join("?");
+      var keys,
+          index = 0,
+          queryStringParameters = [],
+          url = baseURL;
+      
+      // Get the keys of the parameters
+      if(parameters !== undefined) {
+        keys = Object.keys(parameters);
+      
+
+        // For each argument i will append it
+        for(index; index < keys.length; index++){
+          if(parameters[keys[index]] !== null && parameters[keys[index]] !== undefined){
+            queryStringParameters.push( [keys[index], "=", parameters[keys[index]]].join("") );
+          }
+        }      
+        // Join the url
+        url = [baseURL, queryStringParameters.join("&")].join("?");
+
+      }
 
       return url;
     };
@@ -56,6 +63,26 @@ angular.module("app").service('TwitterService', [
      */
     that.setReference = function(reference) {
       twitterReference = reference;
+    };
+
+    /**
+     *  @name     isConnected
+     *
+     *  @description        Return if the service is connected to twitter
+     *  @return   {Boolean}
+     */
+    that.isConnected = function() {
+      return connected;
+    };
+
+    /**
+     *  @name     isInitialized
+     *
+     *  @description        Return if the service is initialized
+     *  @return   {Boolean}
+     */
+    that.isInitialized = function() {
+      return initialized;
     };
 
     /**
@@ -97,8 +124,7 @@ angular.module("app").service('TwitterService', [
       
       // If TwitterService is not initialized then throw error
       if(!that.isInitialized()) {
-        // TODO: ADD ERROR
-        return;
+        throw new Error("TwitterService must be initialized before connecting to Twitter");
       }
 
       // If there is already a twitter reference generated this should be skyped
@@ -122,32 +148,24 @@ angular.module("app").service('TwitterService', [
       return $window.OAuth.callback("twitter", {cache: true});
     };
 
-
+    
     that.saveTweets = function(tweetsType, tweets) {
       cookies.put(["tweets",tweetsType].join("-"), tweets);
     };
-
-    that.isConnected = function() {
-      return connected;
-    };
-
-    that.isInitialized = function() {
-      return initialized;
-    };
     
-    that.getTweets = function(parameters) {
-      var deferred = $q.defer();
-      var url = "/1.1/statuses/home_timeline.json";
-      var arguments = [];
-      var defaults = {
-        count: 20,
-        since_id: null,
-        max_id: null,
-        trim_user: false,
-        exclude_replies: true,
-        contributor_details: false,
-        include_entities: false
-      };
+    that.getHomeTimeline = function(parameters) {
+      var deferred = $q.defer(),
+          url = "/1.1/statuses/home_timeline.json",
+          arguments = [],
+          defaults = {
+            count: 40,
+            since_id: null,
+            max_id: null,
+            trim_user: false,
+            exclude_replies: true,
+            contributor_details: false,
+            include_entities: false
+          };
 
       // If TwitterService is not initialized and connected the deferred will be rejected else will call
       // get method to get the tweets
@@ -161,19 +179,59 @@ angular.module("app").service('TwitterService', [
 
         url = that.generateURL(url, defaults);        
 
+        try {
+
         that.getReference().get(url)
           .done(function(data) {
             deferred.resolve(data);
           })
           .fail(function(error) {
-            console.log(error);
+            deferred.reject(error);
           });
+
+        } catch (error) {
+          deferred.reject(error);
+        }
 
       }
 
       return deferred.promise;        
     };
 
+    that.getBlockedPeople = function() {
+      var deferred = $q.defer(),
+          url = "/1.1/blocks/list.json";
+
+      // If TwitterService is not initialized and connected the deferred will be rejected else will call
+      // get method to get the tweets
+      if(!that.isInitialized()){
+        deferred.reject("TwitterService must be initialized");
+      } else if(!that.isConnected()){
+        deferred.reject("TwitterService must be connected");
+      } else {
+
+        url = that.generateURL(url);        
+
+        try {
+
+        that.getReference().get(url)
+          .done(function(data) {
+            deferred.resolve(data);
+          })
+          .fail(function(error) {
+            deferred.reject(error);
+          });
+
+        } catch (error) {
+          deferred.reject(error);
+        }
+
+      }
+
+      return deferred.promise;        
+    };
+
+    /*
     this.getTweet = function(tweetID) {
       var deferred = $q.defer(),
           url = "/1.1/statuses/show.json",
@@ -198,5 +256,7 @@ angular.module("app").service('TwitterService', [
       return deferred.promise; 
     };
 
+  */
+ 
   }
 ]);

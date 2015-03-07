@@ -1,16 +1,16 @@
-<div class="tweet-container" ng-click="tweetCtrl.showTweetDetail();">
-  <div class="tweet clearfix">
-    <div class="tweet-content">
-      <header class="tweet-header" ng-click="tweetCtrl.showUserProfile();">        
-        <div class="image-wrapper">
-          <img ng-src="{{ tweetCtrl.tweet.user.profile_image_url }}" class="tweet-user-image" />  
+<div class="item-container" ng-click="tweetCtrl.showTweetDetail();">
+  <div class="item clearfix">
+    <div class="item-content">
+      <header class="item-header" ng-click="tweetCtrl.showUserProfile();">        
+        <div class="avatar-wrapper">
+          <img ng-src="{{ tweetCtrl.tweet.user.profile_image_url }}" class="avatar-image" />  
         </div>          
-        <strong class="tweet-user-name">{{ tweetCtrl.tweet.user.name }}</strong>
-        <span class="tweet-user-tag">@{{ tweetCtrl.tweet.user.screen_name }}</span> - <small class="tweet-date">{{ tweetCtrl.tweet.created_at | date:'MMM d' }}</small>        
+        <strong class="user-name">{{ tweetCtrl.tweet.user.name }}</strong>
+        <span class="user-tag">@{{ tweetCtrl.tweet.user.screen_name }}</span> - <small class="date">{{ tweetCtrl.tweet.created_at | date:'MMM d' }}</small>        
       </header>
       <div class="tweet-body">
-        <p class="tweet-text">
-          {{ tweetCtrl.tweet.text }}
+        <p class="tweet-text"  ng-bind-html="tweetCtrl.tweet.text | tweetLink | linky">
+          
         </p>
       </div>
     </div>

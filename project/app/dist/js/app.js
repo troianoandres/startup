@@ -54882,12 +54882,9 @@ homeModule.controller("HomeIndexController", [
   }
 ]);
 homeModule.controller("HomeTimelineController", [
-  "$scope",
-  "TwitterService",
-  "$q",
-  "$document",
-  function($scope, TwitterService, $q, $document){
 
+  function(){
+    /*
     var q = $q,
         that = this,
         scope = $scope;
@@ -54897,19 +54894,9 @@ homeModule.controller("HomeTimelineController", [
     that.initialized = false;
 
     TwitterService.initialize();
-    
-    /*
-    $scope
-      .$on('$stateChangeStart', 
-        function(event, toState, toParams, fromState, fromParams){
-          TwitterService.saveTweets("timeline", that.tweets);
-        });
-    */
-    
 
     var initialize = function() {
       var deferred = q.defer();
-
       TwitterService.getTweets()
         .then(function(result) {
           storeTweets(result);
@@ -54917,7 +54904,7 @@ homeModule.controller("HomeTimelineController", [
           deferred.resolve("ok");
 
         }, function(error) {
-          console.log(error)
+          console.log(error);
 
           deferred.reject("error");
         });
@@ -54936,17 +54923,74 @@ homeModule.controller("HomeTimelineController", [
         that.initialized = false;
       });  
 
+  */
+
   }
 ]);
-var profileModule = angular.module("app.profile", []);
-profileModule.controller('ProfileIndexController', [
-  function(){
+var peopleModule = angular.module("app.people", []);
+peopleModule.controller('PeopleBlockedController', [
+  '$scope', 
+  function($scope){
   
   }
 ]);
-profileModule.controller('ProfileTimelineController', [
-  function(){
+peopleModule.controller('PeopleListController', [
+  "$scope",
+  "TwitterService",
+  function($scope, TwitterService){
   
+    var that = this;
+
+    that.listTitle = $scope.listTitle;
+    that.loading = false;
+    that.people = [];
+
+    var loadData = function() {
+
+      that.loading = true;
+
+      TwitterService.getBlockedPeople()
+        .then(function(result) {
+
+          that.people = result.users;
+
+          console.log(result);
+        }, function(error) {
+          console.log(error);
+        })
+        .finally(function() {
+          that.loading = false;
+        });
+
+    };
+
+    loadData();
+
+  }
+]);
+peopleModule.directive('peopleList', [
+
+  function(){
+    return {
+      // name: '',
+      // priority: 1,
+      // terminal: true,
+      scope: {
+        listTitle: "@ngListTitle",
+        listSource: "@ngListSource"
+      },
+      controller: "PeopleListController as peopleListCtrl",
+      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
+      restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
+      // template: '',
+      templateUrl: 'modules/people/partials/peopleList.html',
+      replace: true,
+      // transclude: true,
+      // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
+      link: function($scope, iElm, iAttrs, controller) {
+        
+      }
+    };
   }
 ]);
 var trendsModule = angular.module("app.trends", []);
@@ -54957,163 +55001,171 @@ trendsModule
   
     }
   ]);
-var mainApp = angular.module('app', [
+var app = angular.module('app', [
   "ui.router",
   "ngCookies",
   "app.home",
   "app.trends",
-  "app.profile"
+  "app.people",
+  "ngSanitize"
 ]);
 
-mainApp.constant('appKey', "YTdRujwGxLOyqmpnuJcth07m08c");
+app.constant('appKey', "YTdRujwGxLOyqmpnuJcth07m08c");
 
-mainApp
-  .config([
-	  "$stateProvider", 
-	  "$urlRouterProvider",
-	  function($stateProvider, $urlRouterProvider) {
+app.config([
+  "$stateProvider", 
+  "$urlRouterProvider",
+  function($stateProvider, $urlRouterProvider) {
 
-		  $urlRouterProvider.otherwise("/app/home");
+	  $urlRouterProvider.otherwise("/app/home");
 
-      $stateProvider  		
+    $stateProvider  		
 
-        .state('access', {
-          url: '/access',
-          resolve: {
-            logged: [
-              "TwitterService",
-              function(TwitterService) {
+      .state('access', {
+        url: '/access',
+        resolve: {
+          logged: [
+            "TwitterService",
+            function(TwitterService) {
 
-                TwitterService.initialize();
+              TwitterService.initialize();
 
-                if(TwitterService.isConnected()) {
-                  return true;
-                } else {
-                  return false;
-                }
+              if(TwitterService.isConnected()) {
+                return true;
+              } else {
+                return false;
               }
-            ]
-          },           
-          views: {
-            "pageView": {
-              templateUrl:  'modules/main/partials/access.html',
-              controller:   "AccessController"
             }
+          ]
+        },
+        views: {
+          "pageView": {
+            templateUrl:  'modules/main/partials/access.html',
+            controller:   "AccessController"
           }
-        })
+        }
+      })
 
-        .state('access.login', {
-          url: '/login',         
-          views: {
-            "contentView": {
-              templateUrl:  'modules/main/partials/login.html',
-              controller:   "AccessLoginController as login"
-            }
+      .state('access.login', {
+        url: '/login',         
+        views: {
+          "contentView": {
+            templateUrl:  'modules/main/partials/login.html',
+            controller:   "AccessLoginController as login"
           }
-        })
+        }
+      })
 
-        .state('access.callback', {
-          url: '/callback',
-          views: {
-            "contentView": {
-              templateUrl:  'modules/main/partials/loginCallback.html',
-              controller:   "AccessLoginCallbackController as callback"
-            }
+      .state('access.callback', {
+        url: '/callback',
+        views: {
+          "contentView": {
+            templateUrl:  'modules/main/partials/loginCallback.html',
+            controller:   "AccessLoginCallbackController as callback"
           }
-        })
+        }
+      })
 
-        .state('app', {
-          url: '/app',
-          resolve: {
-            logged: [
-              "TwitterService",
-              function(TwitterService) {
+      .state('app', {
+        url: '/app',
+        resolve: {
+          logged: [
+            "TwitterService",
+            function(TwitterService) {
 
-                TwitterService.initialize();
+              TwitterService.initialize();
 
-                if(!TwitterService.isConnected()) {
-                  return false;
-                } else {
-                  return true;
-                }
+              if(!TwitterService.isConnected()) {
+                return false;
+              } else {
+                return true;
               }
-            ]
-          },           
-          views: {
-            "pageView": {
-              templateUrl:  'modules/main/partials/index.html',
-              controller:   "AppController"
             }
+          ]
+        },           
+        views: {
+          "pageView": {
+            templateUrl:  'modules/main/partials/index.html',
+            controller:   "AppController"
           }
-        })
+        }
+      })
 
-        .state('app.home', {
-          url: '/home',
-          views: {
-            "contentView": {
-              templateUrl:  'modules/home/partials/container.html',
-              controller:   "HomeIndexController as index"
-            }
+      .state('app.home', {
+        url: '/home',
+        views: {
+          "contentView": {
+            templateUrl:  'modules/home/partials/container.html',
+            controller:   "HomeIndexController as index"
           }
-        })
-        
-        .state('app.home.timeline', {
-          url: '/timeline',
-          views: {
-            "mainContentView": {
-              templateUrl:  'modules/home/partials/timeline.html',
-              controller:   "HomeTimelineController as timeline"
-            }
+        }
+      })
+      
+      .state('app.home.timeline', {
+        url: '/timeline',
+        views: {
+          "mainContentView": {
+            templateUrl:  'modules/home/partials/timeline.html',
+            controller:   "HomeTimelineController as timeline"
           }
-        })
+        }
+      })
 
-        /*
-        .state('app.users', {
-          url: '/users',
-          views: {
-            "contentView": {
-              templateUrl:  'modules/users/partials/container.html',
-              controller:   "HomeIndexController as index"
-            }
+      .state('app.blocked', {
+        url: '/blocked',
+        views: {
+          "contentView": {
+            templateUrl:  'modules/people/partials/blocked.html',
+            controller:   "PeopleBlockedController as blocked"
           }
-        })
-        */
-        /*
-        .state('app.profile.timeline', {
-          url: '/timeline',
-          views: {
-            "mainContentView": {
-              templateUrl:  'modules/profile/partials/timeline.html',
-              controller:   "ProfileTimelineController as timeline"
-            }
+        }
+      })
+
+      /*
+      .state('app.users', {
+        url: '/users',
+        views: {
+          "contentView": {
+            templateUrl:  'modules/users/partials/container.html',
+            controller:   "HomeIndexController as index"
           }
-        })
-        */
-
-        .state('app.trends', {
-          url: '/trends',
-          views: {
-            "contentView": {
-              templateUrl:  'modules/home/partials/container.html',
-              controller:   "HomeController as home"
-            }
+        }
+      })
+      */
+      /*
+      .state('app.profile.timeline', {
+        url: '/timeline',
+        views: {
+          "mainContentView": {
+            templateUrl:  'modules/profile/partials/timeline.html',
+            controller:   "ProfileTimelineController as timeline"
           }
-        });
+        }
+      })
+      */
 
-    }
-  ]);
+      .state('app.trends', {
+        url: '/trends',
+        views: {
+          "contentView": {
+            templateUrl:  'modules/home/partials/container.html',
+            controller:   "HomeController as home"
+          }
+        }
+      });
+
+  }
+]);
 
 
-angular.module("app").service('TwitterService', [
+app.service('TwitterService', [
   "$q",
   "appKey",
   "$window",
-  "$cookies",
-  function($q, appKey, $window, $cookies) {
+  function($q, appKey, $window) {
     var twitterReference = null,
         initialized = false,
         connected = false,
-        cookies = $cookies,
         that = this;
 
     /**
@@ -55126,22 +55178,31 @@ angular.module("app").service('TwitterService', [
      *  @param    {Object}    arguments Object with the parameters to add to the url
      *  @return   {String}              Parsed url to make the request
      */
-    that.generateURL = function(baseURL, arguments) {
-      var keys,
-          index = 0;
-          queryStringParameters = [];
-      
-      // Get the keys of the arguments
-      keys = Object.keys(arguments);
+    that.generateURL = function(baseURL, parameters) {
+      if(!baseURL) {
+        throw new Error("baseUrl must be defined");
+      }
 
-      // For each argument i will append it
-      for(index; index < keys.length; index++){
-        if(arguments[keys[index]]){
-          queryStringParameters.push( [keys[index], "=", arguments[keys[index]]].join("") );
-        }
-      }      
-      // Join the url
-      var url = [baseURL, queryStringParameters.join("&")].join("?");
+      var keys,
+          index = 0,
+          queryStringParameters = [],
+          url = baseURL;
+      
+      // Get the keys of the parameters
+      if(parameters !== undefined) {
+        keys = Object.keys(parameters);
+      
+
+        // For each argument i will append it
+        for(index; index < keys.length; index++){
+          if(parameters[keys[index]] !== null && parameters[keys[index]] !== undefined){
+            queryStringParameters.push( [keys[index], "=", parameters[keys[index]]].join("") );
+          }
+        }      
+        // Join the url
+        url = [baseURL, queryStringParameters.join("&")].join("?");
+
+      }
 
       return url;
     };
@@ -55162,6 +55223,26 @@ angular.module("app").service('TwitterService', [
      */
     that.setReference = function(reference) {
       twitterReference = reference;
+    };
+
+    /**
+     *  @name     isConnected
+     *
+     *  @description        Return if the service is connected to twitter
+     *  @return   {Boolean}
+     */
+    that.isConnected = function() {
+      return connected;
+    };
+
+    /**
+     *  @name     isInitialized
+     *
+     *  @description        Return if the service is initialized
+     *  @return   {Boolean}
+     */
+    that.isInitialized = function() {
+      return initialized;
     };
 
     /**
@@ -55203,12 +55284,11 @@ angular.module("app").service('TwitterService', [
       
       // If TwitterService is not initialized then throw error
       if(!that.isInitialized()) {
-        // TODO: ADD ERROR
-        return;
+        throw new Error("TwitterService must be initialized before connecting to Twitter");
       }
 
       // If there is already a twitter reference generated this should be skyped
-      if(!that.getReference()) {
+      if(!that.isConnected()) {
 
         // Redirect the user to twitter's login page and then redirect back 
         $window.OAuth.redirect("twitter", {cache: true}, "#/access/callback");
@@ -55228,32 +55308,24 @@ angular.module("app").service('TwitterService', [
       return $window.OAuth.callback("twitter", {cache: true});
     };
 
-
+    
     that.saveTweets = function(tweetsType, tweets) {
       cookies.put(["tweets",tweetsType].join("-"), tweets);
     };
-
-    that.isConnected = function() {
-      return connected;
-    };
-
-    that.isInitialized = function() {
-      return initialized;
-    };
     
-    that.getTweets = function(parameters) {
-      var deferred = $q.defer();
-      var url = "/1.1/statuses/home_timeline.json";
-      var arguments = [];
-      var defaults = {
-        count: 20,
-        since_id: null,
-        max_id: null,
-        trim_user: false,
-        exclude_replies: true,
-        contributor_details: false,
-        include_entities: false
-      };
+    that.getHomeTimeline = function(parameters) {
+      var deferred = $q.defer(),
+          url = "/1.1/statuses/home_timeline.json",
+          arguments = [],
+          defaults = {
+            count: 40,
+            since_id: null,
+            max_id: null,
+            trim_user: false,
+            exclude_replies: true,
+            contributor_details: false,
+            include_entities: false
+          };
 
       // If TwitterService is not initialized and connected the deferred will be rejected else will call
       // get method to get the tweets
@@ -55267,19 +55339,59 @@ angular.module("app").service('TwitterService', [
 
         url = that.generateURL(url, defaults);        
 
+        try {
+
         that.getReference().get(url)
           .done(function(data) {
             deferred.resolve(data);
           })
           .fail(function(error) {
-            console.log(error);
+            deferred.reject(error);
           });
+
+        } catch (error) {
+          deferred.reject(error);
+        }
 
       }
 
       return deferred.promise;        
     };
 
+    that.getBlockedPeople = function() {
+      var deferred = $q.defer(),
+          url = "/1.1/blocks/list.json";
+
+      // If TwitterService is not initialized and connected the deferred will be rejected else will call
+      // get method to get the tweets
+      if(!that.isInitialized()){
+        deferred.reject("TwitterService must be initialized");
+      } else if(!that.isConnected()){
+        deferred.reject("TwitterService must be connected");
+      } else {
+
+        url = that.generateURL(url);        
+
+        try {
+
+        that.getReference().get(url)
+          .done(function(data) {
+            deferred.resolve(data);
+          })
+          .fail(function(error) {
+            deferred.reject(error);
+          });
+
+        } catch (error) {
+          deferred.reject(error);
+        }
+
+      }
+
+      return deferred.promise;        
+    };
+
+    /*
     this.getTweet = function(tweetID) {
       var deferred = $q.defer(),
           url = "/1.1/statuses/show.json",
@@ -55304,10 +55416,31 @@ angular.module("app").service('TwitterService', [
       return deferred.promise; 
     };
 
+  */
+ 
   }
 ]);
 
-angular.module("app").directive('twitterTweet', [
+app.filter('tweetLink', [
+  function() {
+      return function(text) {
+          if (!text) {
+            return text;
+          }
+
+          // replace #hashtags and send them to twitter
+          var replaceHashtags = /(^|\s)#(\w*[a-zA-Z_]+\w*)/gim;
+          replacedText = text.replace(replaceHashtags, '$1<a>#$2</a>');
+          
+          // replace @mentions but keep them to our site
+          var replaceMentions = /(^|\s)\@(\w*[a-zA-Z_]+\w*)/gim;
+          replacedText = replacedText.replace(replaceMentions, '$1<a>@$2</a>');
+          
+          return replacedText;
+      };
+  }
+]);
+app.directive('tweet', [
   function(){
     return {
       // name: '',
@@ -55330,7 +55463,103 @@ angular.module("app").directive('twitterTweet', [
     };
   }
 ]);
-mainApp.controller('AppController', [
+app.directive('tweetList', [
+  "$document",
+  function($document){
+    return {
+      name: 'tweetList',
+      // priority: 1,
+      // terminal: true,
+      scope: {
+        listTitle: "@ngListTitle",
+        listSource: "@ngListSource"
+      },
+      controller: "TweetListController as tweetListCtrl",
+      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
+      restrict: 'A',
+      templateUrl: 'modules/main/partials/tweetList.html',
+      replace: true,
+      link: function($scope, iElm, iAttrs, controller) {
+
+        var pageViewElement = angular.element($document[0].body).children().children().eq(1).children().eq(0);
+
+        pageViewElement.bind("scroll", function(event) {        
+
+          if( (this.offsetHeight + this.scrollTop - this.scrollHeight + 1.3) >= 0) {
+            $scope.loadNextTweets();
+            $scope.$apply();
+          }
+
+        });
+
+      }
+    };
+  }
+]);
+app.directive('loadingOverlay', [
+  function(){
+  
+  return {
+    // name: '',
+    // priority: 1,
+    // terminal: true,
+    scope: {
+
+    },
+    controller: "LoadingOverlayController as loadingCtrl",
+    // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
+    restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
+    templateUrl: 'modules/main/partials/loadingOverlay.html',
+    replace: true,
+    // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
+    link: function($scope, iElm, iAttrs, controller) {
+
+    }
+  };
+}]);
+app.directive('loadingSpinner', [
+  function(){
+    // Runs during compile
+    return {
+      // name: '',
+      // priority: 1,
+      // terminal: true,
+      scope: {
+
+      },
+      // controller: function($scope, $element, $attrs, $transclude) {},
+      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
+      // restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
+       template: '  <div class="circle"></div>',
+      // templateUrl: '',
+      replace: true,
+      // transclude: true,
+      // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
+      link: function($scope, iElm, iAttrs, controller) {
+        var loadingCircle = angular.element(iElm);
+        var parent = angular.element(iElm).parent();
+
+        var center = function(loading, parent) {          
+          var marginTop = (parent[0].offsetHeight - loading[0].offsetHeight) / 2;
+
+          loading.css({
+            "margin-top": marginTop + "px"
+          });          
+        };
+
+        var parentHeight = function() {
+          return parent[0].offsetHeight;
+        };
+
+        $scope.$watch(parentHeight, function() {
+          center(loadingCircle, parent);
+        });
+
+      }
+    };
+  }
+]);
+app.controller('AppController', [
   'logged', 
   "$state",
   function(logged, $state){
@@ -55339,7 +55568,7 @@ mainApp.controller('AppController', [
     }
   }
 ]);
-mainApp.controller('AccessController', [
+app.controller('AccessController', [
   "logged",
   "$state",
   function(logged, $state){
@@ -55348,7 +55577,7 @@ mainApp.controller('AccessController', [
     }
   }
 ]);
-angular.module("app").controller('AccessLoginController', [
+app.controller('AccessLoginController', [
   "TwitterService",
   "$state",
   function(TwitterService, $state){
@@ -55359,7 +55588,7 @@ angular.module("app").controller('AccessLoginController', [
 
   }
 ]);
-angular.module("app").controller('AccessLoginCallbackController', [
+app.controller('AccessLoginCallbackController', [
   'TwitterService',
   "$state",
   function(TwitterService, $state){
@@ -55373,7 +55602,7 @@ angular.module("app").controller('AccessLoginCallbackController', [
 
   }
 ]);
-angular.module("app").controller('TwitterTweetController', [
+app.controller('TwitterTweetController', [
   "$scope",
   "$state",
   function($scope, $state){
@@ -55390,5 +55619,58 @@ angular.module("app").controller('TwitterTweetController', [
       state.go("app.tweet.show");
     };    
 
+  }
+]);
+app.controller('TweetListController', [
+  "$scope",
+  "TwitterService",
+  function($scope, TwitterService){
+  
+    var that = this,
+        loadTweetsFunction = null;
+
+    that.listTitle = $scope.listTitle;
+    that.error = true;
+    that.loading = false;
+    that.hasNewTweets = false;    
+    that.tweets = [];
+
+    switch($scope.listSource) {
+      case "home_timeline":
+        loadTweetsFunction = function() {
+          var parameters = {};
+
+          that.loading = true;
+
+          if(that.tweets.length) {
+            parameters.max_id = that.tweets[that.tweets.length - 1].id;
+          }
+
+          TwitterService.getHomeTimeline(parameters)
+            .then(function(result) {
+              that.tweets = that.tweets.concat(result);
+              that.loading = false;
+            }, function(error) {
+              that.loading = false;
+            });
+
+        };
+        break;
+    }
+
+    TwitterService.initialize();
+
+    loadTweetsFunction();
+
+    $scope.loadNextTweets = function() {      
+      loadTweetsFunction();      
+    };
+
+  }
+]);
+
+app.controller('LoadingOverlayController', [
+  function(){
+  
   }
 ]);
