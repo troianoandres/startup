@@ -48,10 +48,17 @@ app.MovieCreateView = Backbone.View.extend({
 			movie.save();			
 			app.movieList.add(movie);
 			this.$form.trigger("reset");
+
+      app.router.navigate("index", true);
 		/*
 		} else {
 			movie = null;
 		}
 		*/
-	}
+	},
+  dispose: function() {    
+
+  }
+    
+
 });

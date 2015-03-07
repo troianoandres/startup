@@ -16,6 +16,7 @@ var Workspace = Backbone.Router.extend({
 	routes:{
 		'create': 	'createMovieView',
 		'edit/:id': 'editMovieView',
+    'delete/:id': 'deleteMovieView',
 		'*other': 	'index'
 	},
 	createMovieView: function() {
@@ -38,15 +39,25 @@ var Workspace = Backbone.Router.extend({
 			app.movieEditView.render();				
 		} else {
 
+      var movie = app.movieList.get(id);
+
 			// Redirect to index
 			this.navigate("", true);
 		}
-	}, 
+	},
+  deleteMovieView: function(id) {
+
+    var movie = app.movieList.get(id);
+    movie.destroy();
+
+    this.navigate("index", true);
+
+  },
 	index: function() {
 
 		// Creates a new MovieListView that shows all the movies into the browser localStorage
 		app.movieListView = new app.MovieListView({el: "#main-content .content-body"});
-		app.movieListView.render();		
+		app.movieListView.render();
 	}
 });
 
