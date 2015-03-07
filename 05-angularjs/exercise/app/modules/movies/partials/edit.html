@@ -1,0 +1,42 @@
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  
+  <div class="alert alert-info" ng-if="editCtrl.message">
+    {{ editCtrl.message }}
+  </div>
+
+  <div class="well">
+    <header>
+      <h4>
+        Edit movie form
+      </h4>
+    </header>
+
+    <div class="form-group">
+      <label>Movie IMDB</label>  
+      <input type="number" class="form-control" ng-model="editCtrl.movie.IMDB" required/>
+    </div>
+    
+    <div class="form-group">
+      <label>Movie title</label>  
+      <input type="text" class="form-control" ng-model="editCtrl.movie.title" required/>
+    </div>
+
+    <div class="form-group">
+      <label>Movie runtime (mins)</label>  
+      <input type="number" class="form-control" step="1" min="30" ng-model="editCtrl.movie.runtime" required/>
+    </div>
+
+    <div class="form-group">
+      <label>Movie plot</label>  
+      <textarea class="form-control" ng-model="editCtrl.movie.plot" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <button class="btn btn-success" ng-click="editCtrl.saveMovie();">
+        Save
+      </button>
+      <input type="reset" class="btn btn-danger" value="Clear form" />
+    </div>    
+
+  </div>
+</div>

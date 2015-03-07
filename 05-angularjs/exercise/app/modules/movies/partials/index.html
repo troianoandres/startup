@@ -1,0 +1,23 @@
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="movie in indexCtrl.movies">
+  <div class="well">
+    <header>
+      <h4>
+        {{ movie.title }}
+      </h4>
+      <small>
+        {{ movie.runtime }}
+      </small>
+    </header>
+    <p>
+      {{ movie.plot }}
+    </p>
+    <footer>
+      <a ui-sref="app.movies.edit({movieIMDB: {{ movie.imdb }} })">
+        <button class="btn btn-danger">Edit</button>
+      </a>
+      <button class="btn btn-danger" ng-click="indexCtrl.deleteMovie($index);">
+        Delete
+      </button>      
+    </footer>
+  </div>
+</div>
