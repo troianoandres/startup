@@ -35,6 +35,8 @@ app.MovieEditView = Backbone.View.extend({
 			genre: this.$form.find("#txt-movie-genre").val(),
 			runtime: this.$form.find("#txt-movie-runtime").val(), 
 			image: this.$form.find("#txt-movie-image").val()
-		});	
+		});
+
+    app.router.navigate("index", true);
 	}
 });
