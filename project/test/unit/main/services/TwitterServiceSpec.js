@@ -342,30 +342,1038 @@ describe("TwitterService tests", function() {
 
   });
 
-  xdescribe("TwitterService.getTweets method tests", function() {
+  describe("getHomeTimeline() tests", function() {
 
-    var $q, deferred;
+    var $q, deferred, $rootScope,
+        initialized = false,
+        connected = false,
+        throwMock = new Error("error"),
+        errorMock = new Error("error"),
+        OAuthObj = null;
+
 
     beforeEach(function() {
 
-      inject(function(_$q_) {
+      inject(function(_$q_, _$rootScope_) {
         $q = _$q_;
+        $rootScope = _$rootScope_;
       });
 
       deferred = $q.defer();
-      deferred.resolve("ok")
-      
 
-      TwitterService.twitterReference = {
-        get: function() { }
+      OAuthObj = {
+        get: function() {
+          if(throwMock){
+
+          } else {
+            if(errorMock) {
+              deferred.reject(errorMock);
+            } else {
+              deferred.resolve( { } );
+            }
+          }
+
+          return deferred.promise;
+        }
       };
 
-      spyOn(TwitterService.twitterReference, "get").and.returnValue(deferred.promise);
+      spyOn(TwitterService, "isInitialized").and.callFake(function() {
+        return initialized;
+      });
+      spyOn(TwitterService, "isConnected").and.callFake(function() {
+        return connected;
+      });      
+
+      spyOn(angular, "extend").and.callFake(function() {
+        return {};
+      });
+
+      spyOn(TwitterService, "generateURL").and.callFake(function() {
+        return "http://asd.com";
+      });
+
+      spyOn(TwitterService, "getReference").and.callFake(function() {
+        return OAuthObj;
+      });
+
+      spyOn(OAuthObj, "get").and.callThrough();
 
     });
 
+    it("getHomeTimeline must be defined", function() {
+      expect(TwitterService.getHomeTimeline).not.toBe(undefined);
+    });
+
+    it("getHomeTimeline must reject the promise with an error if TwitterService is not initialized", function() {
+
+      TwitterService
+        .getHomeTimeline()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be initialized"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(0);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+    });
+
+    it("getHomeTimeline must reject the promise with an error if TwitterService is initialized but not connected", function() {      
+
+      initialized = true;
+
+      TwitterService
+        .getHomeTimeline()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be connected"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+
+    });
+
+    it("getHomeTimeline must be called but get should throw error", function() {      
+
+      initialized = true;
+      connected = true;
+
+      TwitterService
+        .getHomeTimeline()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });
+
+    it("getHomeTimeline must be called but should reject the promise with an error on get", function() {      
+
+      initialized = true;
+      connected = true;
+      throwMock = false;
+
+      TwitterService
+        .getHomeTimeline()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });   
+
+    it("getHomeTimeline must be called but should resolve the promise with { } on get", function() {
+
+      initialized = true;
+      connected = true;
+      throwMock = false;
+      errorMock = false;
+
+      TwitterService
+        .getHomeTimeline()
+          .then(
+            function(result) {
+              expect(result).toBe( {} );
+            });
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });    
+   
   });
 
+  describe("getBlockedPeople() tests", function() {
 
+    var $q, deferred, $rootScope,
+        initialized = false,
+        connected = false,
+        throwMock = new Error("error"),
+        errorMock = new Error("error"),
+        OAuthObj = null;
+
+
+    beforeEach(function() {
+
+      inject(function(_$q_, _$rootScope_) {
+        $q = _$q_;
+        $rootScope = _$rootScope_;
+      });
+
+      deferred = $q.defer();
+
+      OAuthObj = {
+        get: function() {
+          if(throwMock){
+
+          } else {
+            if(errorMock) {
+              deferred.reject(errorMock);
+            } else {
+              deferred.resolve( { } );
+            }
+          }
+
+          return deferred.promise;
+        }
+      };
+
+      spyOn(TwitterService, "isInitialized").and.callFake(function() {
+        return initialized;
+      });
+      spyOn(TwitterService, "isConnected").and.callFake(function() {
+        return connected;
+      });      
+
+      spyOn(TwitterService, "generateURL").and.callFake(function() {
+        return "http://asd.com";
+      });
+
+      spyOn(TwitterService, "getReference").and.callFake(function() {
+        return OAuthObj;
+      });
+
+      spyOn(OAuthObj, "get").and.callThrough();
+
+    });
+
+    it("getBlockedPeople must be defined", function() {
+      expect(TwitterService.getBlockedPeople).not.toBe(undefined);
+    });
+
+    it("getBlockedPeople must reject the promise with an error if TwitterService is not initialized", function() {
+
+      TwitterService
+        .getBlockedPeople()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be initialized"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(0);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+    });
+
+    it("getBlockedPeople must reject the promise with an error if TwitterService is initialized but not connected", function() {      
+
+      initialized = true;
+
+      TwitterService
+        .getBlockedPeople()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be connected"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+
+    });
+
+    it("getBlockedPeople must be called but get should throw error", function() {      
+
+      initialized = true;
+      connected = true;
+
+      TwitterService
+        .getBlockedPeople()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });
+
+    it("getBlockedPeople must be called but should reject the promise with an error on get", function() {      
+
+      initialized = true;
+      connected = true;
+      throwMock = false;
+
+      TwitterService
+        .getBlockedPeople()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });   
+
+    it("getBlockedPeople must be called but should resolve the promise with { } on get", function() {
+
+      initialized = true;
+      connected = true;
+      throwMock = false;
+      errorMock = false;
+
+      TwitterService
+        .getHomeTimeline()
+          .then(
+            function(result) {
+              expect(result).toBe( {} );
+            });
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });    
+   
+  });
+
+  describe("getStatus() tests", function() {
+
+    var $q, deferred, $rootScope,
+        initialized = false,
+        connected = false,
+        throwMock = new Error("error"),
+        errorMock = new Error("error"),
+        OAuthObj = null,
+        statusID = undefined;
+
+
+    beforeEach(function() {
+
+      inject(function(_$q_, _$rootScope_) {
+        $q = _$q_;
+        $rootScope = _$rootScope_;
+      });
+
+      deferred = $q.defer();
+
+      OAuthObj = {
+        get: function() {
+          if(throwMock){
+
+          } else {
+            if(errorMock) {
+              deferred.reject(errorMock);
+            } else {
+              deferred.resolve( { } );
+            }
+          }
+
+          return deferred.promise;
+        }
+      };
+
+      spyOn(TwitterService, "isInitialized").and.callFake(function() {
+        return initialized;
+      });
+      spyOn(TwitterService, "isConnected").and.callFake(function() {
+        return connected;
+      });      
+
+      spyOn(TwitterService, "generateURL").and.callFake(function() {
+        return "http://asd.com";
+      });
+
+      spyOn(TwitterService, "getReference").and.callFake(function() {
+        return OAuthObj;
+      });
+
+      spyOn(OAuthObj, "get").and.callThrough();
+
+    });
+
+    it("getStatus must be defined", function() {
+      expect(TwitterService.getStatus).not.toBe(undefined);
+    });
+
+
+    it("getStatus must reject the promise with an error if TwitterService is not initialized", function() {
+
+      TwitterService
+        .getStatus()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be initialized"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(0);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+    });
+
+    it("getStatus must reject the promise with an error if TwitterService is initialized but not connected", function() {      
+
+      initialized = true;
+
+      TwitterService
+        .getStatus()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be connected"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+
+    });
+
+    it("getStatus should reject the promise if no statusID provided", function() {
+
+      initialized = true;
+      connected = true;
+
+      TwitterService
+        .getStatus(statusID)
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("statusID must be defined"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+    });
+
+
+    it("getStatus must be called but get should throw error", function() {      
+
+      initialized = true;
+      connected = true;
+      statusID = "200";
+
+      TwitterService
+        .getStatus(statusID)
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });
+
+    it("getStatus must be called but should reject the promise with an error on get", function() {      
+
+      initialized = true;
+      connected = true;
+      statusID = "200";
+      throwMock = false;
+
+      TwitterService
+        .getStatus(statusID)
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });   
+
+    it("getStatus must be called but should resolve the promise with { } on get", function() {
+
+      initialized = true;
+      connected = true;
+      statusID = "200";
+      throwMock = false;
+      errorMock = false;
+
+      TwitterService
+        .getHomeTimeline()
+          .then(
+            function(result) {
+              expect(result).toBe( {} );
+            });
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });    
+   
+  });
+
+  describe("getClosestWoeID() tests", function() {
+
+    var $q, deferred, $rootScope,
+        initialized = false,
+        connected = false,
+        throwMock = new Error("error"),
+        errorMock = new Error("error"),
+        OAuthObj = null,
+        geolocationError = new Error("error"),
+        GeolocationService = null;
+
+
+    beforeEach(function() {
+
+      inject(function(_$q_, _$rootScope_, _GeolocationService_) {
+        $q = _$q_;
+        $rootScope = _$rootScope_;
+        GeolocationService = _GeolocationService_;
+      });
+
+      deferred = $q.defer();
+
+      OAuthObj = {
+        get: function() {
+          if(throwMock){
+
+          } else {
+            if(errorMock) {
+              deferred.reject(errorMock);
+            } else {
+              deferred.resolve( { } );
+            }
+          }
+
+          return deferred.promise;
+        }
+      };
+
+      spyOn(TwitterService, "isInitialized").and.callFake(function() {
+        return initialized;
+      });
+      spyOn(TwitterService, "isConnected").and.callFake(function() {
+        return connected;
+      });      
+
+      spyOn(angular, "extend").and.callFake(function() {
+        return {};
+      });
+
+      spyOn(TwitterService, "generateURL").and.callFake(function() {
+        return "http://asd.com";
+      });
+
+      spyOn(TwitterService, "getReference").and.callFake(function() {
+        return OAuthObj;
+      });
+
+      spyOn(OAuthObj, "get").and.callThrough();
+
+      spyOn(GeolocationService, "getLocation").and.callFake(function() {
+        var geolocationDeferred = $q.defer();
+        if(geolocationError) {
+          geolocationDeferred.reject(geolocationError);
+        } else {
+          geolocationDeferred.resolve( {} );
+        }
+        return geolocationDeferred.promise;
+      });
+
+    });
+
+    it("getClosestWoeID must be defined", function() {
+      expect(TwitterService.getClosestWoeID).not.toBe(undefined);
+    });
+
+    it("getClosestWoeID must reject the promise with an error if TwitterService is not initialized", function() {
+
+      TwitterService
+        .getClosestWoeID()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be initialized"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(0);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);      
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+      expect(GeolocationService.getLocation.calls.count()).toBe(0);
+    });
+
+    it("getClosestWoeID must reject the promise with an error if TwitterService is initialized but not connected", function() {      
+
+      initialized = true;
+
+      TwitterService
+        .getClosestWoeID()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be connected"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+      expect(GeolocationService.getLocation.calls.count()).toBe(0);
+
+    });
+
+    it("getClosestWoeID must reject the promise because geolocation throws error", function() {
+
+      initialized = true;
+      connected = true;
+
+      TwitterService
+        .getClosestWoeID()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(geolocationError);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+      expect(GeolocationService.getLocation.calls.count()).toBe(1);
+
+    });
+
+    xit("getClosestWoeID must be called but get should throw error when calling OAuthObj.get", function() {      
+
+      initialized = true;
+      connected = true;
+      geolocationError = false;
+
+      TwitterService
+        .getClosestWoeID()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(throwMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+      expect(GeolocationService.getLocation.calls.count()).toBe(1);
+
+    });
+
+    xit("getClosestWoeID must be called but should reject the promise with an error on get", function() {      
+
+      initialized = true;
+      connected = true;
+      geolocationError = false;
+      throwMock = false;
+
+      TwitterService
+        .getClosestWoeID()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+      expect(GeolocationService.getLocation.calls.count()).toBe(1);
+
+    });   
+
+    xit("getClosestWoeID must be called but should resolve the promise with { } on get", function() {
+
+      initialized = true;
+      connected = true;
+      geolocationError = false;
+      throwMock = false;
+      errorMock = false;
+
+
+      TwitterService
+        .getClosestWoeID()
+          .then(
+            function(result) {
+              expect(result).toBe( {} );
+            });
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+      expect(GeolocationService.getLocation.calls.count()).toBe(1);
+
+    });    
+   
+  });
+
+  xdescribe("getTweetsByQuery() tests", function() {
+
+    var $q, deferred, $rootScope,
+        initialized = false,
+        connected = false,
+        throwMock = new Error("error"),
+        errorMock = new Error("error"),
+        OAuthObj = null,
+        parameters = null;
+
+
+    beforeEach(function() {
+
+      inject(function(_$q_, _$rootScope_) {
+        $q = _$q_;
+        $rootScope = _$rootScope_;
+      });
+
+      deferred = $q.defer();
+
+      OAuthObj = {
+        get: function() {
+          if(throwMock){
+
+          } else {
+            if(errorMock) {
+              deferred.reject(errorMock);
+            } else {
+              deferred.resolve( { } );
+            }
+          }
+
+          return deferred.promise;
+        }
+      };
+
+      spyOn(TwitterService, "isInitialized").and.callFake(function() {
+        return initialized;
+      });
+      spyOn(TwitterService, "isConnected").and.callFake(function() {
+        return connected;
+      });      
+
+      spyOn(angular, "extend").and.callFake(function() {
+        return {};
+      });
+
+      spyOn(TwitterService, "generateURL").and.callFake(function() {
+        return "http://asd.com";
+      });
+
+      spyOn(TwitterService, "getReference").and.callFake(function() {
+        return OAuthObj;
+      });
+
+      spyOn(OAuthObj, "get").and.callThrough();
+
+    });
+
+    it("getTweetsByQuery must be defined", function() {
+      expect(TwitterService.getTweetsByQuery).not.toBe(undefined);
+    });
+
+    it("getTweetsByQuery must reject the promise with an error if TwitterService is not initialized", function() {
+
+      TwitterService
+        .getTweetsByQuery()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be initialized"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(0);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+    });
+
+    it("getTweetsByQuery must reject the promise with an error if TwitterService is initialized but not connected", function() {      
+
+      initialized = true;
+
+      TwitterService
+        .getTweetsByQuery()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("TwitterService must be connected"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+
+    });
+
+    it("getTweetsByQuery must reject the promise with an error because parameters not defined", function() {      
+
+      initialized = true;
+
+      TwitterService
+        .getTweetsByQuery()
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("parameters must be defined"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+
+    });
+
+    it("getTweetsByQuery must reject the promise with an error because parameters.q not defined", function() {      
+
+      initialized = true;
+      parameters =  {};
+
+
+      TwitterService
+        .getTweetsByQuery(parameters)
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(new Error("parameters.q must be defined"));
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(0);
+      expect(TwitterService.getReference.calls.count()).toBe(0);
+      expect(angular.extend.calls.count()).toBe(0);
+      expect(OAuthObj.get.calls.count()).toBe(0);
+
+    });     
+
+    it("getTweetsByQuery must be called but get should throw error", function() {      
+
+      initialized = true;
+      connected = true;
+      parameters = {
+        q: "%search"
+      };
+
+      TwitterService
+        .getTweetsByQuery(parameters)
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });
+
+    it("getTweetsByQuery must be called but should reject the promise with an error on get", function() {      
+
+      initialized = true;
+      connected = true;
+      parameters = {
+        q: "%search"
+      };
+      throwMock = false;
+
+      TwitterService
+        .getTweetsByQuery(parameters)
+          .then(
+            function(result) {
+
+            },
+            function(error) {
+              expect(error).toBe(errorMock);
+            }
+          );
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });   
+
+    it("getTweetsByQuery must be called but should resolve the promise with { } on get", function() {
+
+      initialized = true;
+      connected = true;
+      parameters = {
+        q: "%search"
+      };
+      throwMock = false;
+      errorMock = false;
+
+      TwitterService
+        .getTweetsByQuery(parameters)
+          .then(
+            function(result) {
+              expect(result).toBe( {} );
+            });
+
+      expect(TwitterService.isInitialized.calls.count()).toBe(1);
+      expect(TwitterService.isConnected.calls.count()).toBe(1);
+      expect(TwitterService.generateURL.calls.count()).toBe(1);
+      expect(TwitterService.getReference.calls.count()).toBe(1);
+      expect(angular.extend.calls.count()).toBe(1);
+      expect(OAuthObj.get.calls.count()).toBe(1);
+
+    });    
+   
+  });
 
 });

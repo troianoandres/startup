@@ -41,11 +41,15 @@ module.exports = function(grunt) {
           "./app/libs/angular/angular.js",
           "./app/libs/angular-ui-router/release/angular-ui-router.js",
           "./app/libs/angular-cookies/angular-cookies.js",
+          "./app/libs/angular-sanitize/angular-sanitize.js",
           "./app/libs/jquery/dist/jquery.js",
           "./app/js/jquery-transport-fix.js",
           "./app/libs/oauth-js/dist/oauth.js",
           "./app/libs/bootstrap/dist/js/bootstrap.js",
           "./app/libs/angular-bootstrap/ui-bootstrap-tpls.js",
+
+          "./app/modules/statuses/script.js",
+          "./app/modules/statuses/controllers/StatusesDetailsController.js",
           
           "./app/modules/home/script.js",
           "./app/modules/home/controllers/HomeIndexController.js",
@@ -57,10 +61,16 @@ module.exports = function(grunt) {
           "./app/modules/people/directives/PeopleList.js",
 
           "./app/modules/trends/script.js",
-          "./app/modules/trends/controllers/HomeController.js",        
+          "./app/modules/trends/controllers/TrendsIndexController.js",
+          "./app/modules/trends/controllers/TrendsListController.js",
+          "./app/modules/trends/controllers/TrendTimelineController.js",
+          "./app/modules/trends/controllers/TrendController.js",
+          "./app/modules/trends/directives/TrendsList.js",
+          "./app/modules/trends/directives/Trend.js",
           
           "./app/modules/main/script.js",
           "./app/modules/main/services/TwitterService.js",
+          "./app/modules/main/services/GeolocationService.js",
           "./app/modules/main/filters/TweetLinkFilter.js",
           "./app/modules/main/directives/Tweet.js",
           "./app/modules/main/directives/TweetList.js",
@@ -70,7 +80,7 @@ module.exports = function(grunt) {
           "./app/modules/main/controllers/AccessController.js",
           "./app/modules/main/controllers/AccessLoginController.js",
           "./app/modules/main/controllers/AccessLoginCallbackController.js",
-          "./app/modules/main/controllers/TwitterTweetController.js",
+          "./app/modules/main/controllers/TweetController.js",
           "./app/modules/main/controllers/TweetListController.js",
           "./app/modules/main/controllers/LoadingOverlayController.js"
         ],

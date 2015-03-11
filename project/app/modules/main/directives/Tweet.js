@@ -7,7 +7,7 @@ app.directive('tweet', [
       scope: {
         tweet: "=ngTweet"
       },
-      controller: "TwitterTweetController as tweetCtrl",
+      controller: "TweetController as tweetCtrl",
       // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
       restrict: 'A',
       // template: '',

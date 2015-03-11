@@ -1,28 +1,21 @@
-<div class="tweet-list-container">
+<div class="item-list-container pd-sm-15" ng-init="tweetListCtrl.initialize();">
   
-  <div class="tweet-list">
+  <div class="item-list">
     <!-- Tweet list header -->
-    <div class="tweet-list-header text-center">
-      <h4>{{ tweetListCtrl.listTitle }}</h4>
+    <div class="item-list-header text-center">
+      <h4>{{ tweetListCtrl.directive.title }}</h4>
     </div>
     <!-- Tweet list header -->
-    <div class="tweet-list-body">
-      
+    <div class="item-list-body">    
 
-      <!-- Tweet list error message -->
-      <div ng-if="timeline.error" class="tweet-list-message text-center">
-        
-      </div>
-      <!-- Tweet list error message -->
-
-      <div ng-if="!tweetListCtrl.tweets" class="tweet-list-message text-center">
+      <div ng-if="!tweetListCtrl.directive.tweets" class="item-list-message text-center">
         Your timeline is currently empty<br>
         Follow people and topics you find interesting to see their Tweets in your timeline.
       </div>
-      <div tweet ng-tweet="tweet" ng-repeat="tweet in tweetListCtrl.tweets"></div>    
+      <div tweet ng-tweet="tweet" ng-repeat="tweet in tweetListCtrl.directive.tweets"></div>    
     </div>
 
-    <div loading-overlay ng-if="tweetListCtrl.loading"></div>
+    <div loading-overlay ng-if="tweetListCtrl.directive.loading"></div>
   </div>
 
 </div>

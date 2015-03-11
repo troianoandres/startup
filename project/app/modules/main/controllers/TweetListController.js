@@ -3,44 +3,81 @@ app.controller('TweetListController', [
   "TwitterService",
   function($scope, TwitterService){
   
-    var that = this,
-        loadTweetsFunction = null;
+    var that = this;
+    
+    this.directive = {
+      title: $scope.title,
+      source: $scope.source,
+      query: $scope.query,
+      error: false,
+      loading: false,
+      tweets: []
+    };
 
-    that.listTitle = $scope.listTitle;
-    that.error = true;
-    that.loading = false;
-    that.hasNewTweets = false;    
-    that.tweets = [];
+    this.loadHomeTimeline = function() {
+      var parameters = {};
 
-    switch($scope.listSource) {
-      case "home_timeline":
-        loadTweetsFunction = function() {
-          var parameters = {};
+      that.directive.loading = true;
 
-          that.loading = true;
+      if(that.directive.tweets.length) {
+        parameters.max_id = that.directive.tweets[that.directive.tweets.length - 1].id;
+      }
 
-          if(that.tweets.length) {
-            parameters.max_id = that.tweets[that.tweets.length - 1].id;
+      TwitterService.getHomeTimeline(parameters)
+        .then(
+          function(result) {
+            that.directive.tweets = that.directive.tweets.concat(result);
+          }, function(error) {
+            console.log(error);
           }
+        )
+        .finally(function() {
+          that.directive.loading = false;
+        });
+    };
 
-          TwitterService.getHomeTimeline(parameters)
-            .then(function(result) {
-              that.tweets = that.tweets.concat(result);
-              that.loading = false;
-            }, function(error) {
-              that.loading = false;
-            });
+    this.loadTrendTimeline = function() {
+      var parameters = {
+        q: that.directive.query
+      };
 
-        };
-        break;
-    }
+      that.directive.loading = true;
 
-    TwitterService.initialize();
+      if(that.directive.tweets.length) {
+        parameters.max_id = that.directive.tweets[that.directive.tweets.length - 1].id;
+      }
 
-    loadTweetsFunction();
+      TwitterService.getTweetsByQuery(parameters)
+        .then(
+          function(result) {
+            that.directive.tweets = that.directive.tweets.concat(result.statuses);
+          }, function(error) {
+            console.log(error);
+          }
+        )
+        .finally(function() {
+          that.directive.loading = false;
+        });
+    };
 
-    $scope.loadNextTweets = function() {      
-      loadTweetsFunction();      
+    this.initialize = function() {
+
+      TwitterService.initialize();
+
+      that.loadTweets();
+    }; 
+
+    this.loadTweets = function() {
+      
+      switch(that.directive.source) {
+        case "home_timeline":
+          that.loadHomeTimeline();
+          break;
+        case "trend_timeline": 
+          that.loadTrendTimeline();
+          break;
+      }
+
     };
 
   }

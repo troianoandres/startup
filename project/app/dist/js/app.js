@@ -30618,6 +30618,675 @@ angular.module('ngCookies', ['ng']).
 
 })(window, window.angular);
 
+/**
+ * @license AngularJS v1.3.14
+ * (c) 2010-2014 Google, Inc. http://angularjs.org
+ * License: MIT
+ */
+(function(window, angular, undefined) {'use strict';
+
+var $sanitizeMinErr = angular.$$minErr('$sanitize');
+
+/**
+ * @ngdoc module
+ * @name ngSanitize
+ * @description
+ *
+ * # ngSanitize
+ *
+ * The `ngSanitize` module provides functionality to sanitize HTML.
+ *
+ *
+ * <div doc-module-components="ngSanitize"></div>
+ *
+ * See {@link ngSanitize.$sanitize `$sanitize`} for usage.
+ */
+
+/*
+ * HTML Parser By Misko Hevery (misko@hevery.com)
+ * based on:  HTML Parser By John Resig (ejohn.org)
+ * Original code by Erik Arvidsson, Mozilla Public License
+ * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
+ *
+ * // Use like so:
+ * htmlParser(htmlString, {
+ *     start: function(tag, attrs, unary) {},
+ *     end: function(tag) {},
+ *     chars: function(text) {},
+ *     comment: function(text) {}
+ * });
+ *
+ */
+
+
+/**
+ * @ngdoc service
+ * @name $sanitize
+ * @kind function
+ *
+ * @description
+ *   The input is sanitized by parsing the HTML into tokens. All safe tokens (from a whitelist) are
+ *   then serialized back to properly escaped html string. This means that no unsafe input can make
+ *   it into the returned string, however, since our parser is more strict than a typical browser
+ *   parser, it's possible that some obscure input, which would be recognized as valid HTML by a
+ *   browser, won't make it through the sanitizer. The input may also contain SVG markup.
+ *   The whitelist is configured using the functions `aHrefSanitizationWhitelist` and
+ *   `imgSrcSanitizationWhitelist` of {@link ng.$compileProvider `$compileProvider`}.
+ *
+ * @param {string} html HTML input.
+ * @returns {string} Sanitized HTML.
+ *
+ * @example
+   <example module="sanitizeExample" deps="angular-sanitize.js">
+   <file name="index.html">
+     <script>
+         angular.module('sanitizeExample', ['ngSanitize'])
+           .controller('ExampleController', ['$scope', '$sce', function($scope, $sce) {
+             $scope.snippet =
+               '<p style="color:blue">an html\n' +
+               '<em onmouseover="this.textContent=\'PWN3D!\'">click here</em>\n' +
+               'snippet</p>';
+             $scope.deliberatelyTrustDangerousSnippet = function() {
+               return $sce.trustAsHtml($scope.snippet);
+             };
+           }]);
+     </script>
+     <div ng-controller="ExampleController">
+        Snippet: <textarea ng-model="snippet" cols="60" rows="3"></textarea>
+       <table>
+         <tr>
+           <td>Directive</td>
+           <td>How</td>
+           <td>Source</td>
+           <td>Rendered</td>
+         </tr>
+         <tr id="bind-html-with-sanitize">
+           <td>ng-bind-html</td>
+           <td>Automatically uses $sanitize</td>
+           <td><pre>&lt;div ng-bind-html="snippet"&gt;<br/>&lt;/div&gt;</pre></td>
+           <td><div ng-bind-html="snippet"></div></td>
+         </tr>
+         <tr id="bind-html-with-trust">
+           <td>ng-bind-html</td>
+           <td>Bypass $sanitize by explicitly trusting the dangerous value</td>
+           <td>
+           <pre>&lt;div ng-bind-html="deliberatelyTrustDangerousSnippet()"&gt;
+&lt;/div&gt;</pre>
+           </td>
+           <td><div ng-bind-html="deliberatelyTrustDangerousSnippet()"></div></td>
+         </tr>
+         <tr id="bind-default">
+           <td>ng-bind</td>
+           <td>Automatically escapes</td>
+           <td><pre>&lt;div ng-bind="snippet"&gt;<br/>&lt;/div&gt;</pre></td>
+           <td><div ng-bind="snippet"></div></td>
+         </tr>
+       </table>
+       </div>
+   </file>
+   <file name="protractor.js" type="protractor">
+     it('should sanitize the html snippet by default', function() {
+       expect(element(by.css('#bind-html-with-sanitize div')).getInnerHtml()).
+         toBe('<p>an html\n<em>click here</em>\nsnippet</p>');
+     });
+
+     it('should inline raw snippet if bound to a trusted value', function() {
+       expect(element(by.css('#bind-html-with-trust div')).getInnerHtml()).
+         toBe("<p style=\"color:blue\">an html\n" +
+              "<em onmouseover=\"this.textContent='PWN3D!'\">click here</em>\n" +
+              "snippet</p>");
+     });
+
+     it('should escape snippet without any filter', function() {
+       expect(element(by.css('#bind-default div')).getInnerHtml()).
+         toBe("&lt;p style=\"color:blue\"&gt;an html\n" +
+              "&lt;em onmouseover=\"this.textContent='PWN3D!'\"&gt;click here&lt;/em&gt;\n" +
+              "snippet&lt;/p&gt;");
+     });
+
+     it('should update', function() {
+       element(by.model('snippet')).clear();
+       element(by.model('snippet')).sendKeys('new <b onclick="alert(1)">text</b>');
+       expect(element(by.css('#bind-html-with-sanitize div')).getInnerHtml()).
+         toBe('new <b>text</b>');
+       expect(element(by.css('#bind-html-with-trust div')).getInnerHtml()).toBe(
+         'new <b onclick="alert(1)">text</b>');
+       expect(element(by.css('#bind-default div')).getInnerHtml()).toBe(
+         "new &lt;b onclick=\"alert(1)\"&gt;text&lt;/b&gt;");
+     });
+   </file>
+   </example>
+ */
+function $SanitizeProvider() {
+  this.$get = ['$$sanitizeUri', function($$sanitizeUri) {
+    return function(html) {
+      var buf = [];
+      htmlParser(html, htmlSanitizeWriter(buf, function(uri, isImage) {
+        return !/^unsafe/.test($$sanitizeUri(uri, isImage));
+      }));
+      return buf.join('');
+    };
+  }];
+}
+
+function sanitizeText(chars) {
+  var buf = [];
+  var writer = htmlSanitizeWriter(buf, angular.noop);
+  writer.chars(chars);
+  return buf.join('');
+}
+
+
+// Regular Expressions for parsing tags and attributes
+var START_TAG_REGEXP =
+       /^<((?:[a-zA-Z])[\w:-]*)((?:\s+[\w:-]+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)\s*(>?)/,
+  END_TAG_REGEXP = /^<\/\s*([\w:-]+)[^>]*>/,
+  ATTR_REGEXP = /([\w:-]+)(?:\s*=\s*(?:(?:"((?:[^"])*)")|(?:'((?:[^'])*)')|([^>\s]+)))?/g,
+  BEGIN_TAG_REGEXP = /^</,
+  BEGING_END_TAGE_REGEXP = /^<\//,
+  COMMENT_REGEXP = /<!--(.*?)-->/g,
+  DOCTYPE_REGEXP = /<!DOCTYPE([^>]*?)>/i,
+  CDATA_REGEXP = /<!\[CDATA\[(.*?)]]>/g,
+  SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g,
+  // Match everything outside of normal chars and " (quote character)
+  NON_ALPHANUMERIC_REGEXP = /([^\#-~| |!])/g;
+
+
+// Good source of info about elements and attributes
+// http://dev.w3.org/html5/spec/Overview.html#semantics
+// http://simon.html5.org/html-elements
+
+// Safe Void Elements - HTML5
+// http://dev.w3.org/html5/spec/Overview.html#void-elements
+var voidElements = makeMap("area,br,col,hr,img,wbr");
+
+// Elements that you can, intentionally, leave open (and which close themselves)
+// http://dev.w3.org/html5/spec/Overview.html#optional-tags
+var optionalEndTagBlockElements = makeMap("colgroup,dd,dt,li,p,tbody,td,tfoot,th,thead,tr"),
+    optionalEndTagInlineElements = makeMap("rp,rt"),
+    optionalEndTagElements = angular.extend({},
+                                            optionalEndTagInlineElements,
+                                            optionalEndTagBlockElements);
+
+// Safe Block Elements - HTML5
+var blockElements = angular.extend({}, optionalEndTagBlockElements, makeMap("address,article," +
+        "aside,blockquote,caption,center,del,dir,div,dl,figure,figcaption,footer,h1,h2,h3,h4,h5," +
+        "h6,header,hgroup,hr,ins,map,menu,nav,ol,pre,script,section,table,ul"));
+
+// Inline Elements - HTML5
+var inlineElements = angular.extend({}, optionalEndTagInlineElements, makeMap("a,abbr,acronym,b," +
+        "bdi,bdo,big,br,cite,code,del,dfn,em,font,i,img,ins,kbd,label,map,mark,q,ruby,rp,rt,s," +
+        "samp,small,span,strike,strong,sub,sup,time,tt,u,var"));
+
+// SVG Elements
+// https://wiki.whatwg.org/wiki/Sanitization_rules#svg_Elements
+var svgElements = makeMap("animate,animateColor,animateMotion,animateTransform,circle,defs," +
+        "desc,ellipse,font-face,font-face-name,font-face-src,g,glyph,hkern,image,linearGradient," +
+        "line,marker,metadata,missing-glyph,mpath,path,polygon,polyline,radialGradient,rect,set," +
+        "stop,svg,switch,text,title,tspan,use");
+
+// Special Elements (can contain anything)
+var specialElements = makeMap("script,style");
+
+var validElements = angular.extend({},
+                                   voidElements,
+                                   blockElements,
+                                   inlineElements,
+                                   optionalEndTagElements,
+                                   svgElements);
+
+//Attributes that have href and hence need to be sanitized
+var uriAttrs = makeMap("background,cite,href,longdesc,src,usemap,xlink:href");
+
+var htmlAttrs = makeMap('abbr,align,alt,axis,bgcolor,border,cellpadding,cellspacing,class,clear,' +
+    'color,cols,colspan,compact,coords,dir,face,headers,height,hreflang,hspace,' +
+    'ismap,lang,language,nohref,nowrap,rel,rev,rows,rowspan,rules,' +
+    'scope,scrolling,shape,size,span,start,summary,target,title,type,' +
+    'valign,value,vspace,width');
+
+// SVG attributes (without "id" and "name" attributes)
+// https://wiki.whatwg.org/wiki/Sanitization_rules#svg_Attributes
+var svgAttrs = makeMap('accent-height,accumulate,additive,alphabetic,arabic-form,ascent,' +
+    'attributeName,attributeType,baseProfile,bbox,begin,by,calcMode,cap-height,class,color,' +
+    'color-rendering,content,cx,cy,d,dx,dy,descent,display,dur,end,fill,fill-rule,font-family,' +
+    'font-size,font-stretch,font-style,font-variant,font-weight,from,fx,fy,g1,g2,glyph-name,' +
+    'gradientUnits,hanging,height,horiz-adv-x,horiz-origin-x,ideographic,k,keyPoints,' +
+    'keySplines,keyTimes,lang,marker-end,marker-mid,marker-start,markerHeight,markerUnits,' +
+    'markerWidth,mathematical,max,min,offset,opacity,orient,origin,overline-position,' +
+    'overline-thickness,panose-1,path,pathLength,points,preserveAspectRatio,r,refX,refY,' +
+    'repeatCount,repeatDur,requiredExtensions,requiredFeatures,restart,rotate,rx,ry,slope,stemh,' +
+    'stemv,stop-color,stop-opacity,strikethrough-position,strikethrough-thickness,stroke,' +
+    'stroke-dasharray,stroke-dashoffset,stroke-linecap,stroke-linejoin,stroke-miterlimit,' +
+    'stroke-opacity,stroke-width,systemLanguage,target,text-anchor,to,transform,type,u1,u2,' +
+    'underline-position,underline-thickness,unicode,unicode-range,units-per-em,values,version,' +
+    'viewBox,visibility,width,widths,x,x-height,x1,x2,xlink:actuate,xlink:arcrole,xlink:role,' +
+    'xlink:show,xlink:title,xlink:type,xml:base,xml:lang,xml:space,xmlns,xmlns:xlink,y,y1,y2,' +
+    'zoomAndPan');
+
+var validAttrs = angular.extend({},
+                                uriAttrs,
+                                svgAttrs,
+                                htmlAttrs);
+
+function makeMap(str) {
+  var obj = {}, items = str.split(','), i;
+  for (i = 0; i < items.length; i++) obj[items[i]] = true;
+  return obj;
+}
+
+
+/**
+ * @example
+ * htmlParser(htmlString, {
+ *     start: function(tag, attrs, unary) {},
+ *     end: function(tag) {},
+ *     chars: function(text) {},
+ *     comment: function(text) {}
+ * });
+ *
+ * @param {string} html string
+ * @param {object} handler
+ */
+function htmlParser(html, handler) {
+  if (typeof html !== 'string') {
+    if (html === null || typeof html === 'undefined') {
+      html = '';
+    } else {
+      html = '' + html;
+    }
+  }
+  var index, chars, match, stack = [], last = html, text;
+  stack.last = function() { return stack[stack.length - 1]; };
+
+  while (html) {
+    text = '';
+    chars = true;
+
+    // Make sure we're not in a script or style element
+    if (!stack.last() || !specialElements[stack.last()]) {
+
+      // Comment
+      if (html.indexOf("<!--") === 0) {
+        // comments containing -- are not allowed unless they terminate the comment
+        index = html.indexOf("--", 4);
+
+        if (index >= 0 && html.lastIndexOf("-->", index) === index) {
+          if (handler.comment) handler.comment(html.substring(4, index));
+          html = html.substring(index + 3);
+          chars = false;
+        }
+      // DOCTYPE
+      } else if (DOCTYPE_REGEXP.test(html)) {
+        match = html.match(DOCTYPE_REGEXP);
+
+        if (match) {
+          html = html.replace(match[0], '');
+          chars = false;
+        }
+      // end tag
+      } else if (BEGING_END_TAGE_REGEXP.test(html)) {
+        match = html.match(END_TAG_REGEXP);
+
+        if (match) {
+          html = html.substring(match[0].length);
+          match[0].replace(END_TAG_REGEXP, parseEndTag);
+          chars = false;
+        }
+
+      // start tag
+      } else if (BEGIN_TAG_REGEXP.test(html)) {
+        match = html.match(START_TAG_REGEXP);
+
+        if (match) {
+          // We only have a valid start-tag if there is a '>'.
+          if (match[4]) {
+            html = html.substring(match[0].length);
+            match[0].replace(START_TAG_REGEXP, parseStartTag);
+          }
+          chars = false;
+        } else {
+          // no ending tag found --- this piece should be encoded as an entity.
+          text += '<';
+          html = html.substring(1);
+        }
+      }
+
+      if (chars) {
+        index = html.indexOf("<");
+
+        text += index < 0 ? html : html.substring(0, index);
+        html = index < 0 ? "" : html.substring(index);
+
+        if (handler.chars) handler.chars(decodeEntities(text));
+      }
+
+    } else {
+      // IE versions 9 and 10 do not understand the regex '[^]', so using a workaround with [\W\w].
+      html = html.replace(new RegExp("([\\W\\w]*)<\\s*\\/\\s*" + stack.last() + "[^>]*>", 'i'),
+        function(all, text) {
+          text = text.replace(COMMENT_REGEXP, "$1").replace(CDATA_REGEXP, "$1");
+
+          if (handler.chars) handler.chars(decodeEntities(text));
+
+          return "";
+      });
+
+      parseEndTag("", stack.last());
+    }
+
+    if (html == last) {
+      throw $sanitizeMinErr('badparse', "The sanitizer was unable to parse the following block " +
+                                        "of html: {0}", html);
+    }
+    last = html;
+  }
+
+  // Clean up any remaining tags
+  parseEndTag();
+
+  function parseStartTag(tag, tagName, rest, unary) {
+    tagName = angular.lowercase(tagName);
+    if (blockElements[tagName]) {
+      while (stack.last() && inlineElements[stack.last()]) {
+        parseEndTag("", stack.last());
+      }
+    }
+
+    if (optionalEndTagElements[tagName] && stack.last() == tagName) {
+      parseEndTag("", tagName);
+    }
+
+    unary = voidElements[tagName] || !!unary;
+
+    if (!unary)
+      stack.push(tagName);
+
+    var attrs = {};
+
+    rest.replace(ATTR_REGEXP,
+      function(match, name, doubleQuotedValue, singleQuotedValue, unquotedValue) {
+        var value = doubleQuotedValue
+          || singleQuotedValue
+          || unquotedValue
+          || '';
+
+        attrs[name] = decodeEntities(value);
+    });
+    if (handler.start) handler.start(tagName, attrs, unary);
+  }
+
+  function parseEndTag(tag, tagName) {
+    var pos = 0, i;
+    tagName = angular.lowercase(tagName);
+    if (tagName)
+      // Find the closest opened tag of the same type
+      for (pos = stack.length - 1; pos >= 0; pos--)
+        if (stack[pos] == tagName)
+          break;
+
+    if (pos >= 0) {
+      // Close all the open elements, up the stack
+      for (i = stack.length - 1; i >= pos; i--)
+        if (handler.end) handler.end(stack[i]);
+
+      // Remove the open elements from the stack
+      stack.length = pos;
+    }
+  }
+}
+
+var hiddenPre=document.createElement("pre");
+/**
+ * decodes all entities into regular string
+ * @param value
+ * @returns {string} A string with decoded entities.
+ */
+function decodeEntities(value) {
+  if (!value) { return ''; }
+
+  hiddenPre.innerHTML = value.replace(/</g,"&lt;");
+  // innerText depends on styling as it doesn't display hidden elements.
+  // Therefore, it's better to use textContent not to cause unnecessary reflows.
+  return hiddenPre.textContent;
+}
+
+/**
+ * Escapes all potentially dangerous characters, so that the
+ * resulting string can be safely inserted into attribute or
+ * element text.
+ * @param value
+ * @returns {string} escaped text
+ */
+function encodeEntities(value) {
+  return value.
+    replace(/&/g, '&amp;').
+    replace(SURROGATE_PAIR_REGEXP, function(value) {
+      var hi = value.charCodeAt(0);
+      var low = value.charCodeAt(1);
+      return '&#' + (((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000) + ';';
+    }).
+    replace(NON_ALPHANUMERIC_REGEXP, function(value) {
+      return '&#' + value.charCodeAt(0) + ';';
+    }).
+    replace(/</g, '&lt;').
+    replace(/>/g, '&gt;');
+}
+
+/**
+ * create an HTML/XML writer which writes to buffer
+ * @param {Array} buf use buf.jain('') to get out sanitized html string
+ * @returns {object} in the form of {
+ *     start: function(tag, attrs, unary) {},
+ *     end: function(tag) {},
+ *     chars: function(text) {},
+ *     comment: function(text) {}
+ * }
+ */
+function htmlSanitizeWriter(buf, uriValidator) {
+  var ignore = false;
+  var out = angular.bind(buf, buf.push);
+  return {
+    start: function(tag, attrs, unary) {
+      tag = angular.lowercase(tag);
+      if (!ignore && specialElements[tag]) {
+        ignore = tag;
+      }
+      if (!ignore && validElements[tag] === true) {
+        out('<');
+        out(tag);
+        angular.forEach(attrs, function(value, key) {
+          var lkey=angular.lowercase(key);
+          var isImage = (tag === 'img' && lkey === 'src') || (lkey === 'background');
+          if (validAttrs[lkey] === true &&
+            (uriAttrs[lkey] !== true || uriValidator(value, isImage))) {
+            out(' ');
+            out(key);
+            out('="');
+            out(encodeEntities(value));
+            out('"');
+          }
+        });
+        out(unary ? '/>' : '>');
+      }
+    },
+    end: function(tag) {
+        tag = angular.lowercase(tag);
+        if (!ignore && validElements[tag] === true) {
+          out('</');
+          out(tag);
+          out('>');
+        }
+        if (tag == ignore) {
+          ignore = false;
+        }
+      },
+    chars: function(chars) {
+        if (!ignore) {
+          out(encodeEntities(chars));
+        }
+      }
+  };
+}
+
+
+// define ngSanitize module and register $sanitize service
+angular.module('ngSanitize', []).provider('$sanitize', $SanitizeProvider);
+
+/* global sanitizeText: false */
+
+/**
+ * @ngdoc filter
+ * @name linky
+ * @kind function
+ *
+ * @description
+ * Finds links in text input and turns them into html links. Supports http/https/ftp/mailto and
+ * plain email address links.
+ *
+ * Requires the {@link ngSanitize `ngSanitize`} module to be installed.
+ *
+ * @param {string} text Input text.
+ * @param {string} target Window (_blank|_self|_parent|_top) or named frame to open links in.
+ * @returns {string} Html-linkified text.
+ *
+ * @usage
+   <span ng-bind-html="linky_expression | linky"></span>
+ *
+ * @example
+   <example module="linkyExample" deps="angular-sanitize.js">
+     <file name="index.html">
+       <script>
+         angular.module('linkyExample', ['ngSanitize'])
+           .controller('ExampleController', ['$scope', function($scope) {
+             $scope.snippet =
+               'Pretty text with some links:\n'+
+               'http://angularjs.org/,\n'+
+               'mailto:us@somewhere.org,\n'+
+               'another@somewhere.org,\n'+
+               'and one more: ftp://127.0.0.1/.';
+             $scope.snippetWithTarget = 'http://angularjs.org/';
+           }]);
+       </script>
+       <div ng-controller="ExampleController">
+       Snippet: <textarea ng-model="snippet" cols="60" rows="3"></textarea>
+       <table>
+         <tr>
+           <td>Filter</td>
+           <td>Source</td>
+           <td>Rendered</td>
+         </tr>
+         <tr id="linky-filter">
+           <td>linky filter</td>
+           <td>
+             <pre>&lt;div ng-bind-html="snippet | linky"&gt;<br>&lt;/div&gt;</pre>
+           </td>
+           <td>
+             <div ng-bind-html="snippet | linky"></div>
+           </td>
+         </tr>
+         <tr id="linky-target">
+          <td>linky target</td>
+          <td>
+            <pre>&lt;div ng-bind-html="snippetWithTarget | linky:'_blank'"&gt;<br>&lt;/div&gt;</pre>
+          </td>
+          <td>
+            <div ng-bind-html="snippetWithTarget | linky:'_blank'"></div>
+          </td>
+         </tr>
+         <tr id="escaped-html">
+           <td>no filter</td>
+           <td><pre>&lt;div ng-bind="snippet"&gt;<br>&lt;/div&gt;</pre></td>
+           <td><div ng-bind="snippet"></div></td>
+         </tr>
+       </table>
+     </file>
+     <file name="protractor.js" type="protractor">
+       it('should linkify the snippet with urls', function() {
+         expect(element(by.id('linky-filter')).element(by.binding('snippet | linky')).getText()).
+             toBe('Pretty text with some links: http://angularjs.org/, us@somewhere.org, ' +
+                  'another@somewhere.org, and one more: ftp://127.0.0.1/.');
+         expect(element.all(by.css('#linky-filter a')).count()).toEqual(4);
+       });
+
+       it('should not linkify snippet without the linky filter', function() {
+         expect(element(by.id('escaped-html')).element(by.binding('snippet')).getText()).
+             toBe('Pretty text with some links: http://angularjs.org/, mailto:us@somewhere.org, ' +
+                  'another@somewhere.org, and one more: ftp://127.0.0.1/.');
+         expect(element.all(by.css('#escaped-html a')).count()).toEqual(0);
+       });
+
+       it('should update', function() {
+         element(by.model('snippet')).clear();
+         element(by.model('snippet')).sendKeys('new http://link.');
+         expect(element(by.id('linky-filter')).element(by.binding('snippet | linky')).getText()).
+             toBe('new http://link.');
+         expect(element.all(by.css('#linky-filter a')).count()).toEqual(1);
+         expect(element(by.id('escaped-html')).element(by.binding('snippet')).getText())
+             .toBe('new http://link.');
+       });
+
+       it('should work with the target property', function() {
+        expect(element(by.id('linky-target')).
+            element(by.binding("snippetWithTarget | linky:'_blank'")).getText()).
+            toBe('http://angularjs.org/');
+        expect(element(by.css('#linky-target a')).getAttribute('target')).toEqual('_blank');
+       });
+     </file>
+   </example>
+ */
+angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
+  var LINKY_URL_REGEXP =
+        /((ftp|https?):\/\/|(www\.)|(mailto:)?[A-Za-z0-9._%+-]+@)\S*[^\s.;,(){}<>"”’]/,
+      MAILTO_REGEXP = /^mailto:/;
+
+  return function(text, target) {
+    if (!text) return text;
+    var match;
+    var raw = text;
+    var html = [];
+    var url;
+    var i;
+    while ((match = raw.match(LINKY_URL_REGEXP))) {
+      // We can not end in these as they are sometimes found at the end of the sentence
+      url = match[0];
+      // if we did not match ftp/http/www/mailto then assume mailto
+      if (!match[2] && !match[4]) {
+        url = (match[3] ? 'http://' : 'mailto:') + url;
+      }
+      i = match.index;
+      addText(raw.substr(0, i));
+      addLink(url, match[0].replace(MAILTO_REGEXP, ''));
+      raw = raw.substring(i + match[0].length);
+    }
+    addText(raw);
+    return $sanitize(html.join(''));
+
+    function addText(text) {
+      if (!text) {
+        return;
+      }
+      html.push(sanitizeText(text));
+    }
+
+    function addLink(url, text) {
+      html.push('<a ');
+      if (angular.isDefined(target)) {
+        html.push('target="',
+                  target,
+                  '" ');
+      }
+      html.push('href="',
+                url.replace(/"/g, '&quot;'),
+                '">');
+      addText(text);
+      html.push('</a>');
+    }
+  };
+}]);
+
+
+})(window, window.angular);
+
 /*!
  * jQuery JavaScript Library v1.11.2
  * http://jquery.com/
@@ -45027,7 +45696,6 @@ jQuery.extend({
 		global: true,
 		processData: true,
 		async: true,
-    //dataType: "jsonp",
 		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 		/*
 		timeout: 0,
@@ -54875,6 +55543,46 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
     "");
 }]);
 
+var statusesModule = angular.module("app.statuses", []);
+statusesModule.controller('StatusesDetailsController', [
+  "$scope", 
+  "$stateParams",
+  "$filter",
+  "TwitterService",  
+  function($scope, $stateParams, $filter, TwitterService){
+  
+    var that = this;
+
+    this.tweet = null;
+    this.loading = false;
+
+    this.initialize = function() {
+
+      that.loading = true;
+
+      TwitterService.getStatus($stateParams.statusID)
+        .then(
+          function(result) {
+
+            that.tweet = result;
+            that.tweet.text = $filter("linky")(that.tweet.text);
+            that.tweet.text = $filter("tweetLink")(that.tweet.text);            
+
+          }, 
+          function(error) {
+
+          }
+        )
+        .finally(function() {
+          that.loading = false;
+        });
+
+    };
+
+    TwitterService.initialize();
+
+  }
+]);
 var homeModule = angular.module("app.home", []);
 homeModule.controller("HomeIndexController", [
   function(){
@@ -54882,48 +55590,14 @@ homeModule.controller("HomeIndexController", [
   }
 ]);
 homeModule.controller("HomeTimelineController", [
-
   function(){
-    /*
-    var q = $q,
-        that = this,
-        scope = $scope;
 
-    that.filterBy = "";
-    that.tweets = [];
-    that.initialized = false;
+    var that = this;
 
-    TwitterService.initialize();
-
-    var initialize = function() {
-      var deferred = q.defer();
-      TwitterService.getTweets()
-        .then(function(result) {
-          storeTweets(result);
-          console.log(result);
-          deferred.resolve("ok");
-
-        }, function(error) {
-          console.log(error);
-
-          deferred.reject("error");
-        });
-
-      return deferred.promise;
-    };
-
-    var storeTweets = function(tweets) {
-      that.tweets = tweets;
-    };
-
-    initialize()
-      .then(function() {
-        that.initialized = true;
-      }, function(){
-        that.initialized = false;
-      });  
-
-  */
+    this.tweetListConfig = {
+      title: "Home timeline",
+      source: "home_timeline"
+    };    
 
   }
 ]);
@@ -54945,16 +55619,14 @@ peopleModule.controller('PeopleListController', [
     that.loading = false;
     that.people = [];
 
-    var loadData = function() {
-
+    that.initialize = function() {
+      
       that.loading = true;
 
       TwitterService.getBlockedPeople()
         .then(function(result) {
 
           that.people = result.users;
-
-          console.log(result);
         }, function(error) {
           console.log(error);
         })
@@ -54964,29 +55636,20 @@ peopleModule.controller('PeopleListController', [
 
     };
 
-    loadData();
-
   }
 ]);
 peopleModule.directive('peopleList', [
 
   function(){
     return {
-      // name: '',
-      // priority: 1,
-      // terminal: true,
       scope: {
         listTitle: "@ngListTitle",
         listSource: "@ngListSource"
       },
       controller: "PeopleListController as peopleListCtrl",
-      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-      restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
-      // template: '',
+      restrict: 'A',
       templateUrl: 'modules/people/partials/peopleList.html',
       replace: true,
-      // transclude: true,
-      // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
       link: function($scope, iElm, iAttrs, controller) {
         
       }
@@ -54994,19 +55657,119 @@ peopleModule.directive('peopleList', [
   }
 ]);
 var trendsModule = angular.module("app.trends", []);
-trendsModule
-  .controller('HomeController', [
-    '$scope', 
-    function($scope){
+trendsModule.controller('TrendsIndexController', [
+  "$scope", 
+  "TwitterService",
+  function($scope, TwitterService){      
+
+  }
+]);
+trendsModule.controller('TrendsListController', [
+  '$scope', 
+  "TwitterService",
+  function($scope, TwitterService){
   
-    }
-  ]);
+    var that = this;
+
+    that.loading = true;
+    that.listTitle = $scope.listTitle;
+    that.trends = [];
+
+
+    var initialize = function() {
+      TwitterService.getNearestTrends()
+        .then(function(result) {
+
+          console.log(result);
+
+          that.trends = result.trends;
+          that.loading = false;
+
+        }, function(error) {
+
+          console.log(error);
+
+        });
+    };
+
+    initialize();
+
+  }
+]);
+trendsModule.controller('TrendTimelineController', [
+  "$scope",
+  "$stateParams",
+  "TwitterService",
+  function($scope, $stateParams, TwitterService){
+  
+    var that = this;
+
+    this.tweetListConfig = {
+      query: $stateParams.trendQuery,
+      title: "Tweets for the selected trend",
+      source: "trend_timeline"
+    };
+
+  }
+]);
+trendsModule.controller('TrendController', [
+  "$scope",
+  "$state",
+  function($scope, $state){
+  
+    var that = this;
+
+    that.trend = $scope.trend;
+
+    that.showTrendTimeline = function() {
+      $state.go("app.trends.timeline", {trendQuery: that.trend.query});
+    };
+
+  }
+]);
+trendsModule.directive('trendsList', [
+
+  function(){
+    
+    return {
+      scope: {
+        listTitle: "@ngListTitle"
+      },
+      controller: "TrendsListController as trendsListCtrl",
+      restrict: 'A',
+      templateUrl: 'modules/trends/partials/trendsList.html',
+      replace: true,
+      link: function($scope, iElm, iAttrs, controller) {
+        
+      }
+    };
+  }
+]);
+trendsModule.directive('trend', [
+
+  function(){
+    
+    return {
+      scope: {
+        trend: "=ngTrend"
+      },
+      controller: "TrendController as trendCtrl",      
+      restrict: 'A',
+      templateUrl: 'modules/trends/partials/trend.html',
+      replace: true,
+      link: function($scope, iElm, iAttrs, controller) {
+        
+      }
+    };
+  }
+]);
 var app = angular.module('app', [
   "ui.router",
   "ngCookies",
   "app.home",
   "app.trends",
   "app.people",
+  "app.statuses",
   "ngSanitize"
 ]);
 
@@ -55085,7 +55848,7 @@ app.config([
         },           
         views: {
           "pageView": {
-            templateUrl:  'modules/main/partials/index.html',
+            templateUrl:  'modules/main/partials/container.html',
             controller:   "AppController"
           }
         }
@@ -55106,7 +55869,17 @@ app.config([
         views: {
           "mainContentView": {
             templateUrl:  'modules/home/partials/timeline.html',
-            controller:   "HomeTimelineController as timeline"
+            controller:   "HomeTimelineController as timelineCtrl"
+          }
+        }
+      })
+
+      .state("app.statuses", {
+        url:  "/statuses/:statusID",
+        views: {
+          "contentView": {
+            templateUrl:  'modules/statuses/partials/details.html',
+            controller:   "StatusesDetailsController as detailsCtrl"
           }
         }
       })
@@ -55121,35 +55894,34 @@ app.config([
         }
       })
 
-      /*
-      .state('app.users', {
-        url: '/users',
-        views: {
-          "contentView": {
-            templateUrl:  'modules/users/partials/container.html',
-            controller:   "HomeIndexController as index"
-          }
-        }
-      })
-      */
-      /*
-      .state('app.profile.timeline', {
-        url: '/timeline',
-        views: {
-          "mainContentView": {
-            templateUrl:  'modules/profile/partials/timeline.html',
-            controller:   "ProfileTimelineController as timeline"
-          }
-        }
-      })
-      */
-
       .state('app.trends', {
         url: '/trends',
         views: {
           "contentView": {
-            templateUrl:  'modules/home/partials/container.html',
-            controller:   "HomeController as home"
+            templateUrl:  'modules/trends/partials/container.html',
+            controller:   function() {
+              
+            }
+          }
+        }
+      })
+
+      .state('app.trends.top', {
+        url: '/top',
+        views: {
+          "mainContentView": {
+            templateUrl:  'modules/trends/partials/index.html',
+            controller:   "TrendsIndexController as indexCtrl"
+          }
+        }
+      })
+
+      .state('app.trends.timeline', {
+        url: '/:trendQuery',
+        views: {
+          "mainContentView": {
+            templateUrl:  'modules/trends/partials/timeline.html',
+            controller:   "TrendTimelineController as timelineCtrl"
           }
         }
       });
@@ -55161,8 +55933,9 @@ app.config([
 app.service('TwitterService', [
   "$q",
   "appKey",
+  "GeolocationService",
   "$window",
-  function($q, appKey, $window) {
+  function($q, appKey, GeolocationService, $window) {
     var twitterReference = null,
         initialized = false,
         connected = false,
@@ -55178,7 +55951,7 @@ app.service('TwitterService', [
      *  @param    {Object}    arguments Object with the parameters to add to the url
      *  @return   {String}              Parsed url to make the request
      */
-    that.generateURL = function(baseURL, parameters) {
+    that.generateURL = function(baseURL, parameters, exludeRetweets) {
       if(!baseURL) {
         throw new Error("baseUrl must be defined");
       }
@@ -55202,6 +55975,16 @@ app.service('TwitterService', [
         // Join the url
         url = [baseURL, queryStringParameters.join("&")].join("?");
 
+        if(exludeRetweets) {
+          url = url + "&exclude=retweets";
+        }
+
+      } else {
+
+        if(exludeRetweets) {
+          url = url + "?exclude=retweets";
+        }
+        
       }
 
       return url;
@@ -55307,16 +56090,15 @@ app.service('TwitterService', [
       connected = true;
       return $window.OAuth.callback("twitter", {cache: true});
     };
-
     
-    that.saveTweets = function(tweetsType, tweets) {
-      cookies.put(["tweets",tweetsType].join("-"), tweets);
-    };
-    
+    /**
+     * [getHomeTimeline description]
+     * @param  {[type]} parameters [description]
+     * @return {[type]}            [description]
+     */
     that.getHomeTimeline = function(parameters) {
       var deferred = $q.defer(),
           url = "/1.1/statuses/home_timeline.json",
-          arguments = [],
           defaults = {
             count: 40,
             since_id: null,
@@ -55330,24 +56112,24 @@ app.service('TwitterService', [
       // If TwitterService is not initialized and connected the deferred will be rejected else will call
       // get method to get the tweets
       if(!that.isInitialized()){
-        deferred.reject("TwitterService must be initialized");
+        deferred.reject(new Error("TwitterService must be initialized"));
       } else if(!that.isConnected()){
-        deferred.reject("TwitterService must be connected");
+        deferred.reject(new Error("TwitterService must be connected"));
       } else {
 
         defaults = angular.extend(defaults, parameters);
 
-        url = that.generateURL(url, defaults);        
+        url = that.generateURL(url, defaults, true);        
 
         try {
 
-        that.getReference().get(url)
-          .done(function(data) {
-            deferred.resolve(data);
-          })
-          .fail(function(error) {
-            deferred.reject(error);
-          });
+          that.getReference().get(url)
+            .done(function(data) {
+              deferred.resolve(data);
+            })
+            .fail(function(error) {
+              deferred.reject(error);
+            });
 
         } catch (error) {
           deferred.reject(error);
@@ -55358,6 +56140,10 @@ app.service('TwitterService', [
       return deferred.promise;        
     };
 
+    /**
+     * [getBlockedPeople description]
+     * @return {[type]} [description]
+     */
     that.getBlockedPeople = function() {
       var deferred = $q.defer(),
           url = "/1.1/blocks/list.json";
@@ -55391,33 +56177,252 @@ app.service('TwitterService', [
       return deferred.promise;        
     };
 
-    /*
-    this.getTweet = function(tweetID) {
+    /**
+     * [getStatus description]
+     * @param  {[type]} statusID [description]
+     * @return {[type]}          [description]
+     */
+    this.getStatus = function(statusID) {
       var deferred = $q.defer(),
           url = "/1.1/statuses/show.json",
-          arguments = [],
           defaults = {
-            id: tweetID,
+            id: statusID,
             trim_user: false,
-            include_my_retweet: true,
-            include_entities: true
+            include_my_retweet: false,
+            include_entities: false
           };
+      
+      if(!that.isInitialized()){
+        deferred.reject("TwitterService must be initialized");
+      } else if(!that.isConnected()){
+        deferred.reject("TwitterService must be connected");
+      } else if(!statusID) {
+        deferred.reject("statusID must be defined");
+      } else {
 
-      url = generateURL(url, defaults);
+        url = that.generateURL(url, defaults);
 
-      twitterReference.get(url)
-        .done(function(data) {
-          deferred.resolve(data);
-        })
-        .fail(function(error) {
-          //console.log(error)
-        });
+        try {
+
+          that.getReference().get(url)
+            .done(function(data) {
+              deferred.resolve(data);
+            })
+            .fail(function(error) {
+              deferred.reject(error);
+            });
+
+        } catch (error) {
+          deferred.reject(error);
+        }
+
+      }
 
       return deferred.promise; 
     };
-
-  */
  
+    /**
+     * [getClosestWoeID description]
+     * @return {[type]} [description]
+     */
+    this.getClosestWoeID = function() {
+
+      var deferred = $q.defer(),
+          url = "/1.1/trends/closest.json",
+          callback = null,
+          defaults = {
+            lat: 0,
+            long: 0
+          };          
+
+      // TwitterService must be initialized and connected
+      if(!that.isInitialized()){
+        deferred.reject("TwitterService must be initialized");
+      } else if (!that.isConnected()){
+        deferred.reject("TwitterService must be connected");
+      } else {
+
+        // Define the geolocation callback to get the woeid
+        callback = function(parameters) {
+
+          // Migrate the parameters (lat, long, acur) to the defaults
+          defaults = angular.extend(defaults, parameters);
+
+          // Generate the url
+          url = that.generateURL(url, defaults);        
+
+
+          try {
+            that.getReference().get(url)
+              .done(function(data) {
+                deferred.resolve(data[0]);
+              })
+              .fail(function(error) {
+                deferred.reject(error);
+              });
+
+          } catch (error) {
+            deferred.reject(error);
+          }
+
+        };
+        
+        // Call to the geolocation service to get latitude longitude and acur
+        GeolocationService.getLocation()
+          .then(function(result) {
+
+            var parameters = {long: result.longitude, lat: result.latitude};
+
+            callback(parameters);
+
+          }, function(error) {
+
+            deferred.reject("Could not get geolocation");
+
+          });
+
+      }
+
+      return deferred.promise;   
+    };
+
+    this.getNearestTrends = function() {
+
+      var deferred = $q.defer(),
+          url = "/1.1/trends/place.json",
+          callback = null,
+          defaults = {
+            id: 0
+          };          
+
+      // TwitterService must be initialized and connected
+      if(!that.isInitialized()){
+        deferred.reject("TwitterService must be initialized");
+      } else if (!that.isConnected()){
+        deferred.reject("TwitterService must be connected");
+      } else {
+
+        // Define the getWoeId callback to get the nearest trends
+        callback = function(WoeID) {
+
+          defaults.id = WoeID;
+
+          // Generate the url
+          url = that.generateURL(url, defaults);        
+
+          try {
+            that.getReference().get(url)
+              .done(function(data) {
+                deferred.resolve(data[0]);
+              })
+              .fail(function(error) {
+                deferred.reject(error);
+              });
+
+          } catch (error) {
+            deferred.reject(error);
+          }
+
+        };
+
+        that.getClosestWoeID()
+          .then(function(result) {
+
+            callback(result.woeid);
+
+          }, function(error) {
+
+            console.log(error);
+
+          });
+
+      }
+
+      return deferred.promise;
+    };
+
+    /**
+     * [getTweetsByQuery description]
+     * @param  {[type]} parameters [description]
+     * @return {[type]}            [description]
+     */
+    this.getTweetsByQuery = function(parameters) {
+      var deferred = $q.defer(),
+          url = "/1.1/search/tweets.json",
+          defaults = {
+            q: "",
+            count: 40,
+            since_id: null,
+            max_id: null
+          };
+
+      // TwitterService must be initialized and connected
+      if(!that.isInitialized()){
+        deferred.reject("TwitterService must be initialized");
+      } else if(!that.isConnected()){
+        deferred.reject("TwitterService must be connected");
+      } else if(!parameters) {
+        deferred.reject("parameters must be defined");
+      } else if(!parameters.q){
+        deferred.reject("paramters.q must be defined");
+      } else {
+
+        defaults = angular.extend(defaults, parameters);
+
+        url = that.generateURL(url, defaults, true);
+
+        try {
+
+        that.getReference().get(url)
+          .done(function(data) {
+            deferred.resolve(data);
+          })
+          .fail(function(error) {
+            deferred.reject(error);
+          });
+
+        } catch (error) {
+          deferred.reject(error);
+        }
+
+      }
+
+      return deferred.promise;    
+    };
+
+  }
+]);
+
+app.service('GeolocationService', [
+  "$q",
+  "$window",
+  function($q, $window){
+
+    var that = this;
+
+    this.coords = null;
+
+    this.getLocation = function() {
+      var deferred = $q.defer();
+
+      if($window.navigator && $window.navigator.geolocation) {
+        
+        $window.navigator.geolocation
+          .getCurrentPosition(function(position) {
+
+
+            deferred.resolve(position.coords);
+          }, function(error) {
+            deferred.reject(error);
+          });
+
+      } else {
+        deferred.reject(new Error("not supported browser"));
+      }
+
+      return deferred.promise;
+    };
+
   }
 ]);
 
@@ -55449,7 +56454,7 @@ app.directive('tweet', [
       scope: {
         tweet: "=ngTweet"
       },
-      controller: "TwitterTweetController as tweetCtrl",
+      controller: "TweetController as tweetCtrl",
       // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
       restrict: 'A',
       // template: '',
@@ -55471,8 +56476,9 @@ app.directive('tweetList', [
       // priority: 1,
       // terminal: true,
       scope: {
-        listTitle: "@ngListTitle",
-        listSource: "@ngListSource"
+        title: "=ngTitle",
+        source: "=ngSource",
+        query: "=ngQuery"
       },
       controller: "TweetListController as tweetListCtrl",
       // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
@@ -55486,7 +56492,7 @@ app.directive('tweetList', [
         pageViewElement.bind("scroll", function(event) {        
 
           if( (this.offsetHeight + this.scrollTop - this.scrollHeight + 1.3) >= 0) {
-            $scope.loadNextTweets();
+            $scope.tweetListCtrl.loadTweets();
             $scope.$apply();
           }
 
@@ -55560,27 +56566,35 @@ app.directive('loadingSpinner', [
   }
 ]);
 app.controller('AppController', [
-  'logged', 
+  "$scope",
+  "logged", 
   "$state",
-  function(logged, $state){
+  function($scope, logged, $state){
     if(!logged) {
       $state.go("access.login");
     }
   }
 ]);
 app.controller('AccessController', [
+  "$scope",
   "logged",
   "$state",
-  function(logged, $state){
+  function($scope, logged, $state){
+
+    /*
+    console.log(logged);
+    console.log($state);
+    */
+
     if(logged){
       $state.go("app.home.timeline");
     }
   }
 ]);
 app.controller('AccessLoginController', [
+  "$scope",
   "TwitterService",
-  "$state",
-  function(TwitterService, $state){
+  function($scope, TwitterService){
 
     this.login = function() {
       TwitterService.connectTwitter();
@@ -55589,9 +56603,10 @@ app.controller('AccessLoginController', [
   }
 ]);
 app.controller('AccessLoginCallbackController', [
-  'TwitterService',
+  "$scope",
+  "TwitterService",
   "$state",
-  function(TwitterService, $state){
+  function($scope, TwitterService, $state){
 
     TwitterService.connectionCallback()
       .then(function(result) {
@@ -55602,22 +56617,20 @@ app.controller('AccessLoginCallbackController', [
 
   }
 ]);
-app.controller('TwitterTweetController', [
+app.controller('TweetController', [
   "$scope",
   "$state",
-  function($scope, $state){
-    
-    var state = $state;
+  "$filter",
+  function($scope, $state, $filter){
 
     this.tweet = $scope.tweet;
 
-    this.showTweetDetail = function() {
-      alert();
-    };
+    this.tweet.text = $filter("linky")(this.tweet.text);
+    this.tweet.text = $filter("tweetLink")(this.tweet.text);
 
-    this.showUserProfile = function() {
-      state.go("app.tweet.show");
-    };    
+    this.showTweetDetail = function(tweetID) {
+      $state.go("app.statuses", {statusID: tweetID});
+    };
 
   }
 ]);
@@ -55626,51 +56639,89 @@ app.controller('TweetListController', [
   "TwitterService",
   function($scope, TwitterService){
   
-    var that = this,
-        loadTweetsFunction = null;
+    var that = this;
+    
+    this.directive = {
+      title: $scope.title,
+      source: $scope.source,
+      query: $scope.query,
+      error: false,
+      loading: false,
+      tweets: []
+    };
 
-    that.listTitle = $scope.listTitle;
-    that.error = true;
-    that.loading = false;
-    that.hasNewTweets = false;    
-    that.tweets = [];
+    this.loadHomeTimeline = function() {
+      var parameters = {};
 
-    switch($scope.listSource) {
-      case "home_timeline":
-        loadTweetsFunction = function() {
-          var parameters = {};
+      that.directive.loading = true;
 
-          that.loading = true;
+      if(that.directive.tweets.length) {
+        parameters.max_id = that.directive.tweets[that.directive.tweets.length - 1].id;
+      }
 
-          if(that.tweets.length) {
-            parameters.max_id = that.tweets[that.tweets.length - 1].id;
+      TwitterService.getHomeTimeline(parameters)
+        .then(
+          function(result) {
+            that.directive.tweets = that.directive.tweets.concat(result);
+          }, function(error) {
+            console.log(error);
           }
+        )
+        .finally(function() {
+          that.directive.loading = false;
+        });
+    };
 
-          TwitterService.getHomeTimeline(parameters)
-            .then(function(result) {
-              that.tweets = that.tweets.concat(result);
-              that.loading = false;
-            }, function(error) {
-              that.loading = false;
-            });
+    this.loadTrendTimeline = function() {
+      var parameters = {
+        q: that.directive.query
+      };
 
-        };
-        break;
-    }
+      that.directive.loading = true;
 
-    TwitterService.initialize();
+      if(that.directive.tweets.length) {
+        parameters.max_id = that.directive.tweets[that.directive.tweets.length - 1].id;
+      }
 
-    loadTweetsFunction();
+      TwitterService.getTweetsByQuery(parameters)
+        .then(
+          function(result) {
+            that.directive.tweets = that.directive.tweets.concat(result.statuses);
+          }, function(error) {
+            console.log(error);
+          }
+        )
+        .finally(function() {
+          that.directive.loading = false;
+        });
+    };
 
-    $scope.loadNextTweets = function() {      
-      loadTweetsFunction();      
+    this.initialize = function() {
+
+      TwitterService.initialize();
+
+      that.loadTweets();
+    }; 
+
+    this.loadTweets = function() {
+      
+      switch(that.directive.source) {
+        case "home_timeline":
+          that.loadHomeTimeline();
+          break;
+        case "trend_timeline": 
+          that.loadTrendTimeline();
+          break;
+      }
+
     };
 
   }
 ]);
 
 app.controller('LoadingOverlayController', [
-  function(){
+  "$scope",
+  function($scope){
   
   }
 ]);

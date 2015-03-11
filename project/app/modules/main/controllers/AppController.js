@@ -1,7 +1,8 @@
 app.controller('AppController', [
-  'logged', 
+  "$scope",
+  "logged", 
   "$state",
-  function(logged, $state){
+  function($scope, logged, $state){
     if(!logged) {
       $state.go("access.login");
     }

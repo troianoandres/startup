@@ -1,0 +1,31 @@
+<div class="content pd-xs-10 pd-sm-15">
+  <div class="container">
+    <div class="row">
+      
+      <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        
+        <div class="tweet-details-container" style="margin-top:15px;" ng-init="detailsCtrl.initialize();">
+          <div ng-if="!detailsCtrl.loading" class="tweet-details">
+                  
+            <header class="tweet-details-header pointer">
+              <div class="avatar-wrapper">
+                <img ng-src="{{ detailsCtrl.tweet.user.profile_image_url }}" class="avatar-image" />  
+              </div>              
+              <strong class="user-name">{{ detailsCtrl.tweet.user.name }}</strong><br/>
+              <small class="user-tag">@{{ detailsCtrl.tweet.user.screen_name }}</small>
+            </header>
+
+            <div class="tweet-details-body">
+              <p class="tweet-text"  ng-bind-html="detailsCtrl.tweet.text"></p>
+            </div>
+          </div>
+
+          <div loading-overlay ng-if="detailsCtrl.loading"></div>
+
+        </div>
+
+      </div>
+      
+    </div>
+  </div>
+</div>

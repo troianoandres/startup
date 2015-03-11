@@ -8,6 +8,7 @@ module.exports = function(config){
       // include relevant Angular files and libs
       'app/libs/angular/angular.js',
       'app/libs/angular-cookies/angular-cookies.js',
+      'app/libs/angular-sanitize/angular-sanitize.js',
       'app/libs/angular-ui-router/release/angular-ui-router.min.js',
       'app/libs/angular-mocks/angular-mocks.js',
       'app/libs/angular-bootstrap/ui-bootstrap-tpls.js',

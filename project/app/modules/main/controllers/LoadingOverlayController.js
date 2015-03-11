@@ -1,5 +1,6 @@
 app.controller('LoadingOverlayController', [
-  function(){
+  "$scope",
+  function($scope){
   
   }
 ]);

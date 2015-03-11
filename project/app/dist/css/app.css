@@ -6630,7 +6630,6 @@ body {
 .content {
   height: 100%;
   overflow-y: scroll;
-  padding: 0;
 }
 
 .container {
@@ -6702,7 +6701,6 @@ body {
   .content {
     height: 100%;
     overflow-y: scroll;
-    padding: 15px;
   }
 
   .content-container {
@@ -6757,6 +6755,150 @@ hr.sm {
 
 .navbar {
   margin-bottom: 0px;
+}
+
+
+
+.pd-bot-xs-5 {    padding-bottom: 5px; }
+.pd-top-xs-5 {    padding-top: 5px; }
+.pd-left-xs-5 {   padding-left: 5px; }
+.pd-right-xs-5 {  padding-right: 5px; }
+.pd-ver-xs-5 {    padding-top: 5px;   padding-bottom: 5px; }
+.pd-hor-xs-5 {    padding-left: 5px;  padding-right: 5px; }
+.pd-xs-5 {        padding: 5px; }
+
+.pd-bot-xs-10 {    padding-bottom: 10px; }
+.pd-top-xs-10 {    padding-top: 10px; }
+.pd-left-xs-10 {   padding-left: 10px; }
+.pd-right-xs-10 {  padding-right: 10px; }
+.pd-ver-xs-10 {    padding-top: 10px;   padding-bottom: 10px; }
+.pd-hor-xs-10 {    padding-left: 10px;  padding-right: 10px; }
+.pd-xs-10 {        padding: 10px; }
+
+.pd-bot-xs-15 {    padding-bottom: 15px; }
+.pd-top-xs-15 {    padding-top: 15px; }
+.pd-left-xs-15 {   padding-left: 15px; }
+.pd-right-xs-15 {  padding-right: 15px; }
+.pd-ver-xs-15 {    padding-top: 15px;   padding-bottom: 15px; }
+.pd-hor-xs-15 {    padding-left: 15px;  padding-right: 15px; }
+.pd-xs-15 {        padding: 15px; }
+
+.pd-bot-xs-20 {    padding-bottom: 20px; }
+.pd-top-xs-20 {    padding-top: 20px; }
+.pd-left-xs-20 {   padding-left: 20px; }
+.pd-right-xs-20 {  padding-right: 20px; }
+.pd-ver-xs-20 {    padding-top: 20px;   padding-bottom: 20px; }
+.pd-hor-xs-20 {    padding-left: 20px;  padding-right: 20px; }
+.pd-xs-20 {        padding: 20; }
+
+
+@media (min-width: 768px) {
+
+  .pd-bot-sm-5 {    padding-bottom: 5px; }
+  .pd-top-sm-5 {    padding-top: 5px; }
+  .pd-left-sm-5 {   padding-left: 5px; }
+  .pd-right-sm-5 {  padding-right: 5px; }
+  .pd-ver-sm-5 {    padding-top: 5px;   padding-bottom: 5px; }
+  .pd-hor-sm-5 {    padding-left: 5px;  padding-right: 5px; }
+  .pd-sm-5 {        padding: 5px; }
+
+  .pd-bot-sm-10 {    padding-bottom: 10px; }
+  .pd-top-sm-10 {    padding-top: 10px; }
+  .pd-left-sm-10 {   padding-left: 10px; }
+  .pd-right-sm-10 {  padding-right: 10px; }
+  .pd-ver-sm-10 {    padding-top: 10px;   padding-bottom: 10px; }
+  .pd-hor-sm-10 {    padding-left: 10px;  padding-right: 10px; }
+  .pd-sm-10 {        padding: 10px; }
+
+  .pd-bot-sm-15 {    padding-bottom: 15px; }
+  .pd-top-sm-15 {    padding-top: 15px; }
+  .pd-left-sm-15 {   padding-left: 15px; }
+  .pd-right-sm-15 {  padding-right: 15px; }
+  .pd-ver-sm-15 {    padding-top: 15px;   padding-bottom: 15px; }
+  .pd-hor-sm-15 {    padding-left: 15px;  padding-right: 15px; }
+  .pd-sm-15 {        padding: 15px; }
+
+  .pd-bot-sm-20 {    padding-bottom: 20px; }
+  .pd-top-sm-20 {    padding-top: 20px; }
+  .pd-left-sm-20 {   padding-left: 20px; }
+  .pd-right-sm-20 {  padding-right: 20px; }
+  .pd-ver-sm-20 {    padding-top: 20px;   padding-bottom: 20px; }
+  .pd-hor-sm-20 {    padding-left: 20px;  padding-right: 20px; }
+  .pd-sm-20 {        padding: 20; }
+
+}
+
+
+@media (min-width: 992px) {
+
+  .pd-bot-md-5 {    padding-bottom: 5px; }
+  .pd-top-md-5 {    padding-top: 5px; }
+  .pd-left-md-5 {   padding-left: 5px; }
+  .pd-right-md-5 {  padding-right: 5px; }
+  .pd-ver-md-5 {    padding-top: 5px;   padding-bottom: 5px; }
+  .pd-hor-md-5 {    padding-left: 5px;  padding-right: 5px; }
+  .pd-md-5 {        padding: 5px; }
+
+  .pd-bot-md-10 {    padding-bottom: 10px; }
+  .pd-top-md-10 {    padding-top: 10px; }
+  .pd-left-md-10 {   padding-left: 10px; }
+  .pd-right-md-10 {  padding-right: 10px; }
+  .pd-ver-md-10 {    padding-top: 10px;   padding-bottom: 10px; }
+  .pd-hor-md-10 {    padding-left: 10px;  padding-right: 10px; }
+  .pd-md-10 {        padding: 10px; }
+
+  .pd-bot-md-15 {    padding-bottom: 15px; }
+  .pd-top-md-15 {    padding-top: 15px; }
+  .pd-left-md-15 {   padding-left: 15px; }
+  .pd-right-md-15 {  padding-right: 15px; }
+  .pd-ver-md-15 {    padding-top: 15px;   padding-bottom: 15px; }
+  .pd-hor-md-15 {    padding-left: 15px;  padding-right: 15px; }
+  .pd-md-15 {        padding: 15px; }
+
+  .pd-bot-md-20 {    padding-bottom: 20px; }
+  .pd-top-md-20 {    padding-top: 20px; }
+  .pd-left-md-20 {   padding-left: 20px; }
+  .pd-right-md-20 {  padding-right: 20px; }
+  .pd-ver-md-20 {    padding-top: 20px;   padding-bottom: 20px; }
+  .pd-hor-md-20 {    padding-left: 20px;  padding-right: 20px; }
+  .pd-md-20 {        padding: 20; }
+
+}
+
+@media (min-width: 1200px) {
+
+  .pd-bot-lg-5 {    padding-bottom: 5px; }
+  .pd-top-lg-5 {    padding-top: 5px; }
+  .pd-left-lg-5 {   padding-left: 5px; }
+  .pd-right-lg-5 {  padding-right: 5px; }
+  .pd-ver-lg-5 {    padding-top: 5px;   padding-bottom: 5px; }
+  .pd-hor-lg-5 {    padding-left: 5px;  padding-right: 5px; }
+  .pd-lg-5 {        padding: 5px; }
+
+  .pd-bot-lg-10 {    padding-bottom: 10px; }
+  .pd-top-lg-10 {    padding-top: 10px; }
+  .pd-left-lg-10 {   padding-left: 10px; }
+  .pd-right-lg-10 {  padding-right: 10px; }
+  .pd-ver-lg-10 {    padding-top: 10px;   padding-bottom: 10px; }
+  .pd-hor-lg-10 {    padding-left: 10px;  padding-right: 10px; }
+  .pd-lg-10 {        padding: 10px; }
+
+  .pd-bot-lg-15 {    padding-bottom: 15px; }
+  .pd-top-lg-15 {    padding-top: 15px; }
+  .pd-left-lg-15 {   padding-left: 15px; }
+  .pd-right-lg-15 {  padding-right: 15px; }
+  .pd-ver-lg-15 {    padding-top: 15px;   padding-bottom: 15px; }
+  .pd-hor-lg-15 {    padding-left: 15px;  padding-right: 15px; }
+  .pd-lg-15 {        padding: 15px; }
+
+  .pd-bot-lg-20 {    padding-bottom: 20px; }
+  .pd-top-lg-20 {    padding-top: 20px; }
+  .pd-left-lg-20 {   padding-left: 20px; }
+  .pd-right-lg-20 {  padding-right: 20px; }
+  .pd-ver-lg-20 {    padding-top: 20px;   padding-bottom: 20px; }
+  .pd-hor-lg-20 {    padding-left: 20px;  padding-right: 20px; }
+  .pd-lg-20 {        padding: 20; }
+
 }
 /*
   box-shadow: 0 1px   3px   rgba(0,0,0,0.12), 0 1px   2px   rgba(0,0,0,0.24);
@@ -6843,23 +6985,22 @@ hr.sm {
 }
 
 /****************************************************************************
- *                           BLOCKED LIST MODULE                            *
+ *                              ITEM LIST MODULE                            *
  ****************************************************************************/
 
-.people-list-container {
+.item-list-container {
   width: 100%;
   height: 100%;
-  padding: 15px;  
 }
 
-.people-list {
+.item-list {
   position: relative;
   width: 100%;
   height: 100%;
   background-color: #EEE;
 }
 
-.people-list-header {
+.item-list-header {
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
   background-color: #EEEEEE;
@@ -6868,12 +7009,14 @@ hr.sm {
   color: #000000;
 }
 
+/****************************************************************************
+ *                              ITEM      MODULE                            *
+ ****************************************************************************/
+
 .item-container {
   position: relative;
-  width: 100%;
-  min-height: 50px;
+  width: 100%;  
   padding: 10px;
-
   border: 1px solid #CCCCCC;  
   border-bottom: 0px;  
   
@@ -6892,7 +7035,7 @@ hr.sm {
 
 .item {
   position: relative;
-  min-height: 50px;  
+  /* min-height: 50px;  */
   color: #000000;
   font-size: 12px;
 }
@@ -6930,6 +7073,7 @@ hr.sm {
   position: absolute;
   left: 0;
   top: 0;
+  border-radius: 5px;
 }
 
 .avatar-wrapper {
@@ -6939,143 +7083,49 @@ hr.sm {
   width: 48px;
 }
 
+.item.tweet,
+.item.people {
+  min-height: 50px;
+}
 
 /****************************************************************************
- *                           TWEET LIST MODULE                              *
+ *                           TWEET DETAILS MODULE                           *
  ****************************************************************************/
 
-.tweet-list-container {
-  width: 100%;
-  height: 100%;
-  padding: 15px;
-}
-
-.tweet-list {
+.tweet-details-container {
   position: relative;
   width: 100%;
-  height: 100%;
-  background-color: #EEE;
-}
-
-.tweet-list-header {
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
-  background-color: #EEEEEE;
-  padding: 10px;
-  min-height: 40px;
-  color: #000000;
-}
-
-.tweet-list-message {
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-  background-color: #FFFFFF;
-  color: #888888;
-  padding: 10px;
-  min-height: 40px;
-  border-top: 1px solid #CCCCCC;
-  font-size: 12px;
-}
-
-.tweet-list-body {
-}
-
-.tweet-container {
-  position: relative;
-  width: 100%;
-  background-color: #FFFFFF;
   min-height: 50px;
-  border: 1px solid #CCCCCC;
-  border-bottom: 0px;
+  padding: 30px;
+
+  border-radius: 5px;
+  
+  background-color: #FFFFFF;
 }
 
-.tweet-container:last-child {
-  border-bottom: 1px solid #CCCCCC;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
-
-.tweet-container:hover {
-  background-color: #EEEEEE;
-}
-
-.tweet {
-  padding: 10px;
-  min-height: 50px;
+.tweet-details {
   position: relative;
   color: #000000;
-  font-size: 12px;
+  font-size: 15px;
 }
 
-.tweet-image {
-  width: 48px;
-  height: 48px;
-  background-color: #000;
-  position: absolute;
-  left: 0;
-  top: 0;
+.tweet-details-header {
+  display: block;
+  margin-left: 58px;
+  margin-bottom: 15px;
 }
 
-.tweet-header {
-  text-decoration: none;
-  color: #888888;
-  line-height: inherit;
-  cursor: pointer;
-  font-size: 90%;
-}
-
-.tweet-header .tweet-user-name {
-  color: #000000;
-}
-
-.tweet-header:hover > .tweet-user-name {
+.tweet-details-header:hover > .user-name {
   text-decoration: underline;
   color: #0080B0;
 }
 
-.tweet-header > .tweet-user-tag {  
-
+.tweet-details-body {
+  font-size: 160%;
 }
 
-.tweet-header > .tweet-date {  
-  font-size: 70%;
-}
-
-.tweet-header > .image-wrapper {
-  float: left;
-  margin-left: -58px;
-  margin-top: 5px;
-  width: 48px;
-}
-
-.tweet-body {
-  font-size: 85%;
-}
-
-.tweet-footer {
-
-}
-
-.tweet-retweet {
-  
-}
-
-.tweet-content {
-  margin-left: 58px;
-  display: block;
-}
-
-
-.tweet-header > .image-wrapper {
-  float: left;
-  margin-left: -30px;
-  margin-top: 5px;
-  width: 25px;
-}
-
-.tweet-content {
-  margin-left: 30px;
-  display: block;
+.user-tag {
+  color: #888888;
 }
 
 @media (min-width: 768px) {

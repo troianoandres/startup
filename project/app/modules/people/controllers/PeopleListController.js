@@ -9,16 +9,14 @@ peopleModule.controller('PeopleListController', [
     that.loading = false;
     that.people = [];
 
-    var loadData = function() {
-
+    that.initialize = function() {
+      
       that.loading = true;
 
       TwitterService.getBlockedPeople()
         .then(function(result) {
 
           that.people = result.users;
-
-          console.log(result);
         }, function(error) {
           console.log(error);
         })
@@ -27,8 +25,6 @@ peopleModule.controller('PeopleListController', [
         });
 
     };
-
-    loadData();
 
   }
 ]);

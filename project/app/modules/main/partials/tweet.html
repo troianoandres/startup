@@ -1,7 +1,7 @@
-<div class="item-container" ng-click="tweetCtrl.showTweetDetail();">
-  <div class="item clearfix">
+<div class="item-container" ng-click="tweetCtrl.showTweetDetail(tweetCtrl.tweet.id_str);">
+  <div class="item tweet">
     <div class="item-content">
-      <header class="item-header" ng-click="tweetCtrl.showUserProfile();">        
+      <header class="item-header">        
         <div class="avatar-wrapper">
           <img ng-src="{{ tweetCtrl.tweet.user.profile_image_url }}" class="avatar-image" />  
         </div>          
@@ -9,9 +9,7 @@
         <span class="user-tag">@{{ tweetCtrl.tweet.user.screen_name }}</span> - <small class="date">{{ tweetCtrl.tweet.created_at | date:'MMM d' }}</small>        
       </header>
       <div class="tweet-body">
-        <p class="tweet-text"  ng-bind-html="tweetCtrl.tweet.text | tweetLink | linky">
-          
-        </p>
+        <p class="tweet-text"  ng-bind-html="tweetCtrl.tweet.text"></p>
       </div>
     </div>
   </div>

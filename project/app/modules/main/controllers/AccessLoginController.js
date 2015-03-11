@@ -1,7 +1,7 @@
 app.controller('AccessLoginController', [
+  "$scope",
   "TwitterService",
-  "$state",
-  function(TwitterService, $state){
+  function($scope, TwitterService){
 
     this.login = function() {
       TwitterService.connectTwitter();

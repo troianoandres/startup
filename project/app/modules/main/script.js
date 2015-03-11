@@ -4,6 +4,7 @@ var app = angular.module('app', [
   "app.home",
   "app.trends",
   "app.people",
+  "app.statuses",
   "ngSanitize"
 ]);
 
@@ -82,7 +83,7 @@ app.config([
         },           
         views: {
           "pageView": {
-            templateUrl:  'modules/main/partials/index.html',
+            templateUrl:  'modules/main/partials/container.html',
             controller:   "AppController"
           }
         }
@@ -103,7 +104,17 @@ app.config([
         views: {
           "mainContentView": {
             templateUrl:  'modules/home/partials/timeline.html',
-            controller:   "HomeTimelineController as timeline"
+            controller:   "HomeTimelineController as timelineCtrl"
+          }
+        }
+      })
+
+      .state("app.statuses", {
+        url:  "/statuses/:statusID",
+        views: {
+          "contentView": {
+            templateUrl:  'modules/statuses/partials/details.html',
+            controller:   "StatusesDetailsController as detailsCtrl"
           }
         }
       })
@@ -118,35 +129,34 @@ app.config([
         }
       })
 
-      /*
-      .state('app.users', {
-        url: '/users',
-        views: {
-          "contentView": {
-            templateUrl:  'modules/users/partials/container.html',
-            controller:   "HomeIndexController as index"
-          }
-        }
-      })
-      */
-      /*
-      .state('app.profile.timeline', {
-        url: '/timeline',
-        views: {
-          "mainContentView": {
-            templateUrl:  'modules/profile/partials/timeline.html',
-            controller:   "ProfileTimelineController as timeline"
-          }
-        }
-      })
-      */
-
       .state('app.trends', {
         url: '/trends',
         views: {
           "contentView": {
-            templateUrl:  'modules/home/partials/container.html',
-            controller:   "HomeController as home"
+            templateUrl:  'modules/trends/partials/container.html',
+            controller:   function() {
+              
+            }
+          }
+        }
+      })
+
+      .state('app.trends.top', {
+        url: '/top',
+        views: {
+          "mainContentView": {
+            templateUrl:  'modules/trends/partials/index.html',
+            controller:   "TrendsIndexController as indexCtrl"
+          }
+        }
+      })
+
+      .state('app.trends.timeline', {
+        url: '/:trendQuery',
+        views: {
+          "mainContentView": {
+            templateUrl:  'modules/trends/partials/timeline.html',
+            controller:   "TrendTimelineController as timelineCtrl"
           }
         }
       });

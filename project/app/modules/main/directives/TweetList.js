@@ -6,8 +6,9 @@ app.directive('tweetList', [
       // priority: 1,
       // terminal: true,
       scope: {
-        listTitle: "@ngListTitle",
-        listSource: "@ngListSource"
+        title: "=ngTitle",
+        source: "=ngSource",
+        query: "=ngQuery"
       },
       controller: "TweetListController as tweetListCtrl",
       // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
@@ -21,7 +22,7 @@ app.directive('tweetList', [
         pageViewElement.bind("scroll", function(event) {        
 
           if( (this.offsetHeight + this.scrollTop - this.scrollHeight + 1.3) >= 0) {
-            $scope.loadNextTweets();
+            $scope.tweetListCtrl.loadTweets();
             $scope.$apply();
           }
 

@@ -1,7 +1,8 @@
 app.controller('AccessLoginCallbackController', [
-  'TwitterService',
+  "$scope",
+  "TwitterService",
   "$state",
-  function(TwitterService, $state){
+  function($scope, TwitterService, $state){
 
     TwitterService.connectionCallback()
       .then(function(result) {
