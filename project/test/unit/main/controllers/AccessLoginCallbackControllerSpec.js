@@ -46,33 +46,49 @@ describe("AccessLoginCallbackController tests", function() {
       $state: $state
     });
 
-    $scope.$digest();
+  });
+
+  describe("statements tests", function() {
+
+    it("statements must be defined", function() {
+
+      $scope.$digest();
+
+      expect(controller).not.toEqual(undefined);
+      expect($state).not.toEqual(undefined);
+      expect($scope).not.toEqual(undefined);
+      expect(TwitterService).not.toBe(undefined);
+      expect(controller.redirectHome).not.toEqual(undefined);
+      expect(controller.redirectLogin).not.toEqual(undefined);
+    });
 
   });
 
-  it("Expect all statemest to be correctly resolves", function() {
-    expect(controller).not.toBe(undefined);
-    expect($state).not.toBe(undefined);
-    expect($scope).not.toBe(undefined);
-  });
+  describe("redirectHome() tests", function() {
 
-  xit("connectionCallback fail and $state.go must not be called", function() {
+    it("$state.go must be called with app.home.timeline", function() {
 
-    deferred.reject(new Error("error"));
+      $scope.$digest();
 
-    //$scope.$apply();
+      controller.redirectHome();
 
-    expect($state.go.calls.count()).toBe(0);
+      expect($state.go).toHaveBeenCalledWith("app.home.timeline");
+
+    });
 
   });
 
-  xit("connectionCallback resolved and $state.go must be called once", function() {
+  describe("redirectLogin() tests", function() {
 
-    deferred.resolve( {} );
+    it("$state.go must be called with access.login", function() {
 
-    //$scope.$apply();
+      $scope.$digest();
 
-    expect($state.go.calls.count()).toBe(1);
+      controller.redirectLogin();
+
+      expect($state.go).toHaveBeenCalledWith("access.login");
+
+    });
 
   });
 

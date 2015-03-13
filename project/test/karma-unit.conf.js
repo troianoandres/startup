@@ -13,6 +13,7 @@ module.exports = function(config){
       'app/libs/angular-mocks/angular-mocks.js',
       'app/libs/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/libs/oauth-js/dist/oauth.js',
+      'app/libs/moment/moment.js',
  
       // include js files
       'app/modules/**/script.js',
@@ -23,6 +24,7 @@ module.exports = function(config){
     ],
     // files to exclude
     exclude : [
+      "test/unit/coverage/**"
       //'app/libs/angular/angular-loader.js',
       //'app/libs/angular/*.min.js',
       //'app/libs/angular/angular-scenario.js'
@@ -49,9 +51,9 @@ module.exports = function(config){
  
     coverageReporter: {
       // type of file to output, use text to output to console
-      type : 'text',
+      type : 'html',
       // directory where coverage results are saved
-      dir: 'test/test-results/coverage/'
+      dir: 'test/unit-coverage/'
       // if type is text or text-summary, you can set the file name
       // file: 'coverage.txt'
     },

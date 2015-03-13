@@ -4,11 +4,6 @@ app.controller('AccessController', [
   "$state",
   function($scope, logged, $state){
 
-    /*
-    console.log(logged);
-    console.log($state);
-    */
-
     if(logged){
       $state.go("app.home.timeline");
     }

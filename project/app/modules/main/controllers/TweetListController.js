@@ -1,7 +1,8 @@
 app.controller('TweetListController', [
   "$scope",
   "TwitterService",
-  function($scope, TwitterService){
+  "ErrorHandlerService",
+  function($scope, TwitterService, ErrorHandlerService){
   
     var that = this;
     
@@ -28,7 +29,7 @@ app.controller('TweetListController', [
           function(result) {
             that.directive.tweets = that.directive.tweets.concat(result);
           }, function(error) {
-            console.log(error);
+            ErrorHandlerService.displayError(error);
           }
         )
         .finally(function() {
@@ -52,7 +53,7 @@ app.controller('TweetListController', [
           function(result) {
             that.directive.tweets = that.directive.tweets.concat(result.statuses);
           }, function(error) {
-            console.log(error);
+            ErrorHandlerService.displayError(error);
           }
         )
         .finally(function() {

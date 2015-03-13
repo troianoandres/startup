@@ -2,7 +2,7 @@ app.filter('tweetLink', [
   function() {
       return function(text) {
           if (!text) {
-            return text;
+            return;
           }
 
           // replace #hashtags and send them to twitter

@@ -4,12 +4,16 @@ app.controller('AccessLoginCallbackController', [
   "$state",
   function($scope, TwitterService, $state){
 
+    this.redirectHome = function() {
+      $state.go("app.home.timeline");
+    };
+
+    this.redirectLogin = function() {
+      $state.go("access.login");
+    };
+
     TwitterService.connectionCallback()
-      .then(function(result) {
-        $state.go("app.home.timeline");
-      }, function(error) {
-        console.log(error);
-      });
+      .then(this.redirectHome, this.redirectLogin);      
 
   }
 ]);

@@ -1,5 +1,6 @@
 var app = angular.module('app', [
   "ui.router",
+  "ui.bootstrap",
   "ngCookies",
   "app.home",
   "app.trends",
@@ -59,7 +60,7 @@ app.config([
         views: {
           "contentView": {
             templateUrl:  'modules/main/partials/loginCallback.html',
-            controller:   "AccessLoginCallbackController as callback"
+            controller:   "AccessLoginCallbackController as callbackCtrl"
           }
         }
       })

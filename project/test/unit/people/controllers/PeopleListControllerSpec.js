@@ -6,7 +6,8 @@ describe("PeopleListController tests", function() {
       controller = null,
       listTitle = "Test title",
       $q = null,
-      deferred = null;
+      deferred = null,
+      ErrorHandlerService = null;
 
   beforeEach(function() {
 
@@ -26,13 +27,16 @@ describe("PeopleListController tests", function() {
       $controller = _$controller_;
       TwitterService = _TwitterService_;
       $q = _$q_;
+      ErrorHandlerService = {
+        displayError: jasmine.createSpy()
+      };
     });
 
     peopleMock = [{a:1}, {b:2}] ;
 
     $scope.listTitle = listTitle;
 
-    controller = $controller("PeopleListController", {$scope: $scope, TwitterService: TwitterService});
+    controller = $controller("PeopleListController", {$scope: $scope, TwitterService: TwitterService, ErrorHandlerService: ErrorHandlerService});
 
     $scope.$digest();
 
@@ -75,7 +79,8 @@ describe("PeopleListController tests", function() {
 
       expect(TwitterService.getBlockedPeople.calls.count()).toBe(1);
       expect(controller.loading).toBe(false);
-
+      expect(ErrorHandlerService.displayError.calls.count()).toEqual(1);
+      
     });
 
     it("getBlockedPeople should resolve the promise", function() {

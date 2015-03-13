@@ -4,28 +4,30 @@ app.service('GeolocationService', [
   function($q, $window){
 
     var that = this;
+    
+    this.getLocationDeferred = null;
 
-    this.coords = null;
+    this.resolveGetCurrentPosition = function(position) {
+      that.getLocationDeferred.resolve(position.coords);
+    };
+
+    this.rejectGetCurrentPosition = function(error) {
+      that.getLocationDeferred.reject(error);
+    };
 
     this.getLocation = function() {
-      var deferred = $q.defer();
+      that.getLocationDeferred = $q.defer();
 
       if($window.navigator && $window.navigator.geolocation) {
         
         $window.navigator.geolocation
-          .getCurrentPosition(function(position) {
-
-
-            deferred.resolve(position.coords);
-          }, function(error) {
-            deferred.reject(error);
-          });
+          .getCurrentPosition(that.resolveGetCurrentPosition, that.rejectGetCurrentPosition);
 
       } else {
-        deferred.reject(new Error("not supported browser"));
+        that.getLocationDeferred.reject(new Error("not supported browser"));
       }
 
-      return deferred.promise;
+      return that.getLocationDeferred.promise;
     };
 
   }

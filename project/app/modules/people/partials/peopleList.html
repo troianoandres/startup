@@ -15,10 +15,10 @@
             
             <header class="item-header">        
               <div class="avatar-wrapper">
-                <img ng-src="https://pbs.twimg.com/profile_images/3310627568/d956d7204b97e732eb6fc7e58dfb2102_normal.png" class="avatar-image" />  
+                <img ng-src="{{ people.profile_image_url_https}}" class="avatar-image" />  
               </div>          
-              <strong class="user-name">Troiano Andres</strong><br/>
-              <span class="user-tag">@TroianoAndres</span>
+              <strong class="user-name">{{ people.name }}</strong><br/>
+              <span class="user-tag">@{{ people.screen_name }}</span>
             </header>
 
           </div>

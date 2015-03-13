@@ -1,7 +1,8 @@
 peopleModule.controller('PeopleListController', [
   "$scope",
   "TwitterService",
-  function($scope, TwitterService){
+  "ErrorHandlerService",
+  function($scope, TwitterService, ErrorHandlerService) {
   
     var that = this;
 
@@ -15,10 +16,9 @@ peopleModule.controller('PeopleListController', [
 
       TwitterService.getBlockedPeople()
         .then(function(result) {
-
           that.people = result.users;
         }, function(error) {
-          console.log(error);
+          ErrorHandlerService.displayError(error);
         })
         .finally(function() {
           that.loading = false;

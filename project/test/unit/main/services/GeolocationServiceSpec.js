@@ -1,11 +1,15 @@
 describe("GeolocationService tests", function() {
 
-  var GeolocationService = null;
+  var GeolocationService = null,
+      windowMock = { },
+      browserNotSupportedError = new Error("not supported browser"),
+      $rootScope = null;
 
   beforeEach(function() {
 
     // Mock the main module dependencies
     angular.mock.module("ui.router");
+    angular.mock.module("ui.bootstrap");
     angular.mock.module("ngCookies");
     angular.mock.module("ngSanitize");
     angular.mock.module("app.home");
@@ -14,152 +18,197 @@ describe("GeolocationService tests", function() {
     angular.mock.module("app.statuses");
 
     // Retrieve the main module
-    module("app");
+    module("app");    
 
-    inject(function(_GeolocationService_, _$window_) {
-      GeolocationService = _GeolocationService_;
-      $window = _$window_;
+    module(function($provide) {
+      $provide.value("$window", windowMock);
+    });
+
+    inject(function(_$injector_, _$rootScope_) {
+      GeolocationService = _$injector_.get("GeolocationService");
+      $rootScope = _$rootScope_;
     });
 
   });
 
-  it("GeolocationService must be defined and not be null", function() {
-    expect(GeolocationService).not.toBe(undefined);
-    expect(GeolocationService).not.toBe(null);
-  });
+  describe("statements tests", function() {
 
-  it("GeolocationService must be correctly initialied", function() {
-    expect(GeolocationService.coords).not.toBe(undefined);
-    expect(GeolocationService.coords).toBe(null);
+    it("statements must be defined", function() {
+      expect(GeolocationService).not.toEqual(undefined);
+      expect(GeolocationService.getLocation).not.toEqual(undefined);
+      expect(GeolocationService.getLocationDeferred).not.toEqual(undefined);
+      expect(GeolocationService.resolveGetCurrentPosition).not.toEqual(undefined);
+      expect(GeolocationService.rejectGetCurrentPosition).not.toEqual(undefined);
+    });
+
   });
 
   describe("getLocation() tests", function() {
 
-    beforeEach(function() {
-
-      if(!$window.navigator) {        
-        $window.navigator = {
-          geolocation: {
-            getCurrentPosition: function() { }
-          }
-        };
-      } else if(!$window.navigator.geolocation) {
-        $window.navigator.geolocation = {
-          getCurrentPosition: function() { }
-        };
-      }
-
-    });
-
     describe("$window.navigator not defined", function() {
 
       beforeEach(function() {
-
-        $window.navigator = undefined;
-
-        spyOn(GeolocationService, "getLocation").and.callThrough();
+        windowMock.navigator = undefined;
       });
 
-      it("getLocation should throw error", function() {
-        
+      it("getLocation promise should be rejected with browserNotSupportedError", function() {
+
+        var errorTest = undefined;
+
         GeolocationService
           .getLocation()
-            .then(function(result) {
-              
-            }, function(error) {
-              expect(error).toBe(new Error("not supported browser"));
-            });
+            .then(
+              function(result) { },
+              function(error) {
+                errorTest = error; 
+              }
+            );
 
-        expect(GeolocationService.getLocation.calls.count()).toBe(1);
+        $rootScope.$apply();
 
-      });      
+        expect(errorTest).toEqual(browserNotSupportedError);
+        expect(GeolocationService.getLocationDeferred).not.toEqual(null);
+      });
 
     });
 
     describe("$window.navigator.geolocation not defined", function() {
 
       beforeEach(function() {
-
-        $window.navigator.geolocation = undefined;
-
-        spyOn(GeolocationService, "getLocation").and.callThrough();
+        windowMock.navigator = {
+          geolocation: undefined
+        };
       });
 
-      it("getLocation should throw error", function() {
-        
+      it("getLocation promise should be rejected with browserNotSupportedError", function() {
+
+        var errorTest = undefined;
+
         GeolocationService
           .getLocation()
-            .then(function(result) {
-              
-            }, function(error) {
-              expect(error).toBe(new Error("not supported browser"));
-            });
+            .then(
+              function(result) { },
+              function(error) {
+                errorTest = error; 
+              }
+            );
 
-        expect(GeolocationService.getLocation.calls.count()).toBe(1);
+        $rootScope.$apply();
 
-      });   
+        expect(errorTest).toEqual(browserNotSupportedError);
+        expect(GeolocationService.getLocationDeferred).not.toEqual(null);
+      });
 
     });
 
-    describe("$window.navigator.geolocation called", function() {
+    describe("$window.navigator.geolocation defined", function() {
 
-      var error = false,
-          deferred = null,
-          $q = null, 
-          fakeGetCurrentPosition = null,
-          responseObj = {
-            cords: {
-              lat: 0,
-              long: 0
+      var positionMock = {
+            coords: {
+              lat: 1,
+              long: 1
             }
-          };
+          },
+          errorMock = new Error("error"),
+          deferred = null,
+          resolveMock = null;
 
       beforeEach(function() {
 
-        inject(function(_$q_) {
-          $q = _$q_;
-        });
-
-        deferred = $q.defer();
-
-        fakeGetCurrentPosition = function() {
-
-          if(!error) {
-            deferred.resolve( responseObj );
-          } else {
-            deferred.reject(new Error("error"));
+        windowMock.navigator = {
+          geolocation: {
+            getCurrentPosition: jasmine.createSpy().and.callFake(function() {
+              resolveMock();
+            })
           }
-
-          return deferred.promise;
         };
 
-        spyOn($window.navigator.geolocation, "getCurrentPosition").and.callFake(fakeGetCurrentPosition);
+        GeolocationService.resolveGetCurrentPosition = jasmine.createSpy();
+        GeolocationService.rejectGetCurrentPosition = jasmine.createSpy();
 
       });
 
-      it("getLocation should return coords", function() {
+      it("getCurrentPosition promise rejected with error getLocation should be rejected too", function() {
+
+        resolveMock = GeolocationService.rejectGetCurrentPosition;
+
         GeolocationService
-          .getLocation()
-            .then(function(result) {
-              expect(result).toBe( responseObj.coords );
-            });
+          .getLocation();
+        
+        expect(windowMock.navigator.geolocation.getCurrentPosition.calls.count()).toEqual(1);
+        expect(GeolocationService.rejectGetCurrentPosition.calls.count()).toEqual(1);
+        expect(GeolocationService.resolveGetCurrentPosition.calls.count()).toEqual(0);
+        expect(GeolocationService.getLocationDeferred).not.toEqual(null);
+
       });
 
-      error = true;
+      it("getCurrentPosition promise resolved getLocation too", function() {
 
-      it("getLocation should return error", function() {
+        resolveMock = GeolocationService.resolveGetCurrentPosition;
+
         GeolocationService
-          .getLocation()
-            .then(function(result) {
-            }, function(error) {
-              expect(error).toBe( new Error("error") );
-            });
+          .getLocation();
+        
+        expect(windowMock.navigator.geolocation.getCurrentPosition.calls.count()).toEqual(1);
+        expect(GeolocationService.rejectGetCurrentPosition.calls.count()).toEqual(0);
+        expect(GeolocationService.resolveGetCurrentPosition.calls.count()).toEqual(1);
+        expect(GeolocationService.getLocationDeferred).not.toEqual(null);
+
       });
+
+    });    
+
+  });
+
+  describe("resolveGetCurrentPosition() tests", function() {
+
+    var positionMock = {
+          coords: {
+            lat: 1,
+            long: 1
+          }
+        };
+
+    beforeEach(function() {
+      
+      GeolocationService.getLocationDeferred = {
+        resolve: jasmine.createSpy()
+      };
+
+    });
+
+    it("getLocationDeferred should be resolved with positionMock.coords", function() {
+
+      GeolocationService.resolveGetCurrentPosition(positionMock);
+
+      expect(GeolocationService.getLocationDeferred.resolve.calls.count()).toEqual(1);
+      expect(GeolocationService.getLocationDeferred.resolve).toHaveBeenCalledWith(positionMock.coords);
 
     });
 
   });
 
+  describe("rejectGetCurrentPosition() tests", function() {
 
+    var errorMock = new Error("error");
+
+    beforeEach(function() {
+      
+      GeolocationService.getLocationDeferred = {
+        reject: jasmine.createSpy()
+      };
+
+    });
+
+    it("getLocationDeferred should be resolved with positionMock.coords", function() {
+
+      GeolocationService.rejectGetCurrentPosition(errorMock);
+
+      expect(GeolocationService.getLocationDeferred.reject.calls.count()).toEqual(1);
+      expect(GeolocationService.getLocationDeferred.reject).toHaveBeenCalledWith(errorMock);
+
+    });
+
+  });
 
 });

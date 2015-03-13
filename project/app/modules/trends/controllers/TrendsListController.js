@@ -1,32 +1,32 @@
 trendsModule.controller('TrendsListController', [
   '$scope', 
   "TwitterService",
-  function($scope, TwitterService){
+  "ErrorHandlerService",
+  function($scope, TwitterService, ErrorHandlerService){
   
     var that = this;
 
-    that.loading = true;
+    that.loading = false;
     that.listTitle = $scope.listTitle;
     that.trends = [];
 
+    this.initialize = function() {
+      that.loading = true;
 
-    var initialize = function() {
       TwitterService.getNearestTrends()
         .then(function(result) {
 
-          console.log(result);
-
-          that.trends = result.trends;
-          that.loading = false;
+          that.trends = result.trends;          
 
         }, function(error) {
 
-          console.log(error);
+          ErrorHandlerService.displayError(error);
 
+        })
+        .finally(function() {
+          that.loading = false;
         });
     };
-
-    initialize();
 
   }
 ]);

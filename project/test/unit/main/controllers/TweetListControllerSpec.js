@@ -4,7 +4,8 @@ describe("TweetListController tests", function() {
       $controller = null,
       TwitterService = null,
       title = "test title",
-      errorMock = new Error("error");
+      errorMock = new Error("error"),
+      ErrorHandlerService = null;
 
   beforeEach(function() {
 
@@ -24,6 +25,8 @@ describe("TweetListController tests", function() {
       $scope = _$rootScope_.$new();
       $controller = _$controller_;
       TwitterService = _TwitterService_;
+      ErrorHandlerService = { };
+      ErrorHandlerService.displayError = jasmine.createSpy();      
     });
 
     spyOn(TwitterService, "initialize").and.callFake(function() { });
@@ -43,7 +46,7 @@ describe("TweetListController tests", function() {
       $scope.query = query;
       $scope.source = source;
 
-      controller = $controller("TweetListController", {$scope: $scope, TwitterService: TwitterService});      
+      controller = $controller("TweetListController", {$scope: $scope, TwitterService: TwitterService, ErrorHandlerService: ErrorHandlerService});      
 
     });
 
@@ -141,6 +144,7 @@ describe("TweetListController tests", function() {
         expect(controller.directive.tweets).toEqual([]);
         expect(controller.directive.loading).toEqual(false);
         expect(TwitterService.getHomeTimeline.calls.count()).toEqual(1);
+        expect(ErrorHandlerService.displayError.calls.count()).toEqual(1);
 
       });      
 
@@ -177,6 +181,7 @@ describe("TweetListController tests", function() {
         expect(controller.directive.tweets).toEqual( tweetsMock );
         expect(controller.directive.loading).toEqual(false);
         expect(TwitterService.getHomeTimeline.calls.count()).toEqual(1);
+        expect(ErrorHandlerService.displayError.calls.count()).toEqual(1);
 
       });  
 
@@ -184,7 +189,7 @@ describe("TweetListController tests", function() {
 
   });
 
-  describe("tests for home_timeline", function() {
+  describe("tests for trend_timeline", function() {
 
     var source = "trend_timeline",
         query = "%hello",
@@ -197,7 +202,7 @@ describe("TweetListController tests", function() {
       $scope.query = query;
       $scope.source = source;
 
-      controller = $controller("TweetListController", {$scope: $scope, TwitterService: TwitterService});      
+      controller = $controller("TweetListController", {$scope: $scope, TwitterService: TwitterService, ErrorHandlerService: ErrorHandlerService});      
 
     });
 
@@ -295,6 +300,7 @@ describe("TweetListController tests", function() {
         expect(controller.directive.tweets).toEqual( [] );
         expect(controller.directive.loading).toEqual(false);
         expect(TwitterService.getTweetsByQuery.calls.count()).toEqual(1);
+        expect(ErrorHandlerService.displayError.calls.count()).toEqual(1);
 
       });      
 
@@ -331,6 +337,7 @@ describe("TweetListController tests", function() {
         expect(controller.directive.tweets).toEqual( tweetsMock.statuses );
         expect(controller.directive.loading).toEqual(false);
         expect(TwitterService.getTweetsByQuery.calls.count()).toEqual(1);
+        expect(ErrorHandlerService.displayError.calls.count()).toEqual(1);
 
       });  
 

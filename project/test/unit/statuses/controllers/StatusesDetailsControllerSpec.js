@@ -1,105 +1,184 @@
+/**
+ *  Mostrar
+ */
 describe("StatusesDetailsController tests", function() {
 
   var $scope = null,
-      $controller = null,
+      $stateParams = null,
+      $filter = null,
       TwitterService = null,
-      controller = null;
+      ErrorHandlerService = null,
+      controller = null,
+      tweetMock = {
+        text: "asd" 
+      },
+      deferred = null,
+      tweetLinkMock = null,
+      errorMock = new Error("error");
 
   beforeEach(function() {
 
-    // Mock the main module dependencies
     angular.mock.module("ui.router");
+    angular.mock.module("ui.bootstrap");
     angular.mock.module("ngCookies");
     angular.mock.module("ngSanitize");
     angular.mock.module("app.home");
     angular.mock.module("app.trends");
     angular.mock.module("app.people");
+    angular.mock.module("app.statuses");
 
     // Retrieve the main module
-    module("app.statuses");
     module("app");
 
-    inject(function(_$controller_, _$rootScope_, _TwitterService_) {
+    inject(function(_$rootScope_, _$controller_, _$q_) {
+      
       $scope = _$rootScope_.$new();
-      $controller = _$controller_;
-      TwitterService = _TwitterService_;
+      
+      $stateParams = {statusID: 1};    
+
+      $filter = jasmine.createSpy().and.callFake(function() { return tweetLinkMock; });
+
+      ErrorHandlerService = { };
+      ErrorHandlerService.displayError = jasmine.createSpy();
+
+      deferred = _$q_.defer();
+
+      TwitterService = {
+        initialize: jasmine.createSpy(),
+        getStatus: jasmine.createSpy().and.returnValue(deferred.promise)
+      };
+
+      controller = _$controller_("StatusesDetailsController", {
+        $scope: $scope,
+        $stateParams: $stateParams,
+        $filter: $filter,
+        TwitterService: TwitterService,
+        ErrorHandlerService: ErrorHandlerService
+      });
+
     });
-
-    controller = $controller("StatusesDetailsController", {$scope: $scope, TwitterService: TwitterService});
-
-    $scope.$digest();
 
   });
 
-  it("Expect all statements to be correctly resolved", function() {
+  describe("statements tests", function() {
 
-    expect(TwitterService).not.toBe(undefined);
-    expect(controller).not.toBe(undefined);
-    expect(controller.tweet).toBe(null);
-    expect(controller.loading).toBe(false);
-    expect(controller.initialize).not.toBe(undefined);
+    it("statements must be defined", function() {
+
+      expect(controller).not.toEqual(undefined);
+      expect($scope).not.toEqual(undefined);
+      expect($stateParams).not.toEqual(undefined);
+      expect($filter).not.toEqual(undefined);
+      expect(TwitterService).not.toEqual(undefined);
+      expect(ErrorHandlerService).not.toEqual(undefined);
+      expect(controller.tweet).not.toEqual(undefined);
+      expect(controller.loading).not.toEqual(undefined);
+      expect(controller.initialize).not.toEqual(undefined);
+      expect(controller.setTweet).not.toEqual(undefined);
+
+    });
+
+    it("statements must be initialized with the correct data", function() {
+
+      expect(controller.tweet).toEqual(null);
+      expect(controller.loading).toEqual(false);
+      expect(typeof controller.initialize).toEqual(typeof function() {});
+      expect(typeof controller.setTweet).toEqual(typeof function() {});
+
+    });
 
   });
 
   describe("initialize() tests", function() {
 
-    var tweetMock = { },
-        errorMock = new Error("error"),
-        deferred = null,
-        $q = null;
-
     beforeEach(function() {
-
-      inject(function(_$q_) {
-        $q = _$q_;
-      });
-
-      deferred = $q.defer();
-
-      spyOn(TwitterService, "getStatus").and.callFake(function() {
-        return deferred.promise;
-      });
-
-      spyOn(TwitterService, "initialize").and.callFake(function() { });
-
+      controller.setTweet = jasmine.createSpy();
     });
 
-    it("initialize should fail", function() {
-
-      expect(controller.loading).toBe(false);
+    it("TwitterService should resolve the promise", function() {
 
       controller.initialize();
 
-      expect(controller.loading).toBe(true);
-      
-      deferred.reject(errorMock);
+      expect(TwitterService.initialize.calls.count()).toEqual(1);
+      expect(controller.loading).toEqual(true);
+      expect(TwitterService.getStatus.calls.count()).toEqual(1);
+      expect(TwitterService.getStatus).toHaveBeenCalledWith($stateParams.statusID);
+
+      deferred.resolve( {} );
 
       $scope.$apply();
 
-      expect(controller.tweet).toBe(null);
-      expect(TwitterService.getStatus.calls.count()).toBe(1);
-      expect(controller.loading).toBe(false);
+      expect(controller.setTweet.calls.count()).toEqual(1);
+      expect(controller.setTweet).toHaveBeenCalledWith( {} );
+      expect(ErrorHandlerService.displayError.calls.count()).toEqual(0);
+      expect(controller.loading).toEqual(false);
 
     });
 
-    it("initialize should return a tweet object", function() {
-
-      expect(controller.loading).toBe(false);
+    it("TwitterService should reject the promise", function() {
 
       controller.initialize();
 
-      expect(controller.loading).toBe(true);
-      
-      deferred.resolve(tweetMock);
+      expect(TwitterService.initialize.calls.count()).toEqual(1);
+      expect(controller.loading).toEqual(true);
+      expect(TwitterService.getStatus.calls.count()).toEqual(1);
+      expect(TwitterService.getStatus).toHaveBeenCalledWith($stateParams.statusID);
+
+      deferred.reject( errorMock );
 
       $scope.$apply();
 
-      expect(controller.tweet).toBe(tweetMock);
-      expect(TwitterService.getStatus.calls.count()).toBe(1);
-      expect(controller.loading).toBe(false);
+      expect(controller.setTweet.calls.count()).toEqual(0);
+      expect(ErrorHandlerService.displayError.calls.count()).toEqual(1);
+      expect(ErrorHandlerService.displayError).toHaveBeenCalledWith(errorMock);
+      expect(controller.loading).toEqual(false);
+
+    });
+
+  });
+
+  describe("setTweet() tests", function() {
+
+    describe("tweetLinkMock throws error", function() {
+
+      beforeEach(function() {
+
+        tweetLinkMock = jasmine.createSpy().and.throwError(errorMock.message);
+
+      });
+
+      it("ErrorHandlerService.displayError must be called because $filter throws error", function() {
+
+        controller.setTweet(tweetMock);
+
+        expect(ErrorHandlerService.displayError.calls.count()).toEqual(1);
+        expect(controller.tweet).toEqual(tweetMock);
+
+      });
+
+    });
+
+    describe("tweetLinkMock should format the tweet.text", function() {
+
+      beforeEach(function() {
+
+        tweetLinkMock = jasmine.createSpy().and.returnValue("asd");
+
+      });
+
+      it("tweetLinkMock should be called and tweet.text must be 'asd' ", function() {
+
+        controller.setTweet(tweetMock);
+
+        expect(ErrorHandlerService.displayError.calls.count()).toEqual(0);
+        expect(tweetLinkMock.calls.count()).toEqual(1);
+        expect(controller.tweet.text).toEqual("asd");
+
+      });
 
     });
 
   });
 
 });
+
+

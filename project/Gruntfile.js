@@ -43,10 +43,10 @@ module.exports = function(grunt) {
           "./app/libs/angular-cookies/angular-cookies.js",
           "./app/libs/angular-sanitize/angular-sanitize.js",
           "./app/libs/jquery/dist/jquery.js",
-          "./app/js/jquery-transport-fix.js",
           "./app/libs/oauth-js/dist/oauth.js",
           "./app/libs/bootstrap/dist/js/bootstrap.js",
           "./app/libs/angular-bootstrap/ui-bootstrap-tpls.js",
+          "./app/libs/moment/moment.js",
 
           "./app/modules/statuses/script.js",
           "./app/modules/statuses/controllers/StatusesDetailsController.js",
@@ -71,7 +71,9 @@ module.exports = function(grunt) {
           "./app/modules/main/script.js",
           "./app/modules/main/services/TwitterService.js",
           "./app/modules/main/services/GeolocationService.js",
+          "./app/modules/main/services/ErrorHandlerService.js",
           "./app/modules/main/filters/TweetLinkFilter.js",
+          "./app/modules/main/filters/TwitterDateFilter.js",
           "./app/modules/main/directives/Tweet.js",
           "./app/modules/main/directives/TweetList.js",
           "./app/modules/main/directives/LoadingOverlay.js",
@@ -82,7 +84,8 @@ module.exports = function(grunt) {
           "./app/modules/main/controllers/AccessLoginCallbackController.js",
           "./app/modules/main/controllers/TweetController.js",
           "./app/modules/main/controllers/TweetListController.js",
-          "./app/modules/main/controllers/LoadingOverlayController.js"
+          "./app/modules/main/controllers/LoadingOverlayController.js",
+          "./app/modules/main/controllers/ErrorController.js"
         ],
         dest: "./app/dist/js/app.js"
       }
@@ -112,6 +115,7 @@ module.exports = function(grunt) {
       test: {
         files: [
           "./test/unit/**/*",
+          "./test/unit/**/*.js",
           "./app/modules/**/*.js",
           "./app/modules/**/**/*.js"
         ],
