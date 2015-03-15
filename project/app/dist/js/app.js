@@ -58587,6 +58587,17 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
 }).call(this);
 
 var statusesModule = angular.module("app.statuses", []);
+/**
+ *  @name     StatusesDetailsController
+ *
+ *  @description                            Controller used into the status details view
+ *
+ *  @depends     $scope
+ *  @depends     $stateParams
+ *  @depends     $filter
+ *  @depends     TwitterService
+ *  @depends     ErrorHandlerService
+ */
 statusesModule.controller('StatusesDetailsController', [
   "$scope", 
   "$stateParams",
@@ -58600,10 +58611,17 @@ statusesModule.controller('StatusesDetailsController', [
     this.tweet = null;
     this.loading = false;
 
+    /**
+     *  @name   setTweet
+     *  @description                        Set the retrieved tweet item into the tweet attribute of the controller
+     *  @param  {Object}  tweet
+     */
     this.setTweet = function(tweet) {
       that.tweet = tweet;
       
       try {
+
+        // Format the tweet item text to replace hashtags & mentions
         that.tweet.text = $filter("tweetLink")(that.tweet.text);            
       } catch (error) {
         console.log(error.message);
@@ -58611,12 +58629,17 @@ statusesModule.controller('StatusesDetailsController', [
       }
     };
 
+    /**
+     *  @name   initialize
+     *  @description                        Initialize the current view with the status data 
+     */
     this.initialize = function() {
 
       TwitterService.initialize();
 
       that.loading = true;
 
+      // Get the status related with the statusID provided
       TwitterService.getStatus($stateParams.statusID)
         .then(that.setTweet,function(error) {
           ErrorHandlerService.displayError(error);
@@ -58654,6 +58677,15 @@ peopleModule.controller('PeopleBlockedController', [
   
   }
 ]);
+/**
+ *  @name   PeopleListController
+ *
+ *  @description                    Controller related to the PeopleList directive
+ * 
+ *  @depends  $scope
+ *  @depends  TwitterService
+ *  @depends  ErrorHandlerService
+ */
 peopleModule.controller('PeopleListController', [
   "$scope",
   "TwitterService",
@@ -58662,14 +58694,20 @@ peopleModule.controller('PeopleListController', [
   
     var that = this;
 
+    // Main config for tge directive
     that.listTitle = $scope.listTitle;
     that.loading = false;
     that.people = [];
 
+    /**
+     *  @name initialize
+     *  @description                  called into ng-init of the PeopleList directive
+     */
     that.initialize = function() {
-      
+
       that.loading = true;
 
+      // Get the blocked people from the api
       TwitterService.getBlockedPeople()
         .then(function(result) {
           that.people = result.users;
@@ -58705,11 +58743,19 @@ peopleModule.directive('peopleList', [
 var trendsModule = angular.module("app.trends", []);
 trendsModule.controller('TrendsIndexController', [
   "$scope", 
-  "TwitterService",
-  function($scope, TwitterService){      
+  function($scope){      
 
   }
 ]);
+/**
+ *  @name     TrendsListController
+ *  
+ *  @description                          Controller related to the TrendsList directive
+ *  
+ *  @depends  $scope
+ *  @depends  TwitterService
+ *  @depends  ErrorHandlerService
+ */
 trendsModule.controller('TrendsListController', [
   '$scope', 
   "TwitterService",
@@ -58721,7 +58767,7 @@ trendsModule.controller('TrendsListController', [
     that.loading = false;
     that.listTitle = $scope.listTitle;
     that.trends = [];
-
+    
     this.initialize = function() {
       that.loading = true;
 
@@ -58758,6 +58804,14 @@ trendsModule.controller('TrendTimelineController', [
 
   }
 ]);
+/**
+ *  @name     TrendController
+ *
+ *  @description                    Controller used into the trend directive
+ * 
+ *  @depends  $scope
+ *  @depends  $state
+ */
 trendsModule.controller('TrendController', [
   "$scope",
   "$state",
@@ -58767,6 +58821,10 @@ trendsModule.controller('TrendController', [
 
     that.trend = $scope.trend;
 
+    /**
+     *  @name     showTrendTimeline
+     *  @description                  redirects the user to the trend timeline
+     */
     that.showTrendTimeline = function() {
       $state.go("app.trends.timeline", {trendQuery: that.trend.query});
     };
@@ -58809,6 +58867,30 @@ trendsModule.directive('trend', [
     };
   }
 ]);
+/**
+ *  @name         app
+ *
+ *  @description                        entry point of the application
+ *  @depends                            ui.router
+ *  @depends                            ui.bootstrap
+ *  @depends                            ngCookies
+ *  @depends                            app.home
+ *  @depends                            app.trends
+ *  @depends                            app.people
+ *  @depends                            app.statuses
+ *  @depends                            ngSanitize
+ *
+ *  @const        appKey                defined the app key for oauthio
+ *
+ *  @routes
+ *                access/login          User login for twitter
+ *                access/callback       OAuthio login callback
+ *                app/home/timeline     User home timeline
+ *                app/statuses/:id      shows the tweet related with the provided id
+ *                app/blocked           User blocked people
+ *                app/trends/top        Nearest 10 trends
+ *                app/trends/:query     Timeline to the related trend provided by query  
+ */
 var app = angular.module('app', [
   "ui.router",
   "ui.bootstrap",
@@ -58977,6 +59059,16 @@ app.config([
 ]);
 
 
+/**
+ *  @name       TwitterService
+ *
+ *  @description                      Provides an interface to the twitter api 1.1
+ * 
+ *  @depends    $q
+ *  @depends    appKey                OAuthio application key
+ *  @depends    GeolocationService
+ *  @depends    $window
+ */
 app.service('TwitterService', [
   "$q",
   "appKey",
@@ -58986,11 +59078,20 @@ app.service('TwitterService', [
     
     var that = this;
 
+    // Private attributes of TwitterService
     this._twitterReference = null;
     this._initialized = false;
     this._connected = false;
 
+    /**
+     *  @name      _generateURL
+     *  @param     {String}                 baseUrl for the current resource
+     *  @param     {Object}   parameters    object with parameters to format the baseURL
+     *  @return    {String}                 Resource formated URL
+     */
     this._generateURL = function(baseURL, parameters) {
+      
+      // baseURL must be defined
       if(!baseURL) {
         throw new Error("baseUrl must be defined");
       }
@@ -59014,10 +59115,12 @@ app.service('TwitterService', [
         // Join the url
         url = [baseURL, queryStringParameters.join("&")].join("?");
 
+        // Excludes the retweets
         url = url + "&exclude=retweets";
 
       } else {
 
+        // Excludes the retweets
         url = url + "?exclude=retweets";
         
       }
@@ -59025,26 +59128,46 @@ app.service('TwitterService', [
       return url;
     };
 
+    /**
+     *  @name      getReference
+     *  @return    {Object}                 stored twitterReference instance
+     */
     this.getReference = function() {
       
       return that._twitterReference;
     };
 
+    /**
+     *  @name      setReference
+     *  @param     {Object}   reference     set the twitterReference instance
+     */
     this.setReference = function(reference) {
       
       that._twitterReference = reference;
     };
 
+    /**
+     *  @name      isConnected
+     *  @return   {Boolean}
+     */
     this.isConnected = function() {
       
       return that._connected;
     };
 
+    /**
+     *  @name      isInitialized
+     *  @return   {Boolean}
+     */
     this.isInitialized = function() {
 
       return that._initialized;
     };
 
+    /**
+     *  @name     initialize
+     *  @description                  initialize the current service with the OAuth authentication object if connected
+     */
     this.initialize = function() {
 
       // Initialize the OAuth object with the appKey and the twitter provider
@@ -59061,6 +59184,10 @@ app.service('TwitterService', [
       that._initialized = true;
     };
 
+    /**
+     *  @name     connectTwitter
+     *  @description                  connects the current instance of the service with the twitter api via a redirect method
+     */
     this.connectTwitter = function() {
       
       // If TwitterService is not initialized then throw error
@@ -59076,11 +59203,27 @@ app.service('TwitterService', [
       }
     };
 
+    /**
+     *  @name     connectionCallback
+     *  @return {Promise}             OAuthio redirect method callback
+     */
     this.connectionCallback = function() {
+      
+      // Initialize the current service instance
       that._connected = true;
+
+      // Returns the redirect method callback
       return $window.OAuth.callback("twitter", {cache: true});
     };
     
+    /**
+     *  @name   getHomeTimeline
+     *
+     *  @description                  Gets the user home timeline via an AJAX call to the twitter api
+     * 
+     *  @param  {Object}  parameters  Parameters to overwrite the defaults values
+     *  @return {Promise}
+     */
     that.getHomeTimeline = function(parameters) {
       var deferred = $q.defer(),
           url = "/1.1/statuses/home_timeline.json",
@@ -59094,18 +59237,20 @@ app.service('TwitterService', [
             //include_entities: false
           };
 
-      // If TwitterService is not initialized and connected the deferred will be rejected else will call
-      // get method to get the tweets
+      // If TwitterService is not initialized and connected the deferred will be rejected
       if(!that.isInitialized()){
         deferred.reject(new Error("TwitterService must be initialized"));
       } else if(!that.isConnected()){
         deferred.reject(new Error("TwitterService must be connected"));
       } else {
 
+        // Extends the defaults values with the parameters object
         defaults = angular.extend(defaults, parameters);
 
+        // Format the base url for the resource with the extended values
         url = that._generateURL(url, defaults);        
 
+        // Try to get the tweets for the user home timeline
         try {
 
           that._twitterReference.get(url)
@@ -59127,12 +59272,19 @@ app.service('TwitterService', [
       return deferred.promise;        
     };
 
+    /**
+     *  @name   getBlockedPeople
+     *
+     *  @description                  Gets the user blocked people via an AJAX call to the twitter api
+     * 
+     *  @param  {Object}  parameters  Parameters to overwrite the defaults values
+     *  @return {Promise}
+     */
     that.getBlockedPeople = function() {
       var deferred = $q.defer(),
           url = "/1.1/blocks/list.json";
 
-      // If TwitterService is not initialized and connected the deferred will be rejected else will call
-      // get method to get the tweets
+      // If TwitterService is not initialized and connected the deferred will be rejected
       if(!that.isInitialized()){
         deferred.reject(new Error("TwitterService must be initialized"));
       } else if(!that.isConnected()){
@@ -59141,17 +59293,18 @@ app.service('TwitterService', [
 
         url = that._generateURL(url);        
 
+        // Try to get the user's blocked people
         try {
 
-        that._twitterReference.get(url)
-          .then(
-            function(data) {
-              deferred.resolve(data);
-            },
-            function(error) {
-              deferred.reject(error);
-            }
-          );
+          that._twitterReference.get(url)
+            .then(
+              function(data) {
+                deferred.resolve(data);
+              },
+              function(error) {
+                deferred.reject(error);
+              }
+            );
 
         } catch (error) {
           deferred.reject(error);
@@ -59162,6 +59315,13 @@ app.service('TwitterService', [
       return deferred.promise;        
     };
 
+    /**
+     *  @name   getStatus
+     *
+     *  @description                  Gets the tweet related to the provided statusID via an AJAX call to the twitter api
+     * 
+     *  @return {Promise}
+     */
     this.getStatus = function(statusID) {
       var deferred = $q.defer(),
           url = "/1.1/statuses/show.json",
@@ -59172,6 +59332,7 @@ app.service('TwitterService', [
             //include_entities: false
           };
       
+      // If the TwitterService is not initialized, connected and the statusID is not provided will reject the promise
       if(!that.isInitialized()){
         deferred.reject(new Error("TwitterService must be initialized"));
       } else if(!that.isConnected()){
@@ -59180,8 +59341,10 @@ app.service('TwitterService', [
         deferred.reject(new Error("statusID must be defined"));
       } else {
 
+        // Format the resource url with the defaults values
         url = that._generateURL(url, defaults);
 
+        // Try to get the tweet related to the provided statusID
         try {
 
           that._twitterReference.get(url)
@@ -59203,6 +59366,15 @@ app.service('TwitterService', [
       return deferred.promise; 
     };
 
+    /**
+     *  @name   getClosestWoeID
+     *
+     *  @description                  get the closest woeid for the latitude and longitude provided
+     *
+     *  @param    {decimal}   latitude  
+     *  @param    {decimal}   longitude  
+     *  @return   {Promise}
+     */
     this.getClosestWoeID = function(latitude, longitude) {
       var url = "/1.1/trends/closest.json",          
           defaults = {
@@ -59210,17 +59382,19 @@ app.service('TwitterService', [
             long: longitude
           },
           deferred = $q.defer();      
-        
+      
       if(!that.isInitialized()){
-        deferred.reject("TwitterService must be initialized");
+        deferred.reject(new Error("TwitterService must be initialized"));
       } else if (!that.isConnected()){
-        deferred.reject("TwitterService must be connected");
+        deferred.reject(new Error("TwitterService must be connected"));
       } else if(!longitude || !latitude) {
         deferred.reject(new Error("Latitude and longitude need to be defined"));
       } else {
 
+        // FOrmat the resource url with the defaults values
         url = that._generateURL(url, defaults);        
 
+        // Try to get the closest woeid
         try {
           
           that._twitterReference.get(url)
@@ -59242,24 +59416,33 @@ app.service('TwitterService', [
       return deferred.promise;
     };
 
+    /**
+     *  @name    getPosition
+     *
+     *  @description                  get the latitude & longitude for the current position using the GeolocationService 
+     *                                injected
+     * 
+     *  @return   {Promise}
+     */
     this.getPosition = function() {
       var deferred = $q.defer();
 
       // TwitterService must be initialized and connected
       if(!that.isInitialized()){
-        deferred.reject("TwitterService must be initialized");
+        deferred.reject(new Error("TwitterService must be initialized"));
       } else if (!that.isConnected()){
-        deferred.reject("TwitterService must be connected");
+        deferred.reject(new Error("TwitterService must be connected"));
       } else {
         
+        // Try to get the latitude & longitude for the geolocation
         try {
-          // Call to the geolocation service to get latitude longitude and acur
+
           GeolocationService.getLocation()
             .then(
               function(result) {
                 deferred.resolve({longitude: result.longitude, latitude: result.latitude});
               }, function(error) {
-                deferred.reject(new Error("Could not get geolocation"));
+                deferred.reject(error);
               }
             );
         } catch(error) {
@@ -59271,11 +59454,18 @@ app.service('TwitterService', [
       return deferred.promise;   
     };
 
+    /**
+     *  @name       getNearestTrends
+     * 
+     *  @description                  get the nearest trends to the current woeid. Woeid will be retrieved with the
+     *                                latitude & longitude provided from the getPosition method
+     *                                
+     *  @return     {Promise}
+     */
     this.getNearestTrends = function() {
 
       var deferred = $q.defer(),
           url = "/1.1/trends/place.json",
-          callback = null,
           defaults = {
             id: 0
           };
@@ -59287,18 +59477,25 @@ app.service('TwitterService', [
         deferred.reject(new Error("TwitterService must be connected"));
       } else {
 
-        that.getPosition()
-          .then(
-            function(result) {
+        // Try to get the 10 nearest trends
+        try {
 
-              that.getClosestWoeID(result.latitude, result.longitude)
-                .then(
-                  function(result) {
+          // First will get the latitude & longitude of the user
+          that.getPosition()
+            .then(
+              function(result) {
+                
+                // Then will get the woeid
+                that.getClosestWoeID(result.latitude, result.longitude)
+                  .then(
+                    function(result) {
 
-                    defaults.id = result.woeid;
+                      defaults.id = result.woeid;
 
-                    url = that._generateURL(url, defaults);
-                    try {
+                      // Format the url with the defaults values
+                      url = that._generateURL(url, defaults);
+                    
+                      // Finally will get the trends from the twitter api
                       that._twitterReference.get(url)
                         .then(
                           function(data) {
@@ -59308,19 +59505,21 @@ app.service('TwitterService', [
                             deferred.reject(error);
                           }
                         );
-                    } catch(error) {
+
+                    },
+                    function(error) {
                       deferred.reject(error);
                     }
-                  },
-                  function(error) {
-                    deferred.reject(error);
-                  }
-                );
-            },
-            function(error) {
-              deferred.reject(error);
-            }
-          );
+                  );
+              },
+              function(error) {
+                deferred.reject(error);
+              }
+            );
+        
+        } catch(error) {
+          deferred.reject(error);
+        }          
 
       }
 
@@ -59328,9 +59527,12 @@ app.service('TwitterService', [
     };
 
     /**
-     * [getTweetsByQuery description]
-     * @param  {[type]} parameters [description]
-     * @return {[type]}            [description]
+     *  @name       getTweetsByQuery
+     *
+     *  @description                  get the timeline for the trend query provided into the parameters object
+     * 
+     *  @param      {Object}    parameters
+     *  @return     {Promise}
      */
     this.getTweetsByQuery = function(parameters) {
       var deferred = $q.defer(),
@@ -59342,30 +59544,35 @@ app.service('TwitterService', [
             max_id: null
           };
 
-      // TwitterService must be initialized and connected
+      // TwitterService must be initialized, connected & parameters must be defined
       if(!that.isInitialized()){
-        deferred.reject("TwitterService must be initialized");
+        deferred.reject(new Error("TwitterService must be initialized"));
       } else if(!that.isConnected()){
-        deferred.reject("TwitterService must be connected");
+        deferred.reject(new Error("TwitterService must be connected"));
       } else if(!parameters) {
-        deferred.reject("parameters must be defined");
+        deferred.reject(new Error("parameters must be defined"));
       } else if(!parameters.q){
-        deferred.reject("paramters.q must be defined");
+        deferred.reject(new Error("paramters.q must be defined"));
       } else {
 
+        // Extends the default values with the provided parameters
         defaults = angular.extend(defaults, parameters);
 
-        url = that._generateURL(url, defaults, true);
+        // Format the url with the default values
+        url = that._generateURL(url, defaults);
 
+        // Try to get the timeline for the trend
         try {
 
-        that._twitterReference.get(url)
-          .done(function(data) {
-            deferred.resolve(data);
-          })
-          .fail(function(error) {
-            deferred.reject(error);
-          });
+          that._twitterReference.get(url)
+            .then(
+              function(data) {
+                deferred.resolve(data);
+              },
+              function(error) {
+                deferred.reject(error);
+              }
+            );
 
         } catch (error) {
           deferred.reject(error);
@@ -59379,6 +59586,14 @@ app.service('TwitterService', [
   }
 ]);
 
+/**
+ *  @name       GeolocationService
+ *
+ *  @description                        Provides an interface to access the navigator.geolocation object
+ * 
+ *  @depends    $q
+ *  @depends    $window
+ */
 app.service('GeolocationService', [
   "$q",
   "$window",
@@ -59386,21 +59601,31 @@ app.service('GeolocationService', [
 
     var that = this;
     
+    // Geolocation getLocation deferred
     this.getLocationDeferred = null;
 
+    // Resolve method for getCurrenPosition
     this.resolveGetCurrentPosition = function(position) {
       that.getLocationDeferred.resolve(position.coords);
     };
 
+    // Reject method for getCurrenPosition
     this.rejectGetCurrentPosition = function(error) {
       that.getLocationDeferred.reject(error);
     };
 
+    /**
+     *  @name     getLocation
+     *  @description              get the current position retrieved via window.navigator.geolocation
+     *  @return {Promise}
+     */
     this.getLocation = function() {
       that.getLocationDeferred = $q.defer();
 
+      // Check if geolocation is supported into the browser
       if($window.navigator && $window.navigator.geolocation) {
         
+        // Retrieve the current position
         $window.navigator.geolocation
           .getCurrentPosition(that.resolveGetCurrentPosition, that.rejectGetCurrentPosition);
 
@@ -59414,18 +59639,35 @@ app.service('GeolocationService', [
   }
 ]);
 
+/**
+ *  @name     ErrorHandlerService
+ *
+ *  @description                      Used to handle errors into the application. The service will spawn a modal
+ *                                    if displayError is called
+ * 
+ *  @depends  $modal
+ */
 app.service('ErrorHandlerService', [
   '$modal', 
   function($modal){
   
     var that = this;
 
+    // Error instance
     this.error = null;
 
+    /**
+     *  @name     resetError
+     *  @description      resets the error instance
+     */
     this.resetError = function() {
       that.error = null;
     };
 
+    /**
+     *  @name     initializeErrorResult
+     *  @description                register the events of the modal result promise
+     */
     this.initializeErrorResult = function() {
       
       that.error.result
@@ -59433,11 +59675,18 @@ app.service('ErrorHandlerService', [
 
     };
 
+    /**
+     *  @name     displayError
+     *  @param    {Object}  error   Error to display into the modal
+     */
     this.displayError = function(error) {
+
+      // If no error provided will return undefined
       if(!error) {
         return;
       }
 
+      // Generate the error modal instance and shows it up into the window
       that.error = $modal.open({
         templateUrl: "modules/main/partials/error.html",
         controller: "ErrorController as errorCtrl",
@@ -59448,24 +59697,34 @@ app.service('ErrorHandlerService', [
         }
       });      
 
+      // Initialize the error modal instance callbacks
       that.initializeErrorResult();
 
     };  
 
   }
 ]);
+/**
+ *  @name     TweetLinkFilter
+ *
+ *  @description                        replace hashtags and mentions into anchors
+ *
+ *  @param    {String}    text          text to apply the filter
+ */
 app.filter('tweetLink', [
   function() {
       return function(text) {
+
+          // If there is no text provided will return undefined
           if (!text) {
             return;
           }
 
-          // replace #hashtags and send them to twitter
+          // replace hashtags
           var replaceHashtags = /(^|\s)#(\w*[a-zA-Z_]+\w*)/gim;
           replacedText = text.replace(replaceHashtags, '$1<a>#$2</a>');
           
-          // replace @mentions but keep them to our site
+          // replace mentions
           var replaceMentions = /(^|\s)\@(\w*[a-zA-Z_]+\w*)/gim;
           replacedText = replacedText.replace(replaceMentions, '$1<a>@$2</a>');
           
@@ -59473,10 +59732,19 @@ app.filter('tweetLink', [
       };
   }
 ]);
+/**
+ *  @name     TwitterDateFilter
+ *
+ *  @description                      replace the provided date as string to fromNow time
+ * 
+ *  @param    {String}  date
+ */
 app.filter('twitterDate', [
   "$window",
   function($window) {
       return function(date) {
+
+          // If there is no date provided will return undefined
           if (!date) {
             return;
           }
@@ -59484,6 +59752,7 @@ app.filter('twitterDate', [
           var time = null,
               timeFromNow = null;
 
+          // With moment js parse it to fromNow time
           time = date.split(" ");
           timeFromNow = $window.moment(new Date(Date.parse(time[1]+" "+time[2]+", "+time[5]+" "+time[3]+" UTC"))).fromNow();
           
@@ -59494,16 +59763,11 @@ app.filter('twitterDate', [
 app.directive('tweet', [
   function(){
     return {
-      // name: '',
-      // priority: 1,
-      // terminal: true,
       scope: {
         tweet: "=ngTweet"
       },
       controller: "TweetController as tweetCtrl",
-      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
       restrict: 'A',
-      // template: '',
       templateUrl: 'modules/main/partials/tweet.html',
       replace: true,
       // transclude: true,
@@ -59519,15 +59783,12 @@ app.directive('tweetList', [
   function($document){
     return {
       name: 'tweetList',
-      // priority: 1,
-      // terminal: true,
       scope: {
         title: "=ngTitle",
         source: "=ngSource",
         query: "=ngQuery"
       },
       controller: "TweetListController as tweetListCtrl",
-      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
       restrict: 'A',
       templateUrl: 'modules/main/partials/tweetList.html',
       replace: true,
@@ -59552,15 +59813,9 @@ app.directive('loadingOverlay', [
   function(){
   
   return {
-    // name: '',
-    // priority: 1,
-    // terminal: true,
-    scope: {
-
-    },
+    scope: { },
     controller: "LoadingOverlayController as loadingCtrl",
-    // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-    restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
+    restrict: 'A',
     templateUrl: 'modules/main/partials/loadingOverlay.html',
     replace: true,
     // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
@@ -59571,21 +59826,12 @@ app.directive('loadingOverlay', [
 }]);
 app.directive('loadingSpinner', [
   function(){
-    // Runs during compile
+    
     return {
-      // name: '',
-      // priority: 1,
-      // terminal: true,
-      scope: {
-
-      },
-      // controller: function($scope, $element, $attrs, $transclude) {},
-      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-      // restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
-       template: '  <div class="circle"></div>',
-      // templateUrl: '',
+      scope: { },
+      restrict: 'AE',
+      template: '  <div class="circle"></div>',
       replace: true,
-      // transclude: true,
       // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
       link: function($scope, iElm, iAttrs, controller) {
         var loadingCircle = angular.element(iElm);
@@ -59611,57 +59857,109 @@ app.directive('loadingSpinner', [
     };
   }
 ]);
+/**
+ *  @name       AppController
+ *  @depends    $scope           
+ *  @depends    logged          Boolean represents if the user is logged in
+ *  @depends    $state          $state instance to redirect the user if needed
+ */
 app.controller('AppController', [
   "$scope",
   "logged", 
   "$state",
   function($scope, logged, $state){
+
+    // If the user is not logged in, redirect to the login page
     if(!logged) {
       $state.go("access.login");
     }
   }
 ]);
+/**
+ *  @name    AccessController
+ *  @depends $scope             
+ *  @depends logged             boolean with the current state of the user
+ *  @depends $state             instance of $state to redirect if the user is already logged in
+ */
 app.controller('AccessController', [
   "$scope",
   "logged",
   "$state",
   function($scope, logged, $state){
 
+    // If the user is already logged in, will redirect to home timeline
     if(logged){
       $state.go("app.home.timeline");
     }
   }
 ]);
+/**
+ *  @name     AccessLoginController
+ *  @depends  $scope
+ *  @depends  TwitterService
+ */
 app.controller('AccessLoginController', [
   "$scope",
   "TwitterService",
   function($scope, TwitterService){
 
+    /**
+     *  @name         login
+     *  @description  redirects the user to the oautio page for twitter login
+     *  @return       {void}
+     */
     this.login = function() {
       TwitterService.connectTwitter();
     };
 
   }
 ]);
+/**
+ *  @name     AccessLoginCallbackController
+ *  @depends  $scope
+ *  @depends  TwitterService                  Provide the connectionCallback promise after the redirect
+ *  @depends  $state
+ */
 app.controller('AccessLoginCallbackController', [
   "$scope",
   "TwitterService",
   "$state",
   function($scope, TwitterService, $state){
 
+    /**
+     *  @name         rediretHome
+     *  @description  redirects the user to the home timeline
+     *  @return {void}
+     */
     this.redirectHome = function() {
       $state.go("app.home.timeline");
     };
 
+    /**
+     *  @name         rediretLogin
+     *  @description  redirects the user to the login page
+     *  @return {void}
+     */
     this.redirectLogin = function() {
       $state.go("access.login");
     };
 
+    // catch the connectionCallback event
     TwitterService.connectionCallback()
       .then(this.redirectHome, this.redirectLogin);      
 
   }
 ]);
+/**
+ *  @name     TweetController
+ *
+ *  @description                    Controller used into the Tweet directive
+ * 
+ *  @depends  $scope    
+ *  @depends  $state                Instance of $state to redirect the user if needed
+ *  @depends  $filter               Instance of $filter to apply any filter provided
+ *  @depends  ErrorHandlerService   Service to handle error
+ */
 app.controller('TweetController', [
   "$scope",
   "$state",
@@ -59669,12 +59967,23 @@ app.controller('TweetController', [
   "ErrorHandlerService",
   function($scope, $state, $filter, ErrorHandlerService){
 
+    // Set into the controller as statement the provided tweet into the directive
     this.tweet = $scope.tweet;
 
+    /**
+     *  @name   initialize    
+     *
+     *  @description                Method called when the directive is initialized with ng-init
+     *                              will initialize and format the tweet text and the tweet created date
+     */ 
     this.initialize = function() {
 
       try {
+        
+        // Format the text of the tweet for mentions and hashtags
         this.tweet.text = $filter("tweetLink")(this.tweet.text);
+
+        // Format the date with moment.js to get the fromNow time
         this.tweet.created_at = $filter("twitterDate")(this.tweet.created_at);
       } catch (error) {
         ErrorHandlerService.displayError(error);
@@ -59682,16 +59991,32 @@ app.controller('TweetController', [
 
     };
 
+    /**
+     *  @name   showTweetDetail
+     *  @param  {String}  tweetID   id for the tweet to search for
+     */
     this.showTweetDetail = function(tweetID) {
+      
+      // tweetID should be provided if not will throw an error
       if(!tweetID) {
         ErrorHandlerService.displayError(new Error("You can't see the details of a non identified tweet"));
       }
 
+      // redirect to the statuses page with the statusID provided
       $state.go("app.statuses", {statusID: tweetID});
     };
 
   }
 ]);
+/**
+ *  @name     TweetListController
+ *
+ *  @description                            Controller to use into the tweetlist directive
+ * 
+ *  @depends  $scope
+ *  @depends  TwitterService                Instance used to access the tweets from the twitter api
+ *  @depends  ErrorHandlerService           Instance to handle the errors
+ */
 app.controller('TweetListController', [
   "$scope",
   "TwitterService",
@@ -59700,6 +60025,7 @@ app.controller('TweetListController', [
   
     var that = this;
     
+    // Configuration for the directive
     this.directive = {
       title: $scope.title,
       source: $scope.source,
@@ -59709,15 +60035,22 @@ app.controller('TweetListController', [
       tweets: []
     };
 
+    /**
+     *  @name   loadHomeTimeline
+     *  @description     Load the tweets array with home timeline tweets for the user
+     */
     this.loadHomeTimeline = function() {
       var parameters = {};
 
+      // Set the directive.loading to make the loading spinner spawns
       that.directive.loading = true;
 
+      // if some tweets are already loaded will get the max id of the previous array to get tweets from there
       if(that.directive.tweets.length) {
         parameters.max_id = that.directive.tweets[that.directive.tweets.length - 1].id;
       }
 
+      // Try to get the tweets with the TwitterService instance
       TwitterService.getHomeTimeline(parameters)
         .then(
           function(result) {
@@ -59731,17 +60064,24 @@ app.controller('TweetListController', [
         });
     };
 
+    /**
+     *  @name     loadTrendTimeline
+     *  @description      Load the tweets array with trend specific timeline
+     */
     this.loadTrendTimeline = function() {
       var parameters = {
         q: that.directive.query
       };
 
+      // Set the directive.loading to make the loading spinner spawns
       that.directive.loading = true;
 
+      // if some tweets are already loaded will get the max id of the previous array to get tweets from there
       if(that.directive.tweets.length) {
         parameters.max_id = that.directive.tweets[that.directive.tweets.length - 1].id;
       }
 
+      // Try to get the tweets with the TwitterService instance
       TwitterService.getTweetsByQuery(parameters)
         .then(
           function(result) {
@@ -59755,6 +60095,11 @@ app.controller('TweetListController', [
         });
     };
 
+    /**
+     *  @name     initialize
+     *  @description    called when ng-init is called, will initialize the TwitterService if needed and then it will call 
+     *                  loadTweets method
+     */
     this.initialize = function() {
 
       TwitterService.initialize();
@@ -59762,6 +60107,10 @@ app.controller('TweetListController', [
       that.loadTweets();
     }; 
 
+    /**
+     *  @name     loadTweets
+     *  @description    will call the method that is related to the type of timeline that is currently initialized
+     */
     this.loadTweets = function() {
       
       switch(that.directive.source) {
@@ -59784,16 +60133,25 @@ app.controller('LoadingOverlayController', [
   
   }
 ]);
+/**
+ *  @name     ErrorController
+ *  @depends  $scope            
+ *  @depends  $modalInstance      instance of the modal directive
+ *  @depends  error               error provided to the directive
+ */
 app.controller('ErrorController', [
   "$scope",
   "$modalInstance",
   "error",
   function($scope, $modalInstance, error){
   
+    // Default title for the modal directive
     this.title = "An error has ocurred";
 
+    // error provided
     this.error = error;
 
+    // event triggered when the close button of the modal is clicked
     this.close = function() {
       $modalInstance.dismiss('close');
     };

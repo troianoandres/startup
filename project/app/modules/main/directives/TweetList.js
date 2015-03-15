@@ -3,15 +3,12 @@ app.directive('tweetList', [
   function($document){
     return {
       name: 'tweetList',
-      // priority: 1,
-      // terminal: true,
       scope: {
         title: "=ngTitle",
         source: "=ngSource",
         query: "=ngQuery"
       },
       controller: "TweetListController as tweetListCtrl",
-      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
       restrict: 'A',
       templateUrl: 'modules/main/partials/tweetList.html',
       replace: true,

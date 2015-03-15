@@ -1,16 +1,11 @@
 app.directive('tweet', [
   function(){
     return {
-      // name: '',
-      // priority: 1,
-      // terminal: true,
       scope: {
         tweet: "=ngTweet"
       },
       controller: "TweetController as tweetCtrl",
-      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
       restrict: 'A',
-      // template: '',
       templateUrl: 'modules/main/partials/tweet.html',
       replace: true,
       // transclude: true,

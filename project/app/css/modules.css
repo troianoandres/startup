@@ -22,6 +22,11 @@
   border-bottom: 1px solid #333;
 }
 
+.header-page-logo:focus {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
 .header-page-logo:hover {
   color: inherit;
   text-decoration: none;
@@ -37,6 +42,7 @@
   display: block;
   position: relative;
   min-height: 50px;
+  margin-bottom: 0px;
 }
 
 .navigation-list {
@@ -240,29 +246,26 @@
   color: #888888;
 }
 
-@media (min-width: 768px) {
-  
-  .header-page-logo {
-    width: auto;
-    border-bottom: 0px;
-  }
-  
-  .nav-bar {
-    width: auto;
-    float: right;
-  }
 
-  .navigation-list-item {
-    width: auto;
-    text-align: center;
+/****************************************************************************
+ *                                ANIMATIONS                                *
+ ****************************************************************************/
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
   }
-
-  .tweet-details-body {
-    font-size: 160%;
-  }  
-
 }
 
+@keyframes spin { 
+  100% {     
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+  } 
+} 
+
+/****************************************************************************
+ *                         LOADING & OVERLAY                                *
+ ****************************************************************************/
 
 .overlay-container {
   position: absolute;
@@ -293,19 +296,29 @@
   animation: spin 0.4s infinite linear;
 }
 
-@-webkit-keyframes spin {
-  100% {
-    -webkit-transform: rotate(360deg);
+
+@media (min-width: 768px) {
+  
+  .header-page-logo {
+    width: auto;
+    border-bottom: 0px;
   }
+  
+  .nav-bar {
+    width: auto;
+    float: right;
+  }
+
+  .navigation-list-item {
+    width: auto;
+    text-align: center;
+  }
+
+  .tweet-details-body {
+    font-size: 160%;
+  }  
+
 }
-
-@keyframes spin { 
-  100% {     
-    -moz-transform: rotate(360deg);
-    transform: rotate(360deg);
-  } 
-} 
-
 
 @media (min-width: 992px) {
 

@@ -7,23 +7,8 @@ body {
   color: #EEEEEE;
 }
 
-.text-center {
-  text-align: center;
-}
-
-.pull-right {
-  float: right;
-}
-
 .pointer {
   cursor: pointer;
-}
-
-hr.sm {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: 0;
-  border-top: 1px solid #444;
 }
 
 .mg-bot-10 {
@@ -32,13 +17,6 @@ hr.sm {
 
 .mg-right-2 { margin-right: 2px; }
 .mg-right-5 { margin-right: 5px; }
-
-
-.navbar {
-  margin-bottom: 0px;
-}
-
-
 
 .pd-bot-xs-5 {    padding-bottom: 5px; }
 .pd-top-xs-5 {    padding-top: 5px; }

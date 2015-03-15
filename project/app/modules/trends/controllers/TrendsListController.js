@@ -1,3 +1,12 @@
+/**
+ *  @name     TrendsListController
+ *  
+ *  @description                          Controller related to the TrendsList directive
+ *  
+ *  @depends  $scope
+ *  @depends  TwitterService
+ *  @depends  ErrorHandlerService
+ */
 trendsModule.controller('TrendsListController', [
   '$scope', 
   "TwitterService",
@@ -9,7 +18,7 @@ trendsModule.controller('TrendsListController', [
     that.loading = false;
     that.listTitle = $scope.listTitle;
     that.trends = [];
-
+    
     this.initialize = function() {
       that.loading = true;
 

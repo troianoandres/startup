@@ -6610,10 +6610,6 @@ body {
   min-height: 50px;
 }
 
-.sidebar {
-
-}
-
 .image-wrapper {
   width: 100%;  
 }
@@ -6726,23 +6722,8 @@ body {
   color: #EEEEEE;
 }
 
-.text-center {
-  text-align: center;
-}
-
-.pull-right {
-  float: right;
-}
-
 .pointer {
   cursor: pointer;
-}
-
-hr.sm {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: 0;
-  border-top: 1px solid #444;
 }
 
 .mg-bot-10 {
@@ -6751,13 +6732,6 @@ hr.sm {
 
 .mg-right-2 { margin-right: 2px; }
 .mg-right-5 { margin-right: 5px; }
-
-
-.navbar {
-  margin-bottom: 0px;
-}
-
-
 
 .pd-bot-xs-5 {    padding-bottom: 5px; }
 .pd-top-xs-5 {    padding-top: 5px; }
@@ -6924,6 +6898,11 @@ hr.sm {
   border-bottom: 1px solid #333;
 }
 
+.header-page-logo:focus {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
 .header-page-logo:hover {
   color: inherit;
   text-decoration: none;
@@ -6939,6 +6918,7 @@ hr.sm {
   display: block;
   position: relative;
   min-height: 50px;
+  margin-bottom: 0px;
 }
 
 .navigation-list {
@@ -7142,29 +7122,26 @@ hr.sm {
   color: #888888;
 }
 
-@media (min-width: 768px) {
-  
-  .header-page-logo {
-    width: auto;
-    border-bottom: 0px;
-  }
-  
-  .nav-bar {
-    width: auto;
-    float: right;
-  }
 
-  .navigation-list-item {
-    width: auto;
-    text-align: center;
+/****************************************************************************
+ *                                ANIMATIONS                                *
+ ****************************************************************************/
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
   }
-
-  .tweet-details-body {
-    font-size: 160%;
-  }  
-
 }
 
+@keyframes spin { 
+  100% {     
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+  } 
+} 
+
+/****************************************************************************
+ *                         LOADING & OVERLAY                                *
+ ****************************************************************************/
 
 .overlay-container {
   position: absolute;
@@ -7195,19 +7172,29 @@ hr.sm {
   animation: spin 0.4s infinite linear;
 }
 
-@-webkit-keyframes spin {
-  100% {
-    -webkit-transform: rotate(360deg);
+
+@media (min-width: 768px) {
+  
+  .header-page-logo {
+    width: auto;
+    border-bottom: 0px;
   }
+  
+  .nav-bar {
+    width: auto;
+    float: right;
+  }
+
+  .navigation-list-item {
+    width: auto;
+    text-align: center;
+  }
+
+  .tweet-details-body {
+    font-size: 160%;
+  }  
+
 }
-
-@keyframes spin { 
-  100% {     
-    -moz-transform: rotate(360deg);
-    transform: rotate(360deg);
-  } 
-} 
-
 
 @media (min-width: 992px) {
 

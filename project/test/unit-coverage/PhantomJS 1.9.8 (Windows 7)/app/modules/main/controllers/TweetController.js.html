@@ -64,7 +64,46 @@
 27
 28
 29
-30</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -73,10 +112,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2</span>
@@ -84,28 +133,56 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">app.controller('TweetController', [
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ *  @name     TweetController
+ *
+ *  @description                    Controller used into the Tweet directive
+ * 
+ *  @depends  $scope    
+ *  @depends  $state                Instance of $state to redirect the user if needed
+ *  @depends  $filter               Instance of $filter to apply any filter provided
+ *  @depends  ErrorHandlerService   Service to handle error
+ */
+app.controller('TweetController', [
   "$scope",
   "$state",
   "$filter",
   "ErrorHandlerService",
   function($scope, $state, $filter, ErrorHandlerService){
 &nbsp;
+    // Set into the controller as statement the provided tweet into the directive
     this.tweet = $scope.tweet;
 &nbsp;
+    /**
+     *  @name   initialize    
+     *
+     *  @description                Method called when the directive is initialized with ng-init
+     *                              will initialize and format the tweet text and the tweet created date
+     */ 
     this.initialize = function() {
 &nbsp;
       try {
+        
+        // Format the text of the tweet for mentions and hashtags
         this.tweet.text = $filter("tweetLink")(this.tweet.text);
+&nbsp;
+        // Format the date with moment.js to get the fromNow time
         this.tweet.created_at = $filter("twitterDate")(this.tweet.created_at);
       } catch (error) {
         ErrorHandlerService.displayError(error);
@@ -113,11 +190,18 @@
 &nbsp;
     };
 &nbsp;
+    /**
+     *  @name   showTweetDetail
+     *  @param  {String}  tweetID   id for the tweet to search for
+     */
     this.showTweetDetail = function(tweetID) {
+      
+      // tweetID should be provided if not will throw an error
       if(!tweetID) {
         ErrorHandlerService.displayError(new Error("You can't see the details of a non identified tweet"));
       }
 &nbsp;
+      // redirect to the statuses page with the statusID provided
       $state.go("app.statuses", {statusID: tweetID});
     };
 &nbsp;
@@ -127,7 +211,7 @@
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Mar 13 2015 17:25:59 GMT-0300 (Hora estándar de Argentina)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Mar 15 2015 11:33:43 GMT-0300 (Hora estándar de Argentina)</div>
 </div>
 
 <script src="../../../../prettify.js"></script>

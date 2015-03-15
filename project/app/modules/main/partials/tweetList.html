@@ -6,14 +6,21 @@
       <h4>{{ tweetListCtrl.directive.title }}</h4>
     </div>
     <!-- Tweet list header -->
+
+    <!-- Tweet list body -->
     <div class="item-list-body">    
 
+      <!-- Message if no tweets are retrieved from twitter api -->
       <div ng-if="!tweetListCtrl.directive.tweets" class="item-list-message text-center">
         Your timeline is currently empty<br>
         Follow people and topics you find interesting to see their Tweets in your timeline.
       </div>
+      <!-- Message if no tweets are retrieved from twitter api -->
+
       <div tweet ng-tweet="tweet" ng-repeat="tweet in tweetListCtrl.directive.tweets"></div>    
+
     </div>
+    <!-- Tweet list body -->
 
     <div loading-overlay ng-if="tweetListCtrl.directive.loading"></div>
   </div>

@@ -1,3 +1,27 @@
+/**
+ *  @name         app
+ *
+ *  @description                        entry point of the application
+ *  @depends                            ui.router
+ *  @depends                            ui.bootstrap
+ *  @depends                            ngCookies
+ *  @depends                            app.home
+ *  @depends                            app.trends
+ *  @depends                            app.people
+ *  @depends                            app.statuses
+ *  @depends                            ngSanitize
+ *
+ *  @const        appKey                defined the app key for oauthio
+ *
+ *  @routes
+ *                access/login          User login for twitter
+ *                access/callback       OAuthio login callback
+ *                app/home/timeline     User home timeline
+ *                app/statuses/:id      shows the tweet related with the provided id
+ *                app/blocked           User blocked people
+ *                app/trends/top        Nearest 10 trends
+ *                app/trends/:query     Timeline to the related trend provided by query  
+ */
 var app = angular.module('app', [
   "ui.router",
   "ui.bootstrap",
