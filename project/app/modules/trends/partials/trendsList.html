@@ -1,0 +1,21 @@
+<div class="item-list-container" ng-init="trendsListCtrl.initialize();">
+  
+  <div class="item-list">
+    <!-- Trends list header -->
+    <div class="item-list-header text-center">
+      <h4>{{ trendsListCtrl.listTitle }}</h4>
+    </div>
+    <!-- Trends list header -->
+    
+    <!-- Trends list body -->
+    <div class="item-list-body">      
+
+      <div trend ng-trend="trend" ng-repeat="trend in trendsListCtrl.trends"></div>
+
+    </div>
+    <!-- Trends list body -->
+
+    <div loading-overlay ng-if="trendsListCtrl.loading"></div>
+  </div>
+
+</div>

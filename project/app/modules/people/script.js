@@ -1,0 +1,1 @@
+var peopleModule = angular.module("app.people", []);

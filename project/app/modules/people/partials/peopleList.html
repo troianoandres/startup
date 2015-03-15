@@ -1,0 +1,45 @@
+<div class="item-list-container" ng-init="peopleListCtrl.initialize();">
+  
+  <div class="item-list">
+    
+    <!-- People list header -->
+    <div class="item-list-header text-center">
+      <h4>{{ peopleListCtrl.listTitle }}</h4>
+    </div>
+    <!-- People list header -->
+    <!-- People list body -->
+    <div class="item-list-body">    
+    
+      <!-- People list item -->
+      <div class="item-container" ng-repeat="people in peopleListCtrl.people">
+        <div class="item people">
+          <div class="item-content">
+            
+            <header class="item-header">        
+
+              <!-- User avatar -->
+              <div class="avatar-wrapper">
+                <img ng-src="{{ people.profile_image_url_https}}" class="avatar-image" />  
+              </div>
+              <!-- User avatar -->
+
+              <!-- User data -->
+              <strong class="user-name">{{ people.name }}</strong><br/>
+              <span class="user-tag">@{{ people.screen_name }}</span>
+              <!-- User data -->
+              
+            </header>
+
+          </div>
+        </div>
+      </div>
+      <!-- People list item -->
+
+    </div>
+    <!-- People list body -->
+
+    <div loading-overlay ng-if="peopleListCtrl.loading"></div>
+
+  </div>
+
+</div>

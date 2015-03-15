@@ -1,0 +1,1 @@
+var statusesModule = angular.module("app.statuses", []);
